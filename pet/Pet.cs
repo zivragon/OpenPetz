@@ -16,10 +16,10 @@ public partial class Pet : Node2D
 	{
 		World.pets.Add(this);
 
-		var bitmap = new BMP();
-		bitmap.LoadFile("res://pet/data/textures/hair6.bmp");
+		//var bitmap = new BMP();
+		//bitmap.LoadFile("res://pet/data/textures/hair6.bmp");
 
-		Texture2D tex = bitmap.GetData();
+		//Texture2D tex = bitmap.GetData();
 
 		Texture2D texture = GD.Load<Texture2D>("res://pet/data/textures/hair6.bmp");
 		Texture2D palette = GD.Load<Texture2D>("res://pet/data/textures/petzpalette.png");
@@ -29,27 +29,10 @@ public partial class Pet : Node2D
 
 		ball.GlobalPosition = new Vector2(100, 100);
 
-		Ball ball2 = new Ball(tex, palette, 50, 105, 3, 5, 5);
+		Ball ball2 = new Ball(texture, palette, 50, 105, 3, 5, 5);
 		AddChild(ball2);
 
 		ball2.GlobalPosition = new Vector2(200, 200);
-
-		/*meshInstance = new MeshInstance2D();
-		AddChild(meshInstance);
-		immediateMesh = new ImmediateMesh();
-		meshInstance.Mesh = immediateMesh;
-	
-		consoleMaterial = GD.Load<ShaderMaterial>("res://shaders/ball_shader.tres");
-
-		consoleMaterial.SetShaderParameter("center", meshInstance.GlobalPosition);
-		consoleMaterial.SetShaderParameter("radius", (float)radius);
-		consoleMaterial.SetShaderParameter("tex", consoleFont);
-		consoleMaterial.SetShaderParameter("palette", palette);
-
-		consoleMaterial.SetShaderParameter("outline_width", 5);
-		consoleMaterial.SetShaderParameter("color_index", 35);
-		consoleMaterial.SetShaderParameter("outline_color", 5);
-		consoleMaterial.SetShaderParameter("fuzz", fuzz);*/
 	}
 
 	public override void _ExitTree()

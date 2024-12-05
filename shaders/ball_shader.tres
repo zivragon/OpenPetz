@@ -5,13 +5,12 @@
 [ext_resource type="Texture2D" uid="uid://dfy8bwfuekmgx" path="res://pet/data/textures/hair10.bmp" id="3_c5jat"]
 
 [resource]
-resource_local_to_scene = true
 shader = ExtResource("1_kflw4")
-shader_parameter/center = null
-shader_parameter/radius = null
-shader_parameter/outline_width = null
+shader_parameter/center = Vector2(100, 100)
+shader_parameter/radius = 50.0
+shader_parameter/outline_width = 2.0
 shader_parameter/fuzz = 1.0
-shader_parameter/color_index = null
+shader_parameter/color_index = 105.0
 shader_parameter/transparent_color_index = null
 shader_parameter/outline_color = Vector3(1, 1, 1)
 shader_parameter/tex = ExtResource("3_c5jat")
