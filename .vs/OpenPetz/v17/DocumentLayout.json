@@ -1,0 +1,88 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\petz_\\Documents\\GitHub\\OpenPetz\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{EDD10E3E-8A62-42C0-9A6B-E731211518BB}|OpenPetz.csproj|c:\\users\\petz_\\documents\\github\\openpetz\\pet\\pet.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EDD10E3E-8A62-42C0-9A6B-E731211518BB}|OpenPetz.csproj|solutionrelative:pet\\pet.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EDD10E3E-8A62-42C0-9A6B-E731211518BB}|OpenPetz.csproj|c:\\users\\petz_\\documents\\github\\openpetz\\ball\\ball.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EDD10E3E-8A62-42C0-9A6B-E731211518BB}|OpenPetz.csproj|solutionrelative:ball\\ball.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EDD10E3E-8A62-42C0-9A6B-E731211518BB}|OpenPetz.csproj|c:\\users\\petz_\\documents\\github\\openpetz\\bmp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EDD10E3E-8A62-42C0-9A6B-E731211518BB}|OpenPetz.csproj|solutionrelative:bmp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EDD10E3E-8A62-42C0-9A6B-E731211518BB}|OpenPetz.csproj|c:\\users\\petz_\\documents\\github\\openpetz\\pet\\line.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EDD10E3E-8A62-42C0-9A6B-E731211518BB}|OpenPetz.csproj|solutionrelative:pet\\line.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Bmp.cs",
+              "DocumentMoniker": "C:\\Users\\petz_\\Documents\\GitHub\\OpenPetz\\Bmp.cs",
+              "RelativeDocumentMoniker": "Bmp.cs",
+              "ToolTip": "C:\\Users\\petz_\\Documents\\GitHub\\OpenPetz\\Bmp.cs",
+              "RelativeToolTip": "Bmp.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-05T17:06:18.249Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Line.cs",
+              "DocumentMoniker": "C:\\Users\\petz_\\Documents\\GitHub\\OpenPetz\\pet\\Line.cs",
+              "RelativeDocumentMoniker": "pet\\Line.cs",
+              "ToolTip": "C:\\Users\\petz_\\Documents\\GitHub\\OpenPetz\\pet\\Line.cs",
+              "RelativeToolTip": "pet\\Line.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-05T03:31:46.633Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Pet.cs",
+              "DocumentMoniker": "C:\\Users\\petz_\\Documents\\GitHub\\OpenPetz\\pet\\Pet.cs",
+              "RelativeDocumentMoniker": "pet\\Pet.cs",
+              "ToolTip": "C:\\Users\\petz_\\Documents\\GitHub\\OpenPetz\\pet\\Pet.cs",
+              "RelativeToolTip": "pet\\Pet.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAB8AAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-05T02:37:00.207Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Ball.cs",
+              "DocumentMoniker": "C:\\Users\\petz_\\Documents\\GitHub\\OpenPetz\\ball\\Ball.cs",
+              "RelativeDocumentMoniker": "ball\\Ball.cs",
+              "ToolTip": "C:\\Users\\petz_\\Documents\\GitHub\\OpenPetz\\ball\\Ball.cs",
+              "RelativeToolTip": "ball\\Ball.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACsAAABPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-05T02:35:53.467Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
