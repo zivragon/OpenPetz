@@ -24,8 +24,6 @@ script = ExtResource("5_fdrcr")
 
 [node name="Ball" parent="Pet" instance=ExtResource("4_mh142")]
 
-[node name="MeshInstance2D" type="MeshInstance2D" parent="Pet/Ball"]
-
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 364.706, 231.29, 7.18144)
 visible = false
