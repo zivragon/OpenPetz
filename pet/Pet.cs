@@ -12,6 +12,8 @@ public partial class Pet : Node2D
 	//public uint currentScpState; 
 
 	// Called when the node enters the scene tree for the first time.
+
+	//test
 	public override void _Ready()
 	{
 		World.pets.Add(this);
