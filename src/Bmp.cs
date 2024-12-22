@@ -37,12 +37,12 @@ public class BMP {
 			_width = file.Get32();
 			_height = file.Get32();
 			
-			//Between 1 and 256 (inclusive) only
+			//Between 1 and 512 (inclusive) only
 			
 			if (_width <= 0 || _height <= 0)
 				return;
 			
-			if (_width > 256 || _height > 256)
+			if (_width > 512 || _height > 512)
 				return;
 			
 			//Ignore these two bytes too
@@ -97,14 +97,14 @@ public class BMP {
 	public Texture2D GetPalette() {
 		if (_loaded && _bitCount == 8){
 			
-			var textureImg = ImageTexture.CreateFromImage(_raster);
+			var textureImg = ImageTexture.CreateFromImage(_palette);
 			Texture2D texture = textureImg as Texture2D;
 			
 			return texture;
 		}
 		else
 		{
-			return new Texture2D();
+			return null;
 		}
 	}
 	
@@ -118,7 +118,7 @@ public class BMP {
 		}
 		else
 		{
-			return new Texture2D();
+			return null;
 		}
 	}
 	
