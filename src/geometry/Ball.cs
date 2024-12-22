@@ -5,13 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public partial class Ball : Node2D
+public partial class Ball : MeshInstance2D
 {
-	private MeshInstance2D meshInstance;
-	public ImmediateMesh immediateMesh;
-	public ShaderMaterial material;
-
-	public QuadMesh quadMesh;
+	private ImmediateMesh immediateMesh;
+	//To do: Merge this with this.Material
+	private ShaderMaterial material;
 
 	public Texture2D texture;
 	public Texture2D palette;
@@ -38,40 +36,30 @@ public partial class Ball : Node2D
 		this.outline_color = outline_color;
 	}
 
-	public Ball(Texture2D texture, int radius, int color_index, int fuzz, int outline_width, int outline_color)
-	{
-		this.texture = texture;
-		this.palette = GD.Load<Texture2D>("res://pet/data/textures/petzpalette.png");
-		this.radius = radius;
-		this.color_index = color_index;
-		this.fuzz = fuzz;
-		this.outline_width = outline_width;
-		this.outline_color = outline_color;
-	}
-
 	public override void _Ready()
 	{
-		meshInstance = new MeshInstance2D();
-		AddChild(meshInstance);
 
-		immediateMesh = new ImmediateMesh();
-		meshInstance.Mesh = immediateMesh;
+		this.immediateMesh = new ImmediateMesh();
+		this.material = (ShaderMaterial)GD.Load<ShaderMaterial>("res://shaders/ball_shader.tres").Duplicate(true);
 
-		// need to copy material for each ball or else they overwrite eachother's parameters.
-		// this is really inefficent and we'll need to change this at some point but that means rewriting the shader so ¯\_(ツ)_/¯ 
-		material = (ShaderMaterial)GD.Load<ShaderMaterial>("res://shaders/ball_shader.tres").Duplicate(true);
+		//this.immediateMesh.SurfaceSetMaterial(0, material); //is it necessary?
 
-		material.SetShaderParameter("fuzz", fuzz);
-		material.SetShaderParameter("radius", radius);
-		material.SetShaderParameter("outline_width", outline_width);
+		this.Mesh = this.immediateMesh;
+		this.Material = this.material;
 
-		material.SetShaderParameter("color_index", color_index);
-		material.SetShaderParameter("outline_color", outline_color);
+		//Set Material uniform parameters
 
-		material.SetShaderParameter("tex", texture);
-		material.SetShaderParameter("palette", palette);
+		this.material.SetShaderParameter("fuzz", fuzz);
+		this.material.SetShaderParameter("radius", radius);
+		this.material.SetShaderParameter("outline_width", outline_width);
 
-		material.SetShaderParameter("center", this.GlobalPosition);
+		this.material.SetShaderParameter("color_index", color_index);
+		this.material.SetShaderParameter("outline_color", outline_color);
+
+		this.material.SetShaderParameter("tex", texture);
+		this.material.SetShaderParameter("palette", palette);
+
+		this.material.SetShaderParameter("center", this.GlobalPosition);
 	}
 
 
@@ -82,12 +70,11 @@ public partial class Ball : Node2D
 		immediateMesh.ClearSurfaces();
 		immediateMesh.SurfaceBegin(Mesh.PrimitiveType.Triangles);
 
+		//To do: find out whether this belongs in _Ready or _Process
 		drawQuad(radius + fuzz);
 
 		immediateMesh.SurfaceEnd();
 
-		immediateMesh.SurfaceSetMaterial(0, material);
-		meshInstance.Material = material;
 	}
 
 	private void drawQuad(int size)
