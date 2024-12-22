@@ -71,7 +71,7 @@ public class BMP {
 				//_palette = new byte[256 * 4];
 				palette = file.GetBuffer(1024);
 				//generate the palette
-				_palette = Image.CreateFromData((int)_width, (int)_height, false, Image.Format.Rgba8, palette);
+				_palette = Image.CreateFromData(256, 1, false, Image.Format.Rgba8, palette);
 			}
 			
 			//Now for the raster part
