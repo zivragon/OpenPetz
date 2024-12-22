@@ -14,11 +14,12 @@ public partial class PetRenderer : Node2D
 	private List<Ball> ballz = new List<Ball> (); //store ballz
 	private List<Line> linez = new List<Line> (); //store ballz
 
-	//To Do: Move these two to a singleton
+    //this member is temporary 
+    private string[] texturePaths = new string[] { "./art/textures/hair11.bmp" };
+    
+	private List<Texture2D> textureList = new List<Texture2D>();
 
-	private Texture2D texture;
-
-
+    //To do: let a Manager class take care of this
 	private Texture2D palette;
 
 	//Methods
@@ -26,8 +27,9 @@ public partial class PetRenderer : Node2D
 	public override void _Ready()
 	{
 
+                LoadTextures();
 		//Prepare the Textures
-		texture = GD.Load<Texture2D>("res://art/textures/hair11.bmp");
+		var texture = textureList[1];
 
 		palette = GD.Load<Texture2D>("res://Resource/palettes/oddballz.png");
 
@@ -69,6 +71,18 @@ public partial class PetRenderer : Node2D
 	}
 
 	// CUSTOM Methods
+
+    private void LoadTextures(){
+        //start with adding the empty texture for the sake of texture index of -1
+        textureList.Add(TextureManager.FetchEmptyTexture());
+        
+        foreach (string texturePath in texturePaths)
+        {
+            Texture2D fetchedTexture = TextureManager.FetchTexture(texturePath);
+            
+            textureList.Add(fetchedTexture);
+        }
+    }
 
 	//NOTE: Order of updating matters!
 	private void UpdateGeometries(){
