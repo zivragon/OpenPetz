@@ -14,12 +14,12 @@ public partial class PetRenderer : Node2D
 	private List<Ball> ballz = new List<Ball> (); //store ballz
 	private List<Line> linez = new List<Line> (); //store ballz
 
-    //this member is temporary 
-    private string[] texturePaths = new string[] { "./art/textures/hair11.bmp" };
-    
+	//this member is temporary 
+	private string[] texturePaths = new string[] { "./art/textures/doggolove.bmp" };
+	
 	private List<Texture2D> textureList = new List<Texture2D>();
 
-    //To do: let a Manager class take care of this
+	//To do: let a Manager class take care of this
 	private Texture2D palette;
 
 	//Methods
@@ -27,21 +27,27 @@ public partial class PetRenderer : Node2D
 	public override void _Ready()
 	{
 
-                LoadTextures();
+		//dummy
+		
+		//var shadee = ShaderManager.FetchShader("ball");
+		
+		//.Print(shadee.Code);
+		
+		LoadTextures();
 		//Prepare the Textures
 		var texture = textureList[1];
 
-		palette = GD.Load<Texture2D>("res://Resource/palettes/oddballz.png");
+		palette = GD.Load<Texture2D>("res://Resource/palettes/petzpalette.png");
 
 		//Create dummy ballz for now.
-		for (int i = 1; i <= 5; i++)
+		for (int i = 1; i <= 3; i++)
 		{
 
-			int color = i % 2 == 0 ? 35 : 55;
+			int color = 55;
 			
-			Ball dummyBall = new Ball(texture, palette, 12, color, 4, 1, 39);
+			Ball dummyBall = new Ball(texture, palette, 50, color, 4, 1, 39);
 
-			Vector2 dummyCoord = new Vector2((i - 3) * 20, 0);
+			Vector2 dummyCoord = new Vector2(i * 100 - 200, 0);
 
 			coordArray.Add(new Vector3(dummyCoord.X, dummyCoord.Y, 0));
 			dummyBall.Position = dummyCoord;
@@ -53,7 +59,7 @@ public partial class PetRenderer : Node2D
 			AddChild(dummyBall);
 		}
 
-		for (int l = 0; l < 4; l++)
+		for (int l = 0; l < 2; l++)
 		{
 
 			Line dummyLine = new Line(null, null, this.ballz[l], this.ballz[l + 1], -1, 1, 39, 39);
@@ -66,23 +72,23 @@ public partial class PetRenderer : Node2D
 
 	public override void _Process(double delta)
 	{
-		rotation.Y += (float)0.05;
+		//rotation.Y += (float)0.05;
 		UpdateGeometries();
 	}
 
 	// CUSTOM Methods
 
-    private void LoadTextures(){
-        //start with adding the empty texture for the sake of texture index of -1
-        textureList.Add(TextureManager.FetchEmptyTexture());
-        
-        foreach (string texturePath in texturePaths)
-        {
-            Texture2D fetchedTexture = TextureManager.FetchTexture(texturePath);
-            
-            textureList.Add(fetchedTexture);
-        }
-    }
+	private void LoadTextures(){
+		//start with adding the empty texture for the sake of texture index of -1
+		textureList.Add(TextureManager.FetchEmptyTexture());
+		
+		foreach (string texturePath in texturePaths)
+		{
+			Texture2D fetchedTexture = TextureManager.FetchTexture(texturePath);
+			
+			textureList.Add(fetchedTexture);
+		}
+	}
 
 	//NOTE: Order of updating matters!
 	private void UpdateGeometries(){

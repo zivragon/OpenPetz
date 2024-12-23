@@ -54,9 +54,8 @@ public partial class Line : MeshInstance2D
 		immediateMesh = new ImmediateMesh();
 		this.Mesh = immediateMesh;
 
-		// need to copy material for each line or else they overwrite eachother's parameters
-		// same as ball, this is horribly ineffecient but we're kicking that can down the road for now
-		material = (ShaderMaterial)GD.Load<ShaderMaterial>("res://shaders/line_shader.tres").Duplicate(true);
+		//material = (ShaderMaterial)GD.Load<ShaderMaterial>("res://shaders/line_shader.tres").Duplicate(true);
+		this.material = ShaderManager.FetchShaderMaterial("line");
 
 		//Texture2D texture = GD.Load<Texture2D>("res://pet/data/textures/hair6.bmp");
 		//Texture2D palette = GD.Load<Texture2D>("res://pet/data/textures/petzpalette.png");
