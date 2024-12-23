@@ -40,7 +40,8 @@ public partial class Ball : MeshInstance2D
 	{
 
 		this.immediateMesh = new ImmediateMesh();
-		this.material = (ShaderMaterial)GD.Load<ShaderMaterial>("res://shaders/ball_shader.tres").Duplicate(true);
+		//this.material = (ShaderMaterial)GD.Load<ShaderMaterial>("res://shaders/ball_shader.tres").Duplicate(true);
+		this.material = ShaderManager.FetchShaderMaterial("ball");
 
 		//this.immediateMesh.SurfaceSetMaterial(0, material); //is it necessary?
 

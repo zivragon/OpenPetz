@@ -14,13 +14,7 @@ uniform float fuzz = 0.0;
 uniform vec2 vec_to_upright;
 uniform sampler2D palette: filter_nearest;
 
-vec4 get_shifted_color(float palette_index) {
-	float modded_color = color_index - mod(color_index, 10);
-	float amount_to_shift_index = mod(palette_index * 255.0, 10);
-	float new_palette_index = modded_color + amount_to_shift_index;
-	vec4 new_color = texture(palette, vec2(new_palette_index / 255.0, 0.0));
-	return new_color;
-}
+@LoadTextureShaderComponent
 
 void vertex() {
 	 if(VERTEX.x > 0.0) {
@@ -53,10 +47,17 @@ void fragment() {
 	vec4 outline_r = vec4(r_outline_color * vec3(outline), 1.0) * in_line;
 	float outline2 = (1.0 - step(mod_uv.y, end_y - 1.0)) * outline2_enabled;
 	vec4 outline_l = vec4(l_outline_color * outline2, 1.0) * in_line;
-	vec2 uv = ((FRAGCOORD.xy - center) / vec2(textureSize(tex, 0)));
+	vec2 uv = ((FRAGCOORD.xy) / vec2(textureSize(tex, 0)));
+	
+	uv.y = 1.0 - uv.y;
+	
 	outline = outline + outline2;
+	
 	float inside = (1.0 - outline) * in_line;
+	
 	vec4 texcolor = texture(tex, uv);
+	
+	
 	texcolor = get_shifted_color(texcolor.r);
 	COLOR = outline_r + outline_l + (inside * texcolor);
 }
