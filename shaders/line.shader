@@ -1,28 +1,34 @@
 shader_type canvas_item;
 
 uniform sampler2D tex : hint_default_white, filter_nearest, repeat_enable;
-uniform vec2 max_uvs;
-varying float max_y;
-uniform vec2 center;
+
+uniform vec2 start_ball;
+uniform vec2 end_ball;
+
+uniform float start_diameter;
+uniform float end_diameter;
+
 uniform float outline1_enabled = 1.0;
 uniform float outline2_enabled = 1.0;
+
 uniform float color_index;
-uniform float transparent_color_index;
-uniform vec3 r_outline_color;
-uniform vec3 l_outline_color;
+uniform float transparent_color_index = 75.0;
+
+uniform float r_outline_color;
+uniform float l_outline_color;
+
 uniform float fuzz = 0.0;
-uniform vec2 vec_to_upright;
+
 uniform sampler2D palette: filter_nearest;
 
-@LoadTextureShaderComponent
+@LoadColorShaderComponent
 
-void vertex() {
-	 if(VERTEX.x > 0.0) {
-               max_y = max_uvs.x;
-       } else {
-               max_y = max_uvs.y;
-       }
-
+vec2 rotate2d(float angle, vec2 coord){
+    vec2 rotatable = vec2(1.0);
+	rotatable.y = coord.y * cos(angle) + coord.x * sin(angle);
+	rotatable.x = coord.x * cos(angle) - coord.y * sin(angle);
+	
+	return rotatable;
 }
 
 float random(float x) {
@@ -31,33 +37,29 @@ float random(float x) {
         43758.5453123) - 0.5;
 }
 
-float bucket(float y) {
-	return trunc(y / 2.0);
-}
-
 void fragment() {
-	vec2 mod_uv = UV;
+
+	vec2 coord = FRAGCOORD.xy - end_ball;
+	vec2 texUV = fract(coord / vec2(textureSize(tex, 0)));
+	texUV.y = 1.0 - texUV.y;
 	
-	mod_uv -= random(bucket(FRAGCOORD.y - center.y)) * vec_to_upright * fuzz;
-	float min_y = max_y / 4.0;
-	float end_y = max_y - min_y;
-	float in_line = 1.0 - step(mod_uv.y, min_y);
-	in_line = in_line * step(mod_uv.y, end_y);
-	float outline = step(mod_uv.y, min_y + 1.0) * outline1_enabled;
-	vec4 outline_r = vec4(r_outline_color * vec3(outline), 1.0) * in_line;
-	float outline2 = (1.0 - step(mod_uv.y, end_y - 1.0)) * outline2_enabled;
-	vec4 outline_l = vec4(l_outline_color * outline2, 1.0) * in_line;
-	vec2 uv = ((FRAGCOORD.xy) / vec2(textureSize(tex, 0)));
+	coord = rotate2d(atan(end_ball.y - start_ball.y, start_ball.x - end_ball.x), coord);
 	
-	uv.y = 1.0 - uv.y;
+	float alpha = 1.0;
 	
-	outline = outline + outline2;
+	float distance = length(start_ball - end_ball);
 	
-	float inside = (1.0 - outline) * in_line;
+	float slope = (end_diameter/2.0 - start_diameter/2.0) / distance;
+	//if someone has a better name for this, please let me know :)
+	float girth = coord.x * slope;
 	
-	vec4 texcolor = texture(tex, uv);
+	alpha = step(-end_diameter/2.0 + girth, coord.y) * step(coord.y, end_diameter/2.0 - girth);
 	
+	float tex_index = texture(tex, texUV).r;
 	
-	texcolor = get_shifted_color(texcolor.r);
-	COLOR = outline_r + outline_l + (inside * texcolor);
+	vec4 line_color = get_color(tex_index, true);
+	
+	line_color.a *= alpha;
+
+	COLOR = line_color;
 }

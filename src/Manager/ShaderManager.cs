@@ -6,7 +6,9 @@ public static class ShaderManager {
 	private static Dictionary<string, Shader> fetchedShaders = new Dictionary<string, Shader>();
 	
 	//temporary
-	private static string textureShaderCode = "";
+	private static string colorShaderCode = "";
+	//also temporary
+	private static string circleShaderCode = "";
 	//To do: improve this
 	private static Dictionary<string, Shader> fetchedComponentShaders = new Dictionary<string, Shader>();
 	
@@ -17,9 +19,14 @@ public static class ShaderManager {
 			return fetchedShaders[name];
 		}
 		
-		if (textureShaderCode == ""){
-			using var compFile = FileAccess.Open("./shaders/components/texture.shader", FileAccess.ModeFlags.Read);
-			textureShaderCode = compFile.GetAsText();
+		if (colorShaderCode == ""){
+			using var compFile = FileAccess.Open("./shaders/components/color.shader", FileAccess.ModeFlags.Read);
+			colorShaderCode = compFile.GetAsText();
+		}
+		
+		if (circleShaderCode == ""){
+			using var compFile = FileAccess.Open("./shaders/components/circle.shader", FileAccess.ModeFlags.Read);
+			circleShaderCode = compFile.GetAsText();
 		}
 		
 		try{
@@ -27,7 +34,8 @@ public static class ShaderManager {
 			
 			string code = file.GetAsText();
 			
-			code = code.Replace("@LoadTextureShaderComponent", textureShaderCode);
+			code = code.Replace("@LoadColorShaderComponent", colorShaderCode);
+			code = code.Replace("@LoadCircleShaderComponent", circleShaderCode);
 			
 			Shader shader = new Shader();
 			
