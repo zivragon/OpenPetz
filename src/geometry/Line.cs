@@ -80,13 +80,17 @@ public partial class Line : MeshInstance2D
 
 		material.SetShaderParameter("fuzz", 0);
 
-		material.SetShaderParameter("r_outline_color", new Vector3(0,0,0));
-		material.SetShaderParameter("l_outline_color", new Vector3(0,0,0));
+		material.SetShaderParameter("r_outline_color", 39);
+		material.SetShaderParameter("l_outline_color", 39);
 
 		material.SetShaderParameter("color_index", (float)this.color);
-
-		material.SetShaderParameter("transparent_color_index", (float)0);
-		material.SetShaderParameter("max_uvs", new Vector2(start.radius*4, end.radius*4));
+		material.SetShaderParameter("transparent_color_index", 75);
+		
+		material.SetShaderParameter("start_ball", start.GlobalPosition);
+		material.SetShaderParameter("end_ball", end.GlobalPosition);
+		
+		material.SetShaderParameter("start_diameter", start.diameter);
+		material.SetShaderParameter("end_diameter", end.diameter);
 
 		material.SetShaderParameter("center", Position);
 		material.SetShaderParameter("vec_to_upright", Vector2.FromAngle(this.Rotation));
@@ -99,6 +103,9 @@ public partial class Line : MeshInstance2D
 
 	public override void _Process(double delta)
 	{
+		material.SetShaderParameter("start_ball", start.GlobalPosition);
+		material.SetShaderParameter("end_ball", end.GlobalPosition);
+		
 		Vector2 Position = start.Position + (end.Position - start.Position) / 2; 
 
 		this.Position = Position;
@@ -116,8 +123,8 @@ public partial class Line : MeshInstance2D
 
 	private void drawVertices()
 	{
-		int startWidth = start.radius * 2;
-		int endWidth = end.radius * 2;
+		int startWidth = start.diameter;
+		int endWidth = end.diameter;
 		float length = (end.Position - start.Position).Length() / 2;
 
 		Vector3 vtBottomLeft =	new Vector3(-1 * length, -1 * endWidth, 0);

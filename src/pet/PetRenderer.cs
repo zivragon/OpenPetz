@@ -15,7 +15,7 @@ public partial class PetRenderer : Node2D
 	private List<Line> linez = new List<Line> (); //store ballz
 
 	//this member is temporary 
-	private string[] texturePaths = new string[] { "./art/textures/doggolove.bmp" };
+	private string[] texturePaths = new string[] { "./art/textures/flower.bmp" };
 	
 	private List<Texture2D> textureList = new List<Texture2D>();
 
@@ -43,9 +43,9 @@ public partial class PetRenderer : Node2D
 		for (int i = 1; i <= 3; i++)
 		{
 
-			int color = 55;
+			int color = 85;
 			
-			Ball dummyBall = new Ball(texture, palette, 50, color, 4, 1, 39);
+			Ball dummyBall = new Ball(texture, palette, 100 - i*20, color, 4, 1, 39);
 
 			Vector2 dummyCoord = new Vector2(i * 100 - 200, 0);
 
@@ -72,7 +72,7 @@ public partial class PetRenderer : Node2D
 
 	public override void _Process(double delta)
 	{
-		//rotation.Y += (float)0.05;
+		//rotation.Y += (float)0.05; 
 		UpdateGeometries();
 	}
 
@@ -102,23 +102,32 @@ public partial class PetRenderer : Node2D
 
 		float rYSin = (float)Math.Sin(rotation.Y);
 		float rYCos = (float)Math.Cos(rotation.Y);
+		
+		float rZSin = (float)Math.Sin(rotation.Z);
+		float rZCos = (float)Math.Cos(rotation.Z);
+		
 		for (int index = 0; index < this.ballz.Count; index++)
 		{
 
 			Vector3 coord = this.coordArray[index];
 
 			float xf = coord.X;
-
+			float yf = coord.Y;
 			float zf = coord.Z;
+			
 			float zz = zf;
 
 			zf = (zz * rYCos) - (xf * rYSin);
 			xf = (xf * rYCos) + (zz * rYSin);
+			
+			float yf2 = (yf * rZCos) - (xf * rZSin);
+			float xf2 = (xf * rZCos) + (yf * rZSin);
 
 			float z = (float)Math.Round(zf);
-			float x = (float)Math.Round(xf);
+			float y = (float)Math.Round(yf2);
+			float x = (float)Math.Round(xf2);
 
-			Vector2 v = new Vector2(x, ballz[index].Position.Y);
+			Vector2 v = new Vector2(x, y);
 
 			ballz[index].Position = v;
 			//Since Godot renders Nodes with highest Z on top of others unlike original petz l, we set negative of it

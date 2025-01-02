@@ -14,7 +14,7 @@ public partial class Ball : MeshInstance2D
 	public Texture2D texture;
 	public Texture2D palette;
 
-	public int radius;
+	public int diameter;
 	public int color_index;
 	public int fuzz;
 	public int outline_width;
@@ -25,11 +25,11 @@ public partial class Ball : MeshInstance2D
 
 	}
 
-	public Ball(Texture2D texture, Texture2D palette, int radius, int color_index, int fuzz, int outline_width, int outline_color)
+	public Ball(Texture2D texture, Texture2D palette, int diameter, int color_index, int fuzz, int outline_width, int outline_color)
 	{
 		this.texture = texture;
 		this.palette = palette;
-		this.radius = radius;
+		this.diameter = diameter;
 		this.color_index = color_index;
 		this.fuzz = fuzz;
 		this.outline_width = outline_width;
@@ -51,31 +51,33 @@ public partial class Ball : MeshInstance2D
 		//Set Material uniform parameters
 
 		this.material.SetShaderParameter("fuzz", fuzz);
-		this.material.SetShaderParameter("radius", radius);
+		this.material.SetShaderParameter("diameter", diameter);
 		this.material.SetShaderParameter("outline_width", outline_width);
 
 		this.material.SetShaderParameter("color_index", color_index);
 		this.material.SetShaderParameter("outline_color", outline_color);
+		material.SetShaderParameter("transparent_color_index", 75);
 
 		this.material.SetShaderParameter("tex", texture);
 		this.material.SetShaderParameter("palette", palette);
 
 		this.material.SetShaderParameter("center", this.GlobalPosition);
+		
+		//
+		
+		immediateMesh.ClearSurfaces();
+		immediateMesh.SurfaceBegin(Mesh.PrimitiveType.Triangles);
+
+		//To do: find out whether this belongs in _Ready or _Process
+		drawQuad(diameter + fuzz);
+
+		immediateMesh.SurfaceEnd();
 	}
 
 
 	public override void _Process(double dt)
 	{
 		material.SetShaderParameter("center", this.GlobalPosition);
-
-		immediateMesh.ClearSurfaces();
-		immediateMesh.SurfaceBegin(Mesh.PrimitiveType.Triangles);
-
-		//To do: find out whether this belongs in _Ready or _Process
-		drawQuad(radius + fuzz);
-
-		immediateMesh.SurfaceEnd();
-
 	}
 
 	private void drawQuad(int size)
