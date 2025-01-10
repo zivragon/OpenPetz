@@ -20,6 +20,8 @@ public partial class TextureAtlas : SubViewport
 	{
 		Size = new Vector2I(1024, 64);
 		
+		RenderTargetUpdateMode = SubViewport.UpdateMode.Always;
+
 		texture = TextureManager.FetchTexture("./art/textures/flower.bmp");
 		palette = GD.Load<Texture2D>("res://Resource/palettes/petzpalette.png");
 		
@@ -30,6 +32,7 @@ public partial class TextureAtlas : SubViewport
 		
 		dummyMesh.Mesh = immediateMesh;
 		dummyMesh.Material = material;
+		AddChild(dummyMesh);
 		
 		immediateMesh.ClearSurfaces();
 		immediateMesh.SurfaceBegin(Mesh.PrimitiveType.Triangles);
@@ -47,6 +50,11 @@ public partial class TextureAtlas : SubViewport
 		material.SetShaderParameter("tex", texture);
 		material.SetShaderParameter("palette", palette);
 		
+		
+		RenderingServer.FramePostDraw += () => {
+			GetTexture().GetImage().SavePng("res://cache/texture_atlas/1.png");
+		};
+
 		/*await RenderingServer.FramePostDraw;
 		if (cachedTexture == false){
 			textureAtlas.GetTexture().GetImage().SavePng("res://cache/texture_atlas/1.png");
