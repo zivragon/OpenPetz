@@ -22,6 +22,7 @@ public partial class PetRenderer : Node2D
 	//To do: let a Manager class take care of this
 	private Texture2D palette;
 
+	private TextureAtlas textureAtlas = null;
 	//Methods
 
 	public override void _Ready()
@@ -31,13 +32,16 @@ public partial class PetRenderer : Node2D
 		
 		//var shadee = ShaderManager.FetchShader("ball");
 		
-		//.Print(shadee.Code);
-		
+		//.Print(shadee.Code);		
 		LoadTextures();
 		//Prepare the Textures
 		var texture = textureList[1];
 
 		palette = GD.Load<Texture2D>("res://Resource/palettes/petzpalette.png");
+		
+		textureAtlas = new TextureAtlas();
+		
+		AddChild(textureAtlas);
 
 		//Create dummy ballz for now.
 		for (int i = 1; i <= 3; i++)
