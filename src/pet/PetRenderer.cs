@@ -15,12 +15,13 @@ public partial class PetRenderer : Node2D
 	private List<Line> linez = new List<Line> (); //store ballz
 
 	//this member is temporary 
-	private string[] texturePaths = new string[] { "./art/textures/flower.bmp" };
+	private string[] texturePaths = new string[] { /*"./art/textures/flower.bmp"*/ "./Resource/textures/ziverre/ribbon.bmp" };
 	
 	private List<Texture2D> textureList = new List<Texture2D>();
 
 	//To do: let a Manager class take care of this
 	private Texture2D palette;
+	//private Texture2D pal;
 
 	private TextureAtlas textureAtlas = null;
 	//Methods
@@ -37,21 +38,22 @@ public partial class PetRenderer : Node2D
 		//Prepare the Textures
 		var texture = textureList[1];
 
-		palette = GD.Load<Texture2D>("res://Resource/palettes/petzpalette.png");
+		Texture2D palette = PaletteManager.FetchPalette("petz");
 		
-		textureAtlas = new TextureAtlas();
+		//Ignore until texture atlas is implemented
+		/*textureAtlas = new TextureAtlas();
 		
-		AddChild(textureAtlas);
+		AddChild(textureAtlas);*/
 
 		//Create dummy ballz for now.
-		for (int i = 1; i <= 3; i++)
+		for (int i = 1; i <= 14; i++)
 		{
 
-			int color = 85;
+			int color = i*10 + 5;
 			
-			Ball dummyBall = new Ball(texture, palette, 100 - i*20, color, 4, 1, 39);
+			Ball dummyBall = new Ball(texture, palette, 64, color, 4, 1, 39);
 
-			Vector2 dummyCoord = new Vector2(i * 100 - 200, 0);
+			Vector2 dummyCoord = new Vector2(i * 64 - 448, 0);
 
 			coordArray.Add(new Vector3(dummyCoord.X, dummyCoord.Y, 0));
 			dummyBall.Position = dummyCoord;
@@ -63,7 +65,8 @@ public partial class PetRenderer : Node2D
 			AddChild(dummyBall);
 		}
 
-		for (int l = 0; l < 2; l++)
+		//ignore for now
+		/*for (int l = 0; l < 2; l++)
 		{
 
 			Line dummyLine = new Line(null, null, this.ballz[l], this.ballz[l + 1], -1, 1, 39, 39);
@@ -71,7 +74,7 @@ public partial class PetRenderer : Node2D
 			//add them to the lists
 			this.linez.Add(dummyLine);
 			AddChild(dummyLine);
-		}
+		}*/
 	}
 
 	public override void _Process(double delta)

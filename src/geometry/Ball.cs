@@ -56,7 +56,7 @@ public partial class Ball : MeshInstance2D
 
 		this.material.SetShaderParameter("color_index", color_index);
 		this.material.SetShaderParameter("outline_color", outline_color);
-		material.SetShaderParameter("transparent_color_index", 75);
+		material.SetShaderParameter("transparent_color_index", 1);
 
 		this.material.SetShaderParameter("tex", texture);
 		this.material.SetShaderParameter("palette", palette);

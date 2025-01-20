@@ -84,7 +84,7 @@ public partial class Line : MeshInstance2D
 		material.SetShaderParameter("l_outline_color", 39);
 
 		material.SetShaderParameter("color_index", (float)this.color);
-		material.SetShaderParameter("transparent_color_index", 75);
+		material.SetShaderParameter("transparent_color_index", 1);
 		
 		material.SetShaderParameter("start_ball", start.GlobalPosition);
 		material.SetShaderParameter("end_ball", end.GlobalPosition);
