@@ -12,7 +12,7 @@ uniform float outline1_enabled = 1.0;
 uniform float outline2_enabled = 1.0;
 
 uniform float color_index;
-uniform float transparent_color_index = 75.0;
+uniform float transparent_color_index = 1.0;
 
 uniform float r_outline_color;
 uniform float l_outline_color;
