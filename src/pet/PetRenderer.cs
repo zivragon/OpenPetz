@@ -28,15 +28,9 @@ public partial class PetRenderer : Node2D
 
 	public override void _Ready()
 	{
-
-		//dummy
-		
-		//var shadee = ShaderManager.FetchShader("ball");
-		
-		//.Print(shadee.Code);		
 		LoadTextures();
 		//Prepare the Textures
-		var texture = textureList[1];
+		var texture = textureList[0];
 
 		Texture2D palette = PaletteManager.FetchPalette("petz");
 		
@@ -46,14 +40,14 @@ public partial class PetRenderer : Node2D
 		AddChild(textureAtlas);*/
 
 		//Create dummy ballz for now.
-		for (int i = 1; i <= 14; i++)
+		for (int i = 1; i <= 1; i++)
 		{
 
-			int color = i*10 + 5;
+			int color = 40;
 			
 			Ball dummyBall = new Ball(texture, palette, 64, color, 4, 1, 39);
 
-			Vector2 dummyCoord = new Vector2(i * 64 - 448, 0);
+			Vector2 dummyCoord = new Vector2(0, 0);
 
 			coordArray.Add(new Vector3(dummyCoord.X, dummyCoord.Y, 0));
 			dummyBall.Position = dummyCoord;
@@ -63,6 +57,13 @@ public partial class PetRenderer : Node2D
 			//add them to the lists
 			this.ballz.Add(dummyBall);
 			AddChild(dummyBall);
+			
+			List <PaintBall> paintBallz = new Line<PaintBall>();
+			
+			paintBallz.Add(new PaintBall());
+			
+			PaintBallGroup pbg = new PaintBallGroup(dummyBall, paintBallz);
+			dummyBall.AddChild(pbg);
 		}
 
 		//ignore for now
