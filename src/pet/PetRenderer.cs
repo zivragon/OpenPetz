@@ -58,7 +58,7 @@ public partial class PetRenderer : Node2D
 			this.ballz.Add(dummyBall);
 			AddChild(dummyBall);
 			
-			List <PaintBall> paintBallz = new Line<PaintBall>();
+			List <PaintBall> paintBallz = new List<PaintBall>();
 			
 			paintBallz.Add(new PaintBall());
 			

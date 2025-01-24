@@ -13,7 +13,7 @@ uniform sampler2D palette: filter_nearest;
 
 void fragment() {
 	
-	vec4 color = get_color(color_index / 256.0);
+	vec4 color = get_color(color_index / 256.0, false);
 	
 	COLOR = color;
 }

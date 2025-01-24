@@ -7,70 +7,71 @@ using System.Threading.Tasks;
 
 public partial class PaintBallGroup: MeshInstance2D
 {
-    private Ball baseBall = null;
-    private List <PaintBall> paintBallz = null;
-    private Mesh meshBuffer = null;
-    private Material material = null;
-    
+	private Ball baseBall = null;
+	private List <PaintBall> paintBallz = null;
+	private Mesh meshBuffer = null;
+	private ShaderMaterial material = null;
+	
 
-    PaintBallGroup(Ball _base, List < PaintBall > _paintBallz) 
-    {
-        baseBall = _base;
-        paintBallz = _paintBallz;
+	public PaintBallGroup(Ball _base, List < PaintBall > _paintBallz) 
+	{
+		baseBall = _base;
+		paintBallz = _paintBallz;
 
-        Position = new Vector2(0.0, 0.0);
-        Rotation = new Vector3(0.0, 0.0, 0.0);
-    }
+		Position = new Vector2(0.0f, 0.0f);
+		Rotation = 0; // new Vector3(0.0f, 0.0f, 0.0f);
+	}
 
-    public override void _Ready() 
-    {
-        material = ShaderManager.FetchShaderMaterial("paintball");
-        
-        this.Material = material;
-        
-        var st = new SurfaceTool();
+	public override void _Ready() 
+	{
+		material = ShaderManager.FetchShaderMaterial("paintball");
+		
+		this.Material = material;
+		
+		var st = new SurfaceTool();
 
-        st.SetColorFormat(0, SurfaceTool.CustomFormat.CustomRFloat);
+		st.Begin(Mesh.PrimitiveType.Triangles);
 
-        st.Begin(Mesh.PrimitiveType.Triangles);
+		st.SetCustomFormat(0, SurfaceTool.CustomFormat.RFloat);
 
-        foreach (paintBall in paintBallz)
-        {
-            // "color" (it is infact, not color)
-            var info = new Color(paintBall.Size, paintBall.ColorIndex, 0.0, 0.0);
-            
-            st.SetNormal(paintBall.Coordinations);
-            st.SetCustom(0, info);
-            st.AddVertex(new Vector3(-1, -1, 0));
-            
-            st.SetNormal(paintBall.Coordinations);
-            st.SetCustom(0, info);
-            st.AddVertex(new Vector3(-1, 1, 0));
-            
-            st.SetNormal(paintBall.Coordinations);
-            st.SetCustom(0, info);
-            st.AddVertex(new Vector3(1, 1, 0));
-            
-            st.SetNormal(paintBall.Coordinations);
-            st.SetCustom(0, info);
-            st.AddVertex(new Vector3(-1, -1, 0));
-            
-            st.SetNormal(paintBall.Coordinations);
-            st.SetCustom(0, info);
-            st.AddVertex(new Vector3(1, -1, 0));
-            
-            st.SetNormal(paintBall.Coordinations);
-            st.SetCustom(0, info);
-            st.AddVertex(new Vector3(1, 1, 0));
+		foreach (var paintBall in paintBallz)
+		{
+			// "color" (it is infact, not color)
+			var info = new Color(paintBall.Size, paintBall.ColorIndex, 0.0f, 0.0f);
+			
+			st.SetColor(paintBall.Coordinations);
+			st.SetCustom(0, info);
+			st.AddVertex(new Vector3(-1, -1, 0));
+			
+			st.SetColor(paintBall.Coordinations);
+			st.SetCustom(0, info);
+			st.AddVertex(new Vector3(-1, 1, 0));
+			
+			st.SetColor(paintBall.Coordinations);
+			st.SetCustom(0, info);
+			st.AddVertex(new Vector3(1, 1, 0));
+			
+			st.SetColor(paintBall.Coordinations);
+			st.SetCustom(0, info);
+			st.AddVertex(new Vector3(-1, -1, 0));
+			
+			st.SetColor(paintBall.Coordinations);
+			st.SetCustom(0, info);
+			st.AddVertex(new Vector3(1, -1, 0));
+			
+			st.SetColor(paintBall.Coordinations);
+			st.SetCustom(0, info);
+			st.AddVertex(new Vector3(1, 1, 0));
 
-        }
-        // Commit to a mesh.
-        meshBuffer = st.Commit();
-        
-        this.Mesh = meshBuffer;
-        
-        //Set uniform variables
-        this.material.SetShaderParameter("fuzz", baseBall.fuzz);
+		}
+
+		// Commit to a mesh.
+		meshBuffer = st.Commit();
+		
+		this.Mesh = meshBuffer;
+		
+		//Set uniform variables
+		this.material.SetShaderParameter("fuzz", baseBall.fuzz);
 		this.material.SetShaderParameter("diameter", baseBall.diameter);
 
 		this.material.SetShaderParameter("color_index", 95);
@@ -80,10 +81,10 @@ public partial class PaintBallGroup: MeshInstance2D
 		this.material.SetShaderParameter("palette", baseBall.palette);
 
 		this.material.SetShaderParameter("center", this.GlobalPosition);
-    }
-    
-    public override void _Process()
-    {
-        this.material.SetShaderParameter("center", this.GlobalPosition);
-    }
+	}
+
+	public override void _Process( double delta )
+	{
+		this.material.SetShaderParameter("center", this.GlobalPosition);
+	}
 }
