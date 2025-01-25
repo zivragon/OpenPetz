@@ -8,23 +8,23 @@ using System.Collections.Generic;
 
 public partial class PaintBall
 {
-    private Vector3 coordinations = new Vector3(1.0, 0.0, 0.0);
-    private float size = 1.0;
-    private float colorIndex = 0.0;
-    
-    public Vector3 Coordinations = () => coordinations;
-    public float Size = () => size;
-    public float ColorIndex = () => colorIndex;
-    
-    public PaintBall()
-    {
-    
-    }
-    
-    public PaintBall(Vector3 _coords, float _size, float _colorIndex)
-    {
-        coordinations = _coords;
-        size = _size / 100.0;
-        colorIndex = _colorIndex;
-    }
+	private Color coordinations = new Color(1.0f, 0.0f, 0.0f, 0.0f);
+	private float size = 1.0f;
+	private float colorIndex = 0.0f;
+	
+	public Color Coordinations { get => coordinations; }
+	public float Size { get => size; }
+	public float ColorIndex { get => colorIndex; }
+	
+	public PaintBall()
+	{
+	
+	}
+	
+	public PaintBall(Vector3 _coords, float _size, float _colorIndex)
+	{
+		coordinations = new Color( _coords.X, _coords.Y, _coords.Z, 0);
+		size = _size / 100.0f;
+		colorIndex = _colorIndex;
+	}
 }
