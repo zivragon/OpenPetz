@@ -60,7 +60,12 @@ public partial class PetRenderer : Node2D
 			
 			List <PaintBall> paintBallz = new List<PaintBall>();
 			
-			paintBallz.Add(new PaintBall());
+			paintBallz.Add(new PaintBall(new Vector3(1.0f, 0.0f, 0.0f, 0.0f), 0.25, 95.0));
+			paintBallz.Add(new PaintBall(new Vector3(-1.0f, 0.0f, 0.0f), 0.25, 95.0));
+			paintBallz.Add(new PaintBall(new Vector3(0.0f, 1.0f, 0.0f), 0.25, 95.0));
+			paintBallz.Add(new PaintBall(new Vector3(0.0f, -1.0f, 0.0f), 0.25, 95.0));
+			paintBallz.Add(new PaintBall(new Vector3(0.0f, 0.0f, 1.0f), 0.25, 95.0));
+			paintBallz.Add(new PaintBall(new Vector3(0.0f, 0.0f, -1.0f), 0.25, 95.0));
 			
 			PaintBallGroup pbg = new PaintBallGroup(dummyBall, paintBallz);
 			dummyBall.AddChild(pbg);
