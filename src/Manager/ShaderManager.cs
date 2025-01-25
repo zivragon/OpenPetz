@@ -58,4 +58,3 @@ public static class ShaderManager {
 		return shaderMaterial;
 	}
 }
-

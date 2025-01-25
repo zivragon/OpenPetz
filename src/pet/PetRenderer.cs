@@ -15,39 +15,39 @@ public partial class PetRenderer : Node2D
 	private List<Line> linez = new List<Line> (); //store ballz
 
 	//this member is temporary 
-	private string[] texturePaths = new string[] { "./art/textures/flower.bmp" };
+	private string[] texturePaths = new string[] { /*"./art/textures/flower.bmp"*/ "./Resource/textures/ziverre/ribbon.bmp" };
 	
 	private List<Texture2D> textureList = new List<Texture2D>();
 
 	//To do: let a Manager class take care of this
 	private Texture2D palette;
+	//private Texture2D pal;
 
+	private TextureAtlas textureAtlas = null;
 	//Methods
 
 	public override void _Ready()
 	{
-
-		//dummy
-		
-		//var shadee = ShaderManager.FetchShader("ball");
-		
-		//.Print(shadee.Code);
-		
 		LoadTextures();
 		//Prepare the Textures
-		var texture = textureList[1];
+		var texture = textureList[0];
 
-		palette = GD.Load<Texture2D>("res://Resource/palettes/petzpalette.png");
+		Texture2D palette = PaletteManager.FetchPalette("petz");
+		
+		//Ignore until texture atlas is implemented
+		/*textureAtlas = new TextureAtlas();
+		
+		AddChild(textureAtlas);*/
 
 		//Create dummy ballz for now.
-		for (int i = 1; i <= 3; i++)
+		for (int i = 1; i <= 1; i++)
 		{
 
-			int color = 85;
+			int color = 40;
 			
-			Ball dummyBall = new Ball(texture, palette, 100 - i*20, color, 4, 1, 39);
+			Ball dummyBall = new Ball(texture, palette, 64, color, 4, 1, 39);
 
-			Vector2 dummyCoord = new Vector2(i * 100 - 200, 0);
+			Vector2 dummyCoord = new Vector2(0, 0);
 
 			coordArray.Add(new Vector3(dummyCoord.X, dummyCoord.Y, 0));
 			dummyBall.Position = dummyCoord;
@@ -57,9 +57,22 @@ public partial class PetRenderer : Node2D
 			//add them to the lists
 			this.ballz.Add(dummyBall);
 			AddChild(dummyBall);
+			
+			List <PaintBall> paintBallz = new List<PaintBall>();
+			
+			paintBallz.Add(new PaintBall(new Vector3(1.0f, 0.0f, 0.0f), 0.25f, 95.0f));
+			paintBallz.Add(new PaintBall(new Vector3(-1.0f, 0.0f, 0.0f), 0.25f, 95.0f));
+			paintBallz.Add(new PaintBall(new Vector3(0.0f, 1.0f, 0.0f), 0.25f, 95.0f));
+			paintBallz.Add(new PaintBall(new Vector3(0.0f, -1.0f, 0.0f), 0.25f, 95.0f));
+			paintBallz.Add(new PaintBall(new Vector3(0.0f, 0.0f, 1.0f), 0.25f, 95.0f));
+			paintBallz.Add(new PaintBall(new Vector3(0.0f, 0.0f, -1.0f), 0.25f, 95.0f));
+			
+			PaintBallGroup pbg = new PaintBallGroup(dummyBall, paintBallz);
+			dummyBall.AddChild(pbg);
 		}
 
-		for (int l = 0; l < 2; l++)
+		//ignore for now
+		/*for (int l = 0; l < 2; l++)
 		{
 
 			Line dummyLine = new Line(null, null, this.ballz[l], this.ballz[l + 1], -1, 1, 39, 39);
@@ -67,7 +80,7 @@ public partial class PetRenderer : Node2D
 			//add them to the lists
 			this.linez.Add(dummyLine);
 			AddChild(dummyLine);
-		}
+		}*/
 	}
 
 	public override void _Process(double delta)
