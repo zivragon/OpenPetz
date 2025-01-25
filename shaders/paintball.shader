@@ -8,7 +8,7 @@ uniform sampler2D palette: filter_nearest;
 
 
 varying float v_radius;
-varying float v_total_radius; // @todo unused variable
+varying float v_total_radius; 
 varying float v_fuzz;
 varying float color_index; // @todo(naming consistency) rename to v_color_index
 varying float v_is_visible;
@@ -28,13 +28,13 @@ float random (vec2 st) {    // @pasted from ball.shader
 void vertex() {
 
     v_radius = CUSTOM0.r * diameter / 2.0;
-    // v_total_radius = v_radius + diameter/ 2.0;
+    v_total_radius = v_radius + diameter/ 2.0;
    
     // we store coords in color. Coords are -1,1, but COLOR allows 0,1. 
     // So we had to convert -1,1 to 0,1, let's undo that and get the original coord:
     vec3 xyz = COLOR.xyz * 2.0f - 1.0f;
         
-    v_position = xyz * diameter / 2.0;
+    v_position = xyz * v_total_radius;
     color_index = COLOR.a * 255.0;
     
     v_is_visible = v_position.z > 0.0 ? 0.0 : 1.0;
