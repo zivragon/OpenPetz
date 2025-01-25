@@ -6,7 +6,7 @@ uniform float fuzz = 0.0;
 uniform float transparent_color_index = 1.0;
 uniform sampler2D palette: filter_nearest;
 
-uniform vec3 rotation = vec3(0);
+uniform vec3 rotation = vec3(0.0);
 
 
 varying float v_radius;
@@ -60,7 +60,7 @@ void vertex() {
     
     xyz = rotate3d(rotation, xyz);
         
-    v_position = xyz * v_total_radius;
+    v_position = floor(xyz * v_total_radius);
     color_index = COLOR.a * 255.0;
     
     v_is_visible = v_position.z > 0.0 ? 0.0 : 1.0;
@@ -77,8 +77,8 @@ void fragment() {
     vec2 p_coord = FRAGCOORD.xy - center - v_position.xy;
 
     coord.x += random(vec2(coord.y + fuzz)) * fuzz;
-    p_coord.x += random(vec2(p_coord.y + v_fuzz)) * v_fuzz;
-    
+	p_coord.x += random(vec2(p_coord.y + v_fuzz)) * v_fuzz;
+
     float radius = diameter / 2.0;
     
     vec4 clip = vec4(circle(coord, radius));
@@ -87,5 +87,5 @@ void fragment() {
     
     vec4 color = get_color(color_index / 256.0, false);
 
-    COLOR = color * ball * clip * vec4(v_is_visible);
+	COLOR = color * ball * clip * vec4(v_is_visible);
 }
