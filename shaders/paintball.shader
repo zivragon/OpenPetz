@@ -31,13 +31,13 @@ void vertex() {
     // v_total_radius = v_radius + diameter/ 2.0;
    
     // we store coords in color. Coords are -1,1, but COLOR allows 0,1. 
-    // So we had to convert, let's undo that
+    // So we had to convert -1,1 to 0,1, let's undo that and get the original coord:
     vec3 xyz = COLOR.xyz * 2.0f - 1.0f;
         
     v_position = xyz * diameter / 2.0;
     color_index = COLOR.a * 255.0;
     
-    v_is_visible = v_position.z < 0.0 ? 0.0 : 1.0;
+    v_is_visible = v_position.z > 0.0 ? 0.0 : 1.0;
     
     v_fuzz = CUSTOM0.g;
     
@@ -61,5 +61,5 @@ void fragment() {
     
     vec4 color = get_color(color_index / 256.0, false);
 
-    COLOR = color * ball * clip;// * vec4(v_is_visible);
+    COLOR = color * ball * clip * vec4(v_is_visible);
 }
