@@ -38,6 +38,9 @@ void fragment() {
 
     vec2 coord = FRAGCOORD.xy - center;
     vec2 p_coord = FRAGCOORD.xy - center - v_position.xy;
+
+    coord.x += random(vec2(coord.y + fuzz)) * fuzz;
+    p_coord.x += random(vec2(p_coord.y + v_fuzz)) * v_fuzz;
     
     float radius = diameter / 2.0;
     
