@@ -79,6 +79,24 @@ public partial class Ball : MeshInstance2D
 	public override void _Process(double dt)
 	{
 		material.SetShaderParameter("center", this.GlobalPosition);
+
+		/*
+		 
+		// ROTATION TEST CODE
+		
+		// rotation.X += 0.0625f;
+		// rotation.Y += 0.0625f;
+		// rotation.Z = 0;
+		
+		// rotation.X += 0.0625f;
+		// rotation.Y = 0;
+		// rotation.Z = 0;
+		
+		rotation.X = 0;
+		rotation.Y += 0.0625f;
+		rotation.Z = 0;
+
+		*/
 	}
 
 	private void drawQuad(int size)
