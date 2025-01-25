@@ -89,5 +89,6 @@ public partial class PaintBallGroup: MeshInstance2D
 	public override void _Process( double delta )
 	{
 		this.material.SetShaderParameter("center", this.GlobalPosition);
+		this.material.SetShaderParameter("rotation", baseBall.rotation);
 	}
 }
