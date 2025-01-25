@@ -1,5 +1,3 @@
-I'm trying this one ... should I make some changes?
-
 shader_type canvas_item;
 uniform vec2 center;
 uniform float diameter;
@@ -39,7 +37,7 @@ void vertex() {
 void fragment() {
 
     vec2 coord = FRAGCOORD.xy - center;
-vect2 p_coord = FRAGCOORD.xy - center - v_position.xy;
+    vec2 p_coord = FRAGCOORD.xy - center - v_position.xy;
     
     float radius = diameter / 2.0;
     
