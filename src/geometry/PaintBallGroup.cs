@@ -9,6 +9,8 @@ public partial class PaintBallGroup: MeshInstance2D
 {
 	private Ball baseBall = null;
 	private List <PaintBall> paintBallz = null;
+	public Vector3 rotation = new Vector3(0, 0, 0);
+	
 	private Mesh meshBuffer = null;
 	private ShaderMaterial material = null;
 	
@@ -32,12 +34,12 @@ public partial class PaintBallGroup: MeshInstance2D
 
 		st.Begin(Mesh.PrimitiveType.Triangles);
 
-		st.SetCustomFormat(0, SurfaceTool.CustomFormat.RFloat);
+		st.SetCustomFormat(0, SurfaceTool.CustomFormat.RgFloat);
 
 		foreach (var paintBall in paintBallz)
 		{
 			// "color" (it is infact, not color)
-			var info = new Color(paintBall.Size, paintBall.ColorIndex, 0.0f, 0.0f);
+			var info = new Color(paintBall.Size, paintBall.Fuzz, 0.0f, 0.0f);
 			
 			st.SetColor(paintBall.Coordinations);
 			st.SetCustom(0, info);
@@ -81,6 +83,7 @@ public partial class PaintBallGroup: MeshInstance2D
 		this.material.SetShaderParameter("palette", baseBall.palette);
 
 		this.material.SetShaderParameter("center", this.GlobalPosition);
+		this.material.SetShaderParameter("fuzz", baseBall.fuzz);
 	}
 
 	public override void _Process( double delta )

@@ -10,20 +10,24 @@ public partial class PaintBall
 {
 	private Color coordinations = new Color(1.0f, 0.0f, 0.0f, 0.0f);
 	private float size = 1.0f;
-	private float colorIndex = 0.0f;
+	private float colorIndex = 95.0f;
+	private float fuzz = 4.0f;
 	
 	public Color Coordinations { get => coordinations; }
 	public float Size { get => size; }
 	public float ColorIndex { get => colorIndex; }
+	public float Fuzz { get => fuzz; }
 	
 	public PaintBall()
 	{
-	
+	    coordinations.a = colorIndex;
 	}
 	
 	public PaintBall(Vector3 _coords, float _size, float _colorIndex)
 	{
-		coordinations = new Color( _coords.X, _coords.Y, _coords.Z, 0);
+	    var coords = _coords.Normalize();
+	    
+		coordinations = new Color( coords.X, coords.Y, coords.Z, _colorIndex);
 		size = _size / 100.0f;
 		colorIndex = _colorIndex;
 	}
