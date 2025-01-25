@@ -19,6 +19,7 @@ public partial class Ball : MeshInstance2D
 	public int fuzz;
 	public int outline_width;
 	public int outline_color;
+	public Vector3 rotation = new Vector3(0.0f, 0.0f, 0.0f);
 
 	public Ball()
 	{
