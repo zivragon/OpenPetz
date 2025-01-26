@@ -60,10 +60,10 @@ namespace OpenPetz {
                 };
 
 //              parse animations
+                nint rawFrameNumber = 0;
                 for (nint i = 0; i < NumAnimations; i++) {
-                    nint rawFrameNumber = 0;
                     int frameGroupSize = pBhd->FrameGroupSizes[i];
-                    m_Animations.Add(new(bhdPath, frameGroupSize, pFrameOffsets));
+                    m_Animations.Add(new(bdtFiles[(int)i], frameGroupSize - rawFrameNumber, pFrameOffsets));
                     m_AnimationFirstRawFrame.Add(rawFrameNumber);
                     rawFrameNumber += frameGroupSize;
                     pFrameOffsets += frameGroupSize;                //  advance pointer to next animation's first frame offset
@@ -140,7 +140,6 @@ namespace OpenPetz {
 //              parse all frames in the animation; frameOffsets points to BHD FrameOffsets
                 m_Frames = new List<Frame>();
                 fixed (byte* pBdtBytes = File.ReadAllBytes(bdtPath)) {
-                    BhdSerialized* pBdt = (BhdSerialized*)pBdtBytes;
                     
 //                  .................................
 //                  ...TODO: safety checks for BDT...
@@ -160,19 +159,20 @@ namespace OpenPetz {
             List<KeyValuePair<nint /*ball number*/, Tuple<BallOrientation3D, nint> /*orientation, sizeoffset*/>> m_BallzData;
 
             public Frame(BdtFrame* pBallArray) {
+                m_BallzData = new List<KeyValuePair<nint, Tuple<BallOrientation3D, nint>>>();
 //              temporary lookup for ball size overrides (temporarily disabled)
-                /*BdtFrame.BdtBallSizeOverrideArray.BdtFrameBallSizeOverride* pOverrideArray = &pBallArray->SizeArray.SizeOverrides;
+                BdtFrame.BdtBallSizeOverrideArray.BdtFrameBallSizeOverride* pOverrideArray = &pBallArray->SizeArray.SizeOverrides;
                 Dictionary<nint, short> sizeOverrides = new Dictionary<nint, short>();
                 for (nint k = 0; k < pBallArray->SizeArray.ArrayLength; k++) {
                     sizeOverrides.Add(pOverrideArray->Ball, pOverrideArray->SizeDiff);
                     pOverrideArray++;
-                };*/
+                };
 
 //              for each ball in the frame, parse its position/rotation/size offset
                 XPointRot3_16* pBall = &pBallArray->Ballz;
 	
                 for (nint k = 0; k < 67; k++) {
-                    m_BallzData.Add(new(k, new(new BallOrientation3D(pBall->Position.X, pBall->Position.Y, pBall->Position.Z, pBall->Tilt, pBall->Rotation, pBall->Roll, pBall->AfterTilt), /*sizeOverrides.ContainsKey(k) ? sizeOverrides[k] :*/ 0)));
+                    m_BallzData.Add(new(k, new(new BallOrientation3D(pBall->Position.X, pBall->Position.Y, pBall->Position.Z, pBall->Tilt, pBall->Rotation, pBall->Roll, pBall->AfterTilt), sizeOverrides.ContainsKey(k) ? sizeOverrides[k] : 0)));
                     pBall++;
                 };
             }
@@ -220,7 +220,7 @@ namespace OpenPetz {
     internal unsafe struct BdtHeaderSerialized {                            //  memory layout of a BDT file header
         [FieldOffset(0x000)] public int FileSize;                           //  [+000]  in bytes
         [FieldOffset(0x004)] public short FileVersion;                      //  [+004]  must be 0x0E
-        [FieldOffset(0x006)] public fixed byte Checksum[46];                //  [+006]  "PFM_[V3.014] (c) 1997 PF.Magic Inc. (Hi Mom!)\x00"
+        [FieldOffset(0x006)] public fixed byte Checksum[78];                //  [+006]  "PFM_[V4.015] (c) 1999 The Learning Company Properties, Inc. (Hi Mom, indeed!)\x00"
     };
 
 
@@ -234,8 +234,9 @@ namespace OpenPetz {
 
     [StructLayout(LayoutKind.Explicit)]
     internal unsafe struct BdtFrame {                                       //  memory layout of a BDT frame
-        [FieldOffset(0x000)] public XPointRot3_16 Ballz;                    //  [+000]  (evil, use pointer) array of ballz positions and rotations
-        [FieldOffset(0x29E)] public BdtBallSizeOverrideArray SizeArray;     //  [+29E]  ballz whose size we're overriding
+        [FieldOffset(0x000)] public BdtFrameHeaderSerialized Header;        //  [+000]  frame header
+        [FieldOffset(0x00E)] public XPointRot3_16 Ballz;                    //  [+00E]  (evil, use pointer) array of ballz positions and rotations
+        [FieldOffset(0x2AC)] public BdtBallSizeOverrideArray SizeArray;     //  [+2AC]  ballz whose size we're overriding
 
         [StructLayout(LayoutKind.Explicit)]
         internal unsafe struct BdtBallSizeOverrideArray {                           //  memory layout of an array of ball size overrides
