@@ -14,13 +14,21 @@ public static class AnimationManager {
 		
 	}
 	
-	public static void FetchCatBhd()
-	{
-		/*List<string> bdtFiles = new List<string>();
-		bdtFiles.Add("./ptzfiles/cat/CAT0.bdt");
-		
-		CatBhd = new Bhd("./ptzfiles/cat/CAT.bhd", bdtFiles);*/
-	}
+  public static void FetchCatBhd()
+    {
+        List<string> bdtFiles = new List<string>();
+        for (int i = 0; i <= 492; i++)
+        {
+            bdtFiles.Add($"./ptzfiles/cat/CAT{i}.bdt");
+        }
+
+        CatBhd = new Bhd("./ptzfiles/cat/CAT.bhd", bdtFiles);
+
+        if (CatBhd == null)
+        {
+            GD.Print("Failed to load CAT.bhd");
+        }
+    }
 
 }
 
