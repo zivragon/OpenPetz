@@ -28,6 +28,9 @@ public partial class PetRenderer : Node2D
 
 	public override void _Ready()
 	{
+		
+		AnimationManager.FetchCatBhd();
+		
 		LoadTextures();
 		//Prepare the Textures
 		var texture = textureList[0];
@@ -66,6 +69,17 @@ public partial class PetRenderer : Node2D
 			paintBallz.Add(new PaintBall(new Vector3(0.0f, -1.0f, 0.0f), 0.25f, 95.0f));
 			paintBallz.Add(new PaintBall(new Vector3(0.0f, 0.0f, 1.0f), 0.25f, 95.0f));
 			paintBallz.Add(new PaintBall(new Vector3(0.0f, 0.0f, -1.0f), 0.25f, 95.0f));
+			
+			//
+			paintBallz.Add(new PaintBall(new Vector3(1.0f, 1.0f, 1.0f), 0.25f, 95.0f));
+			paintBallz.Add(new PaintBall(new Vector3(1.0f, 1.0f, -1.0f), 0.25f, 95.0f));
+			paintBallz.Add(new PaintBall(new Vector3(1.0f, -1.0f, -1.0f), 0.25f, 95.0f));
+			paintBallz.Add(new PaintBall(new Vector3(1.0f, -1.0f, 1.0f), 0.25f, 95.0f));
+			
+			paintBallz.Add(new PaintBall(new Vector3(-1.0f, -1.0f, 1.0f), 0.25f, 95.0f));
+			paintBallz.Add(new PaintBall(new Vector3(-1.0f, -1.0f, -1.0f), 0.25f, 95.0f));
+			paintBallz.Add(new PaintBall(new Vector3(-1.0f, 1.0f, 1.0f), 0.25f, 95.0f));
+			paintBallz.Add(new PaintBall(new Vector3(-1.0f, 1.0f, -1.0f), 0.25f, 95.0f));
 			
 			PaintBallGroup pbg = new PaintBallGroup(dummyBall, paintBallz);
 			dummyBall.AddChild(pbg);

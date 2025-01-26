@@ -1,31 +1,32 @@
 ﻿using System;
 using System.IO;
-using System.Numerics;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-
+using Godot;
 
 namespace OpenPetz {
     public class BallOrientation3D {
         public Vector3 Position { get; }
-        public Quaternion Rotation { get; }
+        public Vector3 Rotation { get; }
 
         public BallOrientation3D(float posx, float posy, float posz, float tilt, float rotation, float roll, float aftertilt) {
             Position = new Vector3(posx, posy, posz);
-            {
+			Rotation = new Vector3(tilt, rotation, roll);
+			
+            /*{
                 Quaternion tiltQuat = Quaternion.CreateFromAxisAngle(Vector3.UnitX, tilt);
                 Quaternion rotationQuat = Quaternion.CreateFromAxisAngle(Vector3.UnitY, rotation);
                 Quaternion rollQuat = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, roll);
                 Quaternion aftertiltQuat = Quaternion.CreateFromAxisAngle(Vector3.UnitX, aftertilt);
                 Rotation = rotationQuat * rollQuat * tiltQuat * aftertiltQuat;
-            };
+            };*/
         }
     };
 
 
     unsafe internal class Bhd {
-        public List<FrameGroup> m_Animations { get; }
-        public List<nint> m_BallSizes { get; }
+        public List<FrameGroup> m_Animations { get;/* set;*/}
+        public List<nint> m_BallSizes { get;/* set;*/}
         public nint NumBallz { get; }
         public nint NumAnimations { get; }
         public nint NumFrames { get; }
@@ -36,8 +37,8 @@ namespace OpenPetz {
         private List<nint> m_AnimationFirstRawFrame;    //  so we can locate the corresponding animation for a given raw frame number
 
         public Bhd(string bhdPath, List<string> bdtFiles) {
-            m_Animations = [];
-            m_AnimationFirstRawFrame = [];
+            m_Animations = new List<FrameGroup>();
+            m_AnimationFirstRawFrame = new List<nint>();
             fixed (byte* pBhdBytes = File.ReadAllBytes(bhdPath)) {
                 BhdSerialized* pBhd = (BhdSerialized*)pBhdBytes;
                 int* pFrameOffsets = &pBhd->FrameOffsets;           //  establish pointer to the first animation's first frame offset
@@ -53,7 +54,7 @@ namespace OpenPetz {
                 StandFrame = pBhd->StandFrame;
 
 //              parse default ball sizes
-                m_BallSizes = [];
+                m_BallSizes = new List<nint>();
                 for (nint i = 0; i < 67; i++) {
                     m_BallSizes.Add(pBhd->BallSizes[i]);
                 };
@@ -132,12 +133,12 @@ namespace OpenPetz {
 
 //      class for an animation (a group of frames)
         unsafe internal class FrameGroup {
-            public List<Frame> m_Frames { get; }
+            public List<Frame> m_Frames { get; set; }
             public nint NumFrames { get; }
 
             public FrameGroup(string bdtPath, nint numFrames, int* frameOffsets) {
 //              parse all frames in the animation; frameOffsets points to BHD FrameOffsets
-                m_Frames = [];
+                m_Frames = new List<Frame>();
                 fixed (byte* pBdtBytes = File.ReadAllBytes(bdtPath)) {
                     BhdSerialized* pBdt = (BhdSerialized*)pBdtBytes;
                     
@@ -159,18 +160,19 @@ namespace OpenPetz {
             List<KeyValuePair<nint /*ball number*/, Tuple<BallOrientation3D, nint> /*orientation, sizeoffset*/>> m_BallzData;
 
             public Frame(BdtFrame* pBallArray) {
-//              temporary lookup for ball size overrides
-                BdtFrame.BdtBallSizeOverrideArray.BdtFrameBallSizeOverride* pOverrideArray = &pBallArray->SizeArray.SizeOverrides;
-                Dictionary<nint, short> sizeOverrides = [];
+//              temporary lookup for ball size overrides (temporarily disabled)
+                /*BdtFrame.BdtBallSizeOverrideArray.BdtFrameBallSizeOverride* pOverrideArray = &pBallArray->SizeArray.SizeOverrides;
+                Dictionary<nint, short> sizeOverrides = new Dictionary<nint, short>();
                 for (nint k = 0; k < pBallArray->SizeArray.ArrayLength; k++) {
                     sizeOverrides.Add(pOverrideArray->Ball, pOverrideArray->SizeDiff);
                     pOverrideArray++;
-                };
+                };*/
 
 //              for each ball in the frame, parse its position/rotation/size offset
                 XPointRot3_16* pBall = &pBallArray->Ballz;
+	
                 for (nint k = 0; k < 67; k++) {
-                    m_BallzData.Add(new(k, new(new BallOrientation3D(pBall->Position.X, pBall->Position.Y, pBall->Position.Z, pBall->Tilt, pBall->Rotation, pBall->Roll, pBall->AfterTilt), sizeOverrides.ContainsKey(k) ? sizeOverrides[k] : 0)));
+                    m_BallzData.Add(new(k, new(new BallOrientation3D(pBall->Position.X, pBall->Position.Y, pBall->Position.Z, pBall->Tilt, pBall->Rotation, pBall->Roll, pBall->AfterTilt), /*sizeOverrides.ContainsKey(k) ? sizeOverrides[k] :*/ 0)));
                     pBall++;
                 };
             }

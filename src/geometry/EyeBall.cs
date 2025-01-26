@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public partial class Ball : MeshInstance2D
+public partial class EyeBall : MeshInstance2D
 {
 	private ImmediateMesh immediateMesh;
 	//To do: Merge this with this.Material
@@ -21,12 +21,12 @@ public partial class Ball : MeshInstance2D
 	public int outline_color;
 	public Vector3 rotation = new Vector3(0.0f, 0.0f, 0.0f);
 
-	public Ball()
+	public EyeBall()
 	{
 
 	}
 
-	public Ball(Texture2D texture, Texture2D palette, int diameter, int color_index, int fuzz, int outline_width, int outline_color)
+	public EyeBall(Texture2D texture, Texture2D palette, int diameter, int color_index, int fuzz, int outline_width, int outline_color)
 	{
 		this.texture = texture;
 		this.palette = palette;
@@ -42,7 +42,7 @@ public partial class Ball : MeshInstance2D
 
 		this.immediateMesh = new ImmediateMesh();
 		//this.material = (ShaderMaterial)GD.Load<ShaderMaterial>("res://shaders/ball_shader.tres").Duplicate(true);
-		this.material = ShaderManager.FetchShaderMaterial("ball");
+		this.material = ShaderManager.FetchShaderMaterial("eyeball");
 
 		//this.immediateMesh.SurfaceSetMaterial(0, material); //is it necessary?
 
@@ -85,7 +85,7 @@ public partial class Ball : MeshInstance2D
 		
 		//rotation.X += 0.0625f;
 		rotation.Y += 0.0625f;
-		rotation.Z += 0.0625f;
+		//rotation.Z += 0.0625f;
 
 	}
 
