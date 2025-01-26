@@ -26,15 +26,17 @@ public partial class PaintBall
 	public PaintBall(Vector3 _coords, float _size, float _colorIndex)
 	{
 		var coords = _coords.Normalized();
+		//_colorIndex needs to be converted to the [0, 1] range
+		colorIndex = _colorIndex / 255.0f;
 		
 		coordinations = new Color(
 			ColorValueFromCoord(coords.X),
 			ColorValueFromCoord(coords.Y),
 			ColorValueFromCoord(coords.Z),
-			_colorIndex / 255.0f
+			colorIndex
 		);
 		size = _size;
-		colorIndex = _colorIndex / 255.0f;
+		
 	}
 	
 	// OpenGL or Godot clamps COLOR inside shader to be 0,1
@@ -43,7 +45,6 @@ public partial class PaintBall
  		// -1,1 to 0,1
  		float result = (coord + 1.0f ) / 2.0f;
 
- 		// GD.Print("converting " + coord + " to " + result);
  		return result; 
  	}	
 }
