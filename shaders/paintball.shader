@@ -6,6 +6,8 @@ uniform float fuzz = 0.0;
 uniform float transparent_color_index = 1.0;
 uniform sampler2D palette: filter_nearest;
 
+uniform vec3 rotation = vec3(0.0);
+
 
 varying float v_radius;
 varying float v_total_radius; 
@@ -18,6 +20,28 @@ varying vec3 v_position;
 @LoadColorShaderComponent
 
 @LoadCircleShaderComponent
+
+vec3 rotate3d(vec3 angle, vec3 coord){
+    vec3 v1 = vec3(0.0);
+    vec3 v2 = vec3(0.0);
+    vec3 v3 = vec3(0.0);
+    
+    //Y
+	v1.z = coord.z * cos(angle.y) - coord.x * sin(angle.y);
+	v1.x = coord.x * cos(angle.y) + coord.z * sin(angle.y);
+	
+	//Z
+	v2.y = coord.y * cos(angle.z) - v1.x * sin(angle.z);
+	v2.x = v1.x * cos(angle.z) + coord.y * sin(angle.z);
+	
+	//X
+	v3.z = v1.z * cos(angle.x) - v2.y * sin(angle.x);
+	v3.y = v2.y * cos(angle.x) + v1.z * sin(angle.x);
+	
+	vec3 rotatable = vec3(v2.x, v3.y, v3.z);
+	
+	return rotatable;
+}
 
 float random (vec2 st) {    // @pasted from ball.shader
     return fract(sin(dot(st.xy,
@@ -33,8 +57,10 @@ void vertex() {
     // we store coords in color. Coords are -1,1, but COLOR allows 0,1. 
     // So we had to convert -1,1 to 0,1, let's undo that and get the original coord:
     vec3 xyz = COLOR.xyz * 2.0f - 1.0f;
+    
+    xyz = rotate3d(rotation, xyz);
         
-    v_position = xyz * v_total_radius;
+    v_position = floor(xyz * v_total_radius);
     color_index = COLOR.a * 255.0;
     
     v_is_visible = v_position.z > 0.0 ? 0.0 : 1.0;
@@ -51,8 +77,8 @@ void fragment() {
     vec2 p_coord = FRAGCOORD.xy - center - v_position.xy;
 
     coord.x += random(vec2(coord.y + fuzz)) * fuzz;
-    p_coord.x += random(vec2(p_coord.y + v_fuzz)) * v_fuzz;
-    
+	p_coord.x += random(vec2(p_coord.y + v_fuzz)) * v_fuzz;
+
     float radius = diameter / 2.0;
     
     vec4 clip = vec4(circle(coord, radius));
@@ -61,5 +87,5 @@ void fragment() {
     
     vec4 color = get_color(color_index / 256.0, false);
 
-    COLOR = color * ball * clip * vec4(v_is_visible);
+	COLOR = color * ball * clip * vec4(v_is_visible);
 }
