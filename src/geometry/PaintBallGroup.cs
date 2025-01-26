@@ -76,9 +76,6 @@ public partial class PaintBallGroup: MeshInstance2D
 		this.material.SetShaderParameter("fuzz", baseBall.fuzz);
 		this.material.SetShaderParameter("diameter", baseBall.diameter);
 
-		this.material.SetShaderParameter("color_index", 95);
-		material.SetShaderParameter("transparent_color_index", 0);
-
 		this.material.SetShaderParameter("tex", baseBall.texture);
 		this.material.SetShaderParameter("palette", baseBall.palette);
 
