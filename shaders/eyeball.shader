@@ -6,16 +6,15 @@ uniform float fuzz = 0.0;
 uniform float transparent_color_index = 1.0;
 uniform sampler2D palette: filter_nearest;
 
+uniform float outline_width = 1.0;
+uniform float outline_color = 80.0;
+
+uniform float color_index = 0.0;
+uniform float eye_diameter = 32.0;
+
 uniform vec3 rotation = vec3(0.0);
 
-
-varying float v_radius;
-varying float v_total_radius; 
-varying float v_fuzz;
-varying float color_index; // @todo(naming consistency) rename to v_color_index
-varying float v_is_visible;
-
-varying vec3 v_position;
+//varying vec3 eye_vector;
 
 @LoadColorShaderComponent
 
@@ -50,42 +49,31 @@ float random (vec2 st) {    // @pasted from ball.shader
 }
 
 void vertex() {
-
-    v_radius = CUSTOM0.r * diameter / 2.0;
-    v_total_radius = v_radius / 2.0 + diameter/ 2.0;
-   
-    // we store coords in color. Coords are -1,1, but COLOR allows 0,1. 
-    // So we had to convert -1,1 to 0,1, let's undo that and get the original coord:
-    vec3 xyz = COLOR.xyz * 2.0f - 1.0f;
-    
-    xyz = rotate3d(rotation, xyz);
-        
-    v_position = floor(xyz * v_total_radius);
-    color_index = COLOR.a * 255.0;
-    
-    v_is_visible = v_position.z > 0.0 ? 0.0 : 1.0;
-    
-    v_fuzz = CUSTOM0.g;
-    
-    VERTEX *= (v_radius + vec2(fuzz, 0.0));
-    VERTEX += v_position.xy;
+	//eye_vector = vec3(0.0, 0.0, 1.0);
 }
 
 void fragment() {
 
     vec2 coord = FRAGCOORD.xy - center;
-    vec2 p_coord = FRAGCOORD.xy - center - v_position.xy;
 
     coord.x += random(vec2(coord.y + fuzz)) * fuzz;
-	p_coord.x += random(vec2(p_coord.y + 0.125 + v_fuzz)) * v_fuzz;
 
     float radius = diameter / 2.0;
+	float eye_radius = eye_diameter / 2.0;
     
     vec4 clip = vec4(circle(coord, radius));
     
-    vec4 ball = vec4(circle(p_coord, v_radius));
-    
-    vec4 color = get_color(color_index / 256.0, false);
+    vec4 outline = vec4(circle(coord, eye_radius));
+	
+	outline *= get_color(outline_color / 255.0, false);
+	
+	vec4 ball = vec4(circle(coord, radius - outline_width));
+	
+	float is_ball = ball.a;
+	
+	ball *= get_color(color_index / 255.0, true);
+	
+	vec4 color = mix(outline, ball, is_ball);
 
-	COLOR = color * ball * clip * vec4(v_is_visible);
+	COLOR = ball * clip;
 }
