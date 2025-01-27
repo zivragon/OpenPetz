@@ -71,8 +71,8 @@ public partial class Ball : MeshInstance2D
 		// ROTATION TEST CODE
 		
 		//rotation.X += 0.0625f;
-		rotation.Y += 0.0625f;
-		rotation.Z += 0.0625f;
+		//rotation.Y += 0.0625f;
+		//rotation.Z += 0.0625f;
 
 	}
 

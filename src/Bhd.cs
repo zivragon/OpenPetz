@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -16,14 +16,14 @@ namespace OpenPetz {
     };
 
 
-    unsafe /*internal*/ public class Bhd {
-        public List<FrameGroup> m_Animations { get;/* set;*/}
-        public List<nint> m_BallSizes { get;/* set;*/}
-        public nint NumBallz { get; }
-        public nint NumAnimations { get; }
-        public nint NumFrames { get; }
-        public nint StartFrame { get; }
-        public nint StandFrame { get; }
+	unsafe /*internal*/ public class Bhd {
+		public List<FrameGroup> m_Animations { get;/* set;*/}
+		public List<nint> m_BallSizes { get;/* set;*/}
+		public nint NumBallz { get; }
+		public nint NumAnimations { get => m_Animations.Count; }
+		public nint NumFrames { get; }
+		public nint StartFrame { get; }
+		public nint StandFrame { get; }
 
 
         private List<nint> m_AnimationFirstRawFrame;    //  so we can locate the corresponding animation for a given raw frame number
