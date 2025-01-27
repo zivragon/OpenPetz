@@ -128,7 +128,7 @@ public partial class PetRenderer : Node2D
 	private void UpdateMainBallz()
 	{
 
-		currentFrame += 0;
+		currentFrame += 1;
 		GD.Print(animation.NumFrames);
 		
 		if (currentFrame >= animation.NumFrames)
