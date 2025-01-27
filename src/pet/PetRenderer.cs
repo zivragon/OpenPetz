@@ -45,7 +45,7 @@ public partial class PetRenderer : Node2D
 		AddChild(textureAtlas);*/
 
 		//Create dummy ballz for now.
-		for (int i = 0; i < 34; i++)
+		for (int i = 0; i < 67; i++)
 		{
 			var orien = frame.BallOrientation(i);
 			int color = 40;
