@@ -25,11 +25,16 @@ public partial class PetRenderer : Node2D
 	private TextureAtlas textureAtlas = null;
 	//Methods
 
+
+	Lnz linezData = new Lnz();
+
 	public override void _Ready()
 	{
 		
 		catBhd = AnimationManager.FetchCatBhd();
 		animation = catBhd.GetAnimation(0);
+		
+		linezData.Parse("./Resource/linez/calico-petz3.lnz"); // @todo configure the file
 		
 		var frame = animation.m_Frames[currentFrame];
 		
@@ -45,12 +50,14 @@ public partial class PetRenderer : Node2D
 		AddChild(textureAtlas);*/
 
 		//Create dummy ballz for now.
-		for (int i = 0; i < 34; i++)
+		for (int i = 0; i < catBhd.NumBallz; i++)
 		{
 			var orien = frame.BallOrientation(i);
-			int color = 40;
+
+			Lnz.BallzInfo ballInfo = linezData.BallzInfoz[i];
+			int color = ballInfo.Color;// 40;
 			
-			Ball dummyBall = new Ball(texture, palette, (int)catBhd.GetDefaultBallSize(i), color, 4, 1, 39);
+			Ball dummyBall = new Ball(texture, palette, (int)catBhd.GetDefaultBallSize(i), color, (int)ballInfo.Fuzz, 1, ballInfo.OutlineColor);
 
 			Vector2 dummyCoord = new Vector2(orien.Position.X, orien.Position.Y);
 			
@@ -62,45 +69,54 @@ public partial class PetRenderer : Node2D
 			this.ballz.Add(dummyBall);
 			AddChild(dummyBall);
 			
-			/*List <PaintBall> paintBallz = new List<PaintBall>();
-			
-			paintBallz.Add(new PaintBall(new Vector3(1.0f, 0.0f, 0.0f), 0.25f, 95.0f));
-			paintBallz.Add(new PaintBall(new Vector3(-1.0f, 0.0f, 0.0f), 0.25f, 95.0f));
-			paintBallz.Add(new PaintBall(new Vector3(0.0f, 1.0f, 0.0f), 0.25f, 95.0f));
-			paintBallz.Add(new PaintBall(new Vector3(0.0f, -1.0f, 0.0f), 0.25f, 95.0f));
-			paintBallz.Add(new PaintBall(new Vector3(0.0f, 0.0f, 1.0f), 0.25f, 95.0f));
-			paintBallz.Add(new PaintBall(new Vector3(0.0f, 0.0f, -1.0f), 0.25f, 95.0f));
-			
-			//
-			paintBallz.Add(new PaintBall(new Vector3(1.0f, 1.0f, 1.0f), 0.25f, 95.0f));
-			paintBallz.Add(new PaintBall(new Vector3(1.0f, 1.0f, -1.0f), 0.25f, 95.0f));
-			paintBallz.Add(new PaintBall(new Vector3(1.0f, -1.0f, -1.0f), 0.25f, 95.0f));
-			paintBallz.Add(new PaintBall(new Vector3(1.0f, -1.0f, 1.0f), 0.25f, 95.0f));
-			
-			paintBallz.Add(new PaintBall(new Vector3(-1.0f, -1.0f, 1.0f), 0.25f, 95.0f));
-			paintBallz.Add(new PaintBall(new Vector3(-1.0f, -1.0f, -1.0f), 0.25f, 95.0f));
-			paintBallz.Add(new PaintBall(new Vector3(-1.0f, 1.0f, 1.0f), 0.25f, 95.0f));
-			paintBallz.Add(new PaintBall(new Vector3(-1.0f, 1.0f, -1.0f), 0.25f, 95.0f));
-			
+			List <PaintBall> paintBallz = new List<PaintBall>();
+			foreach(var pb in linezData.PaintBallz)
+			{
+				if (pb.BaseBall == i)
+				{
+					paintBallz.Add(new PaintBall(new Vector3(pb.Direction.X, pb.Direction.Y, pb.Direction.Z),
+						pb.Diameter, pb.Color));
+				}
+			}
 			PaintBallGroup pbg = new PaintBallGroup(dummyBall, paintBallz);
-			dummyBall.AddChild(pbg);*/
+			dummyBall.AddChild(pbg);
 		}
 
 		//ignore for now
-		/*for (int l = 0; l < 2; l++)
+		foreach(var line in linezData.Linez)
 		{
-
-			Line dummyLine = new Line(null, null, this.ballz[l], this.ballz[l + 1], -1, 1, 39, 39);
+			if (line.StartBall >= this.ballz.Count)
+			{
+				GD.Print(String.Format("Line.StartBall index out of range. {0}/{1}",line.StartBall,this.ballz.Count));
+				continue;
+			}
+			
+			if (line.EndBall >= this.ballz.Count)
+			{
+				GD.Print(String.Format("Line.EndBall index out of range. {0}/{1}",line.EndBall,this.ballz.Count));
+				continue;
+			}
+			
+			Line newLine = new Line(
+				null, 
+				null, 
+				this.ballz[line.StartBall],
+				this.ballz[line.EndBall],
+				line.Color, // -1,
+				1,
+				line.RightOutlineColor,//39,
+				line.LeftOutlineColor//39
+			);
 
 			//add them to the lists
-			this.linez.Add(dummyLine);
-			AddChild(dummyLine);
-		}*/
+			this.linez.Add(newLine);
+			AddChild(newLine);
+		}
 	}
 
 	public override void _Process(double delta)
 	{
-		//rotation.Y += (float)0.05; 
+		rotation.Y += (float)0.05; 
 		UpdateGeometries();
 	}
 
