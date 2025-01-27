@@ -12,7 +12,7 @@ public partial class PetRenderer : Node2D
 	private List<Ball> ballz = new List<Ball> (); //store ballz
 	private List<Ball> addBallz = new List<Ball> ();
 	private List<Line> linez = new List<Line> (); //store ballz
-
+	
 	//this member is temporary 
 	private string[] texturePaths = new string[] { /*"./art/textures/flower.bmp"*/ "./Resource/textures/ziverre/ribbon.bmp" };
 	
@@ -28,6 +28,31 @@ public partial class PetRenderer : Node2D
 
 
 	Lnz linezData = new Lnz();
+
+	//
+	// Ballz and AddBallz can be Ommited
+	//
+
+	Lnz.AddBall GetAddballInfo(int ballID)
+	{
+		// Assuming main ballz are never ommited
+		
+		int index = ballID - (int)catBhd.NumBallz; // @todo make this not so hacky
+
+		return linezData.AddBallz[index];
+	}
+
+	Ball GetBallByID(int ballID)
+	{
+		Ball result = ballz.Find(ball => ball.id == ballID);
+		
+		if (result == null)
+		{
+			result = addBallz.Find(ball => ball.id == ballID);
+		}
+
+		return result;
+	}
 
 	public override void _Ready()
 	{
@@ -52,6 +77,13 @@ public partial class PetRenderer : Node2D
 		
 		for (int i = 0; i < catBhd.NumBallz; i++)
 		{
+			
+			
+			if (linezData.IsOmmited(i))
+			{
+				continue;
+			}
+			
 			var orien = frame.BallOrientation(i);
 
 			Lnz.BallzInfo ballInfo = linezData.BallzInfoz[i];
@@ -84,8 +116,8 @@ public partial class PetRenderer : Node2D
 
 		for (var index = 0; index < linezData.AddBallz.Count; index++)
 		{
-			var addBall = linezData.AddBallz[index];
-			var parent = this.ballz[addBall.ParentBallID];
+			var addBallInfo = linezData.AddBallz[index];
+			var parentBall = this.ballz[addBallInfo.ParentBallID];
 			int addBallId = (int)catBhd.NumBallz + index;
 
 			if (linezData.IsOmmited(addBallId))
@@ -94,11 +126,11 @@ public partial class PetRenderer : Node2D
 			}
 
 			Ball dummyBall = new Ball(
-					addBallId, texture, palette, (int)addBall.BallSize, addBall.Color, (int)addBall.Fuzz,
-					addBall.Outline, addBall.OutlineColor
+					addBallId, texture, palette, (int)addBallInfo.BallSize, addBallInfo.Color, (int)addBallInfo.Fuzz,
+					addBallInfo.Outline, addBallInfo.OutlineColor
 				);
-			dummyBall.Position = parent.Position + new Vector2(addBall.Offset.X, addBall.Offset.Y);
-			dummyBall.ZIndex = (int)-addBall.Offset.Z;
+			dummyBall.Position = parentBall.Position + new Vector2(addBallInfo.Offset.X, addBallInfo.Offset.Y);
+			dummyBall.ZIndex = (int)-addBallInfo.Offset.Z;
 			this.addBallz.Add(dummyBall);
 			AddChild(dummyBall);
 		}
@@ -107,17 +139,8 @@ public partial class PetRenderer : Node2D
 		{
 			// Either ball or add ball
 			
-			Ball startBall = ballz.Find(ball => ball.id == line.StartBall);
-			if (startBall == null)
-			{
-				startBall = addBallz.Find(ball => ball.id == line.StartBall);
-			}
-			
-			Ball endBall = ballz.Find(ball => ball.id == line.EndBall);
-			if (endBall == null)
-			{
-				endBall = addBallz.Find(ball => ball.id == line.EndBall);
-			}
+			Ball startBall = GetBallByID( line.StartBall );
+			Ball endBall = GetBallByID( line.EndBall);
 
 			// omitted?
 			
@@ -176,6 +199,13 @@ public partial class PetRenderer : Node2D
 
 	//NOTE: Order of updating matters!
 	private void UpdateGeometries(){
+
+		currentFrame += 1;
+		GD.Print(animation.NumFrames);
+		
+		if (currentFrame >= animation.NumFrames)
+			currentFrame = 0;
+
 		UpdateMainBallz();
 		UpdateAddBallz();
 		UpdateLinez();
@@ -184,13 +214,6 @@ public partial class PetRenderer : Node2D
 	//To Do: implement the rotation vector math for x rotation
 	private void UpdateMainBallz()
 	{
-
-		currentFrame += 1;
-		GD.Print(animation.NumFrames);
-		
-		if (currentFrame >= animation.NumFrames)
-			currentFrame = 0;
-		
 		var frame = animation.m_Frames[currentFrame];
 	
 		float rYSin = (float)Math.Sin(rotation.Y);
@@ -202,7 +225,7 @@ public partial class PetRenderer : Node2D
 		for (int index = 0; index < this.ballz.Count; index++)
 		{
 
-			var orien = frame.BallOrientation(index);
+			var orien = frame.BallOrientation(this.ballz[index].id);
 
 			float xf = orien.Position.X;
 			float yf = orien.Position.Y;
@@ -231,11 +254,7 @@ public partial class PetRenderer : Node2D
 	private void UpdateAddBallz()
 	{
 
-		currentFrame += 1;
 		GD.Print(animation.NumFrames);
-		
-		if (currentFrame >= animation.NumFrames)
-			currentFrame = 0;
 		
 		var frame = animation.m_Frames[currentFrame];
 	
@@ -245,16 +264,11 @@ public partial class PetRenderer : Node2D
 		float rZSin = (float)Math.Sin(rotation.Z);
 		float rZCos = (float)Math.Cos(rotation.Z);
 		
-		for (int index = 0; index < this.addBallz.Count; index++)
+		foreach (var addBall in this.addBallz)
 		{
-			Ball addBall = this.addBallz[index];
+			Lnz.AddBall addBallInfo = GetAddballInfo(addBall.id);
 			
-			int addBallId = addBall.id - (int)catBhd.NumBallz; // @todo make this not so hacky
-			
-			Lnz.AddBall addBallInfo = linezData.AddBallz[addBallId];
-			int parentBallID = linezData.AddBallz[addBallId].ParentBallID;
-
-			var orien = frame.BallOrientation(parentBallID);
+			var orien = frame.BallOrientation(addBallInfo.ParentBallID);
 
 			float xf = orien.Position.X + addBallInfo.Offset.X;
 			float yf = orien.Position.Y + addBallInfo.Offset.Y;
@@ -274,9 +288,9 @@ public partial class PetRenderer : Node2D
 
 			Vector2 v = new Vector2(x, y);
 
-			this.addBallz[index].Position = v;
+			addBall.Position = v;
 			//Since Godot renders Nodes with highest Z on top of others unlike original petz l, we set negative of it
-			this.addBallz[index].ZIndex = (int)-z;
+			addBall.ZIndex = (int)-z;
 		}
 	}
 
