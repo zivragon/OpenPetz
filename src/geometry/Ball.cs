@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 public partial class Ball : MeshInstance2D
 {
-	private ImmediateMesh immediateMesh;
+	private Mesh ballMesh;
 	//To do: Merge this with this.Material
 	private ShaderMaterial material;
 
@@ -40,13 +40,11 @@ public partial class Ball : MeshInstance2D
 	public override void _Ready()
 	{
 
-		this.immediateMesh = new ImmediateMesh();
-		//this.material = (ShaderMaterial)GD.Load<ShaderMaterial>("res://shaders/ball_shader.tres").Duplicate(true);
+		this.ballMesh = MeshManager.FetchDefaultMesh();
+
 		this.material = ShaderManager.FetchShaderMaterial("ball");
 
-		//this.immediateMesh.SurfaceSetMaterial(0, material); //is it necessary?
-
-		this.Mesh = this.immediateMesh;
+		this.Mesh = this.ballMesh;
 		this.Material = this.material;
 
 		//Set Material uniform parameters
@@ -63,16 +61,6 @@ public partial class Ball : MeshInstance2D
 		this.material.SetShaderParameter("palette", palette);
 
 		this.material.SetShaderParameter("center", this.GlobalPosition);
-		
-		//
-		
-		immediateMesh.ClearSurfaces();
-		immediateMesh.SurfaceBegin(Mesh.PrimitiveType.Triangles);
-
-		//To do: find out whether this belongs in _Ready or _Process
-		drawQuad(diameter + fuzz);
-
-		immediateMesh.SurfaceEnd();
 	}
 
 
@@ -88,29 +76,5 @@ public partial class Ball : MeshInstance2D
 		rotation.Z += 0.0625f;
 
 	}
-
-	private void drawQuad(int size)
-	{
-		immediateMesh.SurfaceSetUV(new Vector2(0, 1));
-		immediateMesh.SurfaceAddVertex(new Vector3(-1 * size, -1 * size, 0));
-
-		immediateMesh.SurfaceSetUV(new Vector2(0, 0));
-		immediateMesh.SurfaceAddVertex(new Vector3(-1 * size, size, 0));
-
-		immediateMesh.SurfaceSetUV(new Vector2(1, 1));
-		immediateMesh.SurfaceAddVertex(new Vector3(size, size, 0));
-
-
-		immediateMesh.SurfaceSetUV(new Vector2(0, 128));
-		immediateMesh.SurfaceAddVertex(new Vector3(size, -1 * size, 0));
-
-		immediateMesh.SurfaceSetUV(new Vector2(0, 0));
-		immediateMesh.SurfaceAddVertex(new Vector3(-1 * size, -1 * size, 0));
-
-		immediateMesh.SurfaceSetUV(new Vector2(128, 128));
-		immediateMesh.SurfaceAddVertex(new Vector3(size, size, 0));
-
-	}
-
 
 }

@@ -14,10 +14,10 @@ public static class AnimationManager {
 		
 	}
 	
-  public static void FetchCatBhd()
+  public static Bhd FetchCatBhd()
     {
         List<string> bdtFiles = new List<string>();
-        for (int i = 0; i <= 492; i++)
+        for (int i = 0; i <= 1; i++)
         {
             bdtFiles.Add($"./ptzfiles/cat/CAT{i}.bdt");
         }
@@ -28,7 +28,8 @@ public static class AnimationManager {
         {
             GD.Print("Failed to load CAT.bhd");
         }
+		
+		return CatBhd;
     }
 
 }
-
