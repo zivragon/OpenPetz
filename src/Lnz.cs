@@ -306,22 +306,24 @@ public class Lnz
 
     public class Whisker
     {
-        public int Start = 0;
-        public int End = 0;
-        public int Color = 0;
+        public int StartBallID = 0;
+        public int EndBallID = 0;
+        public int Color = 0; // @todo what is the default value?
 
         public static Whisker FromLine(string str)
         {
             Whisker result = new Whisker();
 
             RowParser parser = new RowParser(str);
-            parser.Int(ref result.Start);
-            parser.Int(ref result.End);
-            parser.Int(ref result.Color);
+            parser.Int(ref result.StartBallID);
+            parser.Int(ref result.EndBallID);
             if (!parser.isOK)
             {
                 return null;
             }
+
+            // not required
+            parser.Int(ref result.Color);
 
             return result;
         }
@@ -588,6 +590,17 @@ public class Lnz
                     if (item != null)
                     {
                         Eyes.Add(item);
+                    }
+                }, lines, ref lineIndex);
+            }
+            else if (line.StartsWith("[Whiskers]"))
+            {
+                ForeachRowInSection((row) =>
+                {
+                    var item = Whisker.FromLine(row);
+                    if (item != null)
+                    {
+                        Whiskers.Add(item);
                     }
                 }, lines, ref lineIndex);
             }

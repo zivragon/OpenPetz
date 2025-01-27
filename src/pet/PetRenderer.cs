@@ -60,6 +60,11 @@ public partial class PetRenderer : Node2D
 		catBhd = AnimationManager.FetchCatBhd();
 		animation = catBhd.GetAnimation(0);
 		
+		// @todo this file should be specified by [Default Linez File]
+		// @todo this file has [Num Ballz]
+		// @todo have a way for Parse to override, not only append
+		linezData.Parse("./Resource/linez/catmaster.lnz"); // @todo configure the file
+		//
 		linezData.Parse("./Resource/linez/calico-petz3.lnz"); // @todo configure the file
 		
 		var frame = animation.m_Frames[currentFrame];
@@ -87,9 +92,8 @@ public partial class PetRenderer : Node2D
 			var orien = frame.BallOrientation(i);
 
 			Lnz.BallzInfo ballInfo = linezData.BallzInfoz[i];
-			int color = ballInfo.Color;// 40;
 			
-			Ball dummyBall = new Ball(i, texture, palette, (int)catBhd.GetDefaultBallSize(i), color, (int)ballInfo.Fuzz, 1, ballInfo.OutlineColor);
+			Ball dummyBall = new Ball(i, texture, palette, (int)catBhd.GetDefaultBallSize(i), ballInfo.Color, (int)ballInfo.Fuzz, 1, ballInfo.OutlineColor);
 
 			Vector2 dummyCoord = new Vector2(orien.Position.X, orien.Position.Y);
 			
@@ -133,6 +137,36 @@ public partial class PetRenderer : Node2D
 			dummyBall.ZIndex = (int)-addBallInfo.Offset.Z;
 			this.addBallz.Add(dummyBall);
 			AddChild(dummyBall);
+		}
+
+		foreach (var whisker in linezData.Whiskers)
+		{
+			// Either ball or add ball
+			
+			Ball startBall = GetBallByID( whisker.StartBallID );
+			Ball endBall = GetBallByID( whisker.EndBallID );
+
+			// omitted?
+			
+			if (startBall == null || endBall == null)
+			{
+				continue;
+			}
+			
+			Line newLine = new Line(
+				null, 
+				null, 
+				startBall,
+				endBall,
+				whisker.Color,
+				1,
+				-1,
+				-1
+			);
+
+			//add them to the lists
+			this.linez.Add(newLine);
+			AddChild(newLine);
 		}
 
 		foreach(var line in linezData.Linez)
