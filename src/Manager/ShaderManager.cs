@@ -3,22 +3,16 @@ using System;
 using System.Collections.Generic;
 
 public static class ShaderManager {
-	private static Dictionary<string, Shader> fetchedShaders = new Dictionary<string, Shader>();
-	
+
 	//temporary
 	private static string colorShaderCode = "";
 	//also temporary
 	private static string circleShaderCode = "";
 	//To do: improve this
-	private static Dictionary<string, Shader> fetchedComponentShaders = new Dictionary<string, Shader>();
+	//private static Dictionary<string, Shader> fetchedComponentShaders = new Dictionary<string, Shader>();
 	
-	public static Shader FetchShader(string name)
+	private static Shader FetchShader(string name)
 	{
-		if (fetchedShaders.ContainsKey(name))
-		{
-			return fetchedShaders[name];
-		}
-		
 		if (colorShaderCode == ""){
 			using var compFile = FileAccess.Open("./shaders/components/color.shader", FileAccess.ModeFlags.Read);
 			colorShaderCode = compFile.GetAsText();
@@ -47,14 +41,20 @@ public static class ShaderManager {
 		}
 	}
 	
+	private static Dictionary<string, ShaderMaterial> _shaderMaterials = new Dictionary<string, ShaderMaterial>();
+	
 	public static ShaderMaterial FetchShaderMaterial(string name)
 	{
-		var shader = ShaderManager.FetchShader(name);
-		
-		var shaderMaterial = new ShaderMaterial();
-		
-		shaderMaterial.Shader = shader;
-		
-		return shaderMaterial;
+	
+		if (!_shaderMaterials.ContainsKey(name))
+		{
+			var shader = ShaderManager.FetchShader(name);
+			var shaderMaterial = new ShaderMaterial();
+			shaderMaterial.Shader = shader;
+			_shaderMaterials[name] = shaderMaterial;
+		}
+	
+		ShaderMaterial result = (ShaderMaterial)(_shaderMaterials[name].Duplicate(false));
+		return result;
 	}
 }
