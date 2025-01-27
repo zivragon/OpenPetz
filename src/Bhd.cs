@@ -40,7 +40,7 @@ namespace OpenPetz {
 //              .................................
 
                 NumBallz = pBhd->NumBallz;
-                NumAnimations = /*pBhd->NumFrameGroups*/2;
+                NumAnimations = pBhd->NumFrameGroups;
                 NumFrames = pBhd->NumFrames;
                 StartFrame = pBhd->StartFrame;
                 StandFrame = pBhd->StandFrame;
