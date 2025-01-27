@@ -10,6 +10,14 @@ using Godot; // For Vector3 (instead of using System.Numerics)
 
 public class Lnz
 {
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///
+    ///
+    ///                                 STRUCTS / SECTIONS / TYPES
+    ///
+    ///  
+    ///////////////////////////////////////////////////////////////////////////////////////
+
     // [Move]
     public class Move
     {
@@ -58,7 +66,8 @@ public class Lnz
     {
         // https://web.archive.org/web/20190805174318fw_/http://www.angelfire.com/moon2/petzzoo2/id27.htm		//
 
-        public int BallID = 0;
+        /** parent ball id */
+        public int ParentBallID = 0;
         public Vector3 Offset = new Vector3(0, 0, 0); // in relation to center of the base
         public int Color = 0;
         public int OutlineColor = 0;
@@ -76,7 +85,7 @@ public class Lnz
             AddBall result = new AddBall();
 
             RowParser parser = new RowParser(str);
-            parser.Int(ref result.BallID);
+            parser.Int(ref result.ParentBallID);
             parser.Vector3(ref result.Offset);
             parser.Int(ref result.Color);
             parser.Int(ref result.OutlineColor);
@@ -400,7 +409,15 @@ public class Lnz
         }
     };
 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///
+    ///
+    ///                                 DATA
+    ///
+    ///  
+    ///////////////////////////////////////////////////////////////////////////////////////
     public List<Eye> Eyes = new List<Eye>();
+
     public List<Whisker> Whiskers = new List<Whisker>();
     public List<EarExtension> EarExtensions = new List<EarExtension>();
     public List<Line> Linez = new List<Line>();
@@ -413,6 +430,42 @@ public class Lnz
     public List<BodyArea> BodyAreaz = new List<BodyArea>();
     public List<FurPatternBall> FurPatternBalls = new List<FurPatternBall>();
 
+    public bool IsOmmited(int ballId)
+    {
+        foreach (var omission in Omissions)
+        {
+            if (omission == ballId)
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    // int BallIdFromName(string name)
+    // {
+    //     for (int index = 0; index < BallzInfoz.Count; index++)
+    //     {
+    //         BallzInfo ball = BallzInfoz[index];
+    //
+    //         if (ball.BallID == name)
+    //         {
+    //             return index;
+    //         }
+    //     }
+    //
+    //     return -1; // @fixme
+    // }
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///
+    ///
+    ///                                 HELPERS
+    ///
+    ///  
+    ///////////////////////////////////////////////////////////////////////////////////////
+    
     public void Parse(string fileName)
     {
         var lines = File.ReadAllLines(fileName);
@@ -450,7 +503,7 @@ public class Lnz
                     }
                 }, lines, ref lineIndex);
             }
-            else if (line.StartsWith("[Add ball]"))
+            else if (line.StartsWith("[Add Ball]"))
             {
                 ForeachRowInSection((row) =>
                 {
@@ -669,7 +722,6 @@ public class Lnz
             }
         }
 
-
         public void Enum(ref int outValue, int[] validValues)
         {
             if (!isOK)
@@ -757,13 +809,13 @@ public class Lnz
         var rp = new RowParser(".25 0.125 123456 123.125");
 
         float X = 0;
-        
+
         rp.Float(ref X);
         if (X != .25f)
         {
             GD.Print("Parsing .25 failed");
         }
-        
+
         rp.Float(ref X);
         if (X != .125f)
         {
@@ -781,7 +833,6 @@ public class Lnz
         {
             GD.Print("Parsing 123.125 failed");
         }
-
     }
 
     //

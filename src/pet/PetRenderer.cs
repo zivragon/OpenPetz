@@ -10,6 +10,7 @@ public partial class PetRenderer : Node2D
 
 	//Geometry containers
 	private List<Ball> ballz = new List<Ball> (); //store ballz
+	private List<Ball> addBallz = new List<Ball> ();
 	private List<Line> linez = new List<Line> (); //store ballz
 
 	//this member is temporary 
@@ -48,7 +49,7 @@ public partial class PetRenderer : Node2D
 		/*textureAtlas = new TextureAtlas();
 		
 		AddChild(textureAtlas);*/
-
+		
 		for (int i = 0; i < catBhd.NumBallz; i++)
 		{
 			var orien = frame.BallOrientation(i);
@@ -56,7 +57,7 @@ public partial class PetRenderer : Node2D
 			Lnz.BallzInfo ballInfo = linezData.BallzInfoz[i];
 			int color = ballInfo.Color;// 40;
 			
-			Ball dummyBall = new Ball(texture, palette, (int)catBhd.GetDefaultBallSize(i), color, (int)ballInfo.Fuzz, 1, ballInfo.OutlineColor);
+			Ball dummyBall = new Ball(i, texture, palette, (int)catBhd.GetDefaultBallSize(i), color, (int)ballInfo.Fuzz, 1, ballInfo.OutlineColor);
 
 			Vector2 dummyCoord = new Vector2(orien.Position.X, orien.Position.Y);
 			
@@ -81,25 +82,55 @@ public partial class PetRenderer : Node2D
 			dummyBall.AddChild(pbg);
 		}
 
-		foreach(var line in linezData.Linez)
+		for (var index = 0; index < linezData.AddBallz.Count; index++)
 		{
-			if (line.StartBall >= this.ballz.Count)
+			var addBall = linezData.AddBallz[index];
+			var parent = this.ballz[addBall.ParentBallID];
+			int addBallId = (int)catBhd.NumBallz + index;
+
+			if (linezData.IsOmmited(addBallId))
 			{
-				GD.Print(String.Format("Line.StartBall index out of range. {0}/{1}",line.StartBall,this.ballz.Count));
 				continue;
 			}
+
+			Ball dummyBall = new Ball(
+					addBallId, texture, palette, (int)addBall.BallSize, addBall.Color, (int)addBall.Fuzz,
+					addBall.Outline, addBall.OutlineColor
+				);
+			dummyBall.Position = parent.Position + new Vector2(addBall.Offset.X, addBall.Offset.Y);
+			dummyBall.ZIndex = (int)-addBall.Offset.Z;
+			this.addBallz.Add(dummyBall);
+			AddChild(dummyBall);
+		}
+
+		foreach(var line in linezData.Linez)
+		{
+			// Either ball or add ball
 			
-			if (line.EndBall >= this.ballz.Count)
+			Ball startBall = ballz.Find(ball => ball.id == line.StartBall);
+			if (startBall == null)
 			{
-				GD.Print(String.Format("Line.EndBall index out of range. {0}/{1}",line.EndBall,this.ballz.Count));
+				startBall = addBallz.Find(ball => ball.id == line.StartBall);
+			}
+			
+			Ball endBall = ballz.Find(ball => ball.id == line.EndBall);
+			if (endBall == null)
+			{
+				endBall = addBallz.Find(ball => ball.id == line.EndBall);
+			}
+
+			// omitted?
+			
+			if (startBall == null || endBall == null)
+			{
 				continue;
 			}
 			
 			Line newLine = new Line(
 				null, 
 				null, 
-				this.ballz[line.StartBall],
-				this.ballz[line.EndBall],
+				startBall,
+				endBall,
 				line.Color, // -1,
 				1,
 				line.RightOutlineColor,//39,
@@ -111,7 +142,7 @@ public partial class PetRenderer : Node2D
 			AddChild(newLine);
 		}
 
-    	//ignore for now
+		//ignore for now
 		/*for (int l = 0; l < 2; l++)
 		{
 
@@ -146,6 +177,7 @@ public partial class PetRenderer : Node2D
 	//NOTE: Order of updating matters!
 	private void UpdateGeometries(){
 		UpdateMainBallz();
+		UpdateAddBallz();
 		UpdateLinez();
 	}
 	
@@ -195,6 +227,59 @@ public partial class PetRenderer : Node2D
 			this.ballz[index].ZIndex = (int)-z;
 		}
 	}
+	
+	private void UpdateAddBallz()
+	{
+
+		currentFrame += 1;
+		GD.Print(animation.NumFrames);
+		
+		if (currentFrame >= animation.NumFrames)
+			currentFrame = 0;
+		
+		var frame = animation.m_Frames[currentFrame];
+	
+		float rYSin = (float)Math.Sin(rotation.Y);
+		float rYCos = (float)Math.Cos(rotation.Y);
+		
+		float rZSin = (float)Math.Sin(rotation.Z);
+		float rZCos = (float)Math.Cos(rotation.Z);
+		
+		for (int index = 0; index < this.addBallz.Count; index++)
+		{
+			Ball addBall = this.addBallz[index];
+			
+			int addBallId = addBall.id - (int)catBhd.NumBallz; // @todo make this not so hacky
+			
+			Lnz.AddBall addBallInfo = linezData.AddBallz[addBallId];
+			int parentBallID = linezData.AddBallz[addBallId].ParentBallID;
+
+			var orien = frame.BallOrientation(parentBallID);
+
+			float xf = orien.Position.X + addBallInfo.Offset.X;
+			float yf = orien.Position.Y + addBallInfo.Offset.Y;
+			float zf = orien.Position.Z + addBallInfo.Offset.Z;
+			
+			float zz = zf;
+
+			zf = (zz * rYCos) - (xf * rYSin);
+			xf = (xf * rYCos) + (zz * rYSin);
+			
+			float yf2 = (yf * rZCos) - (xf * rZSin);
+			float xf2 = (xf * rZCos) + (yf * rZSin);
+
+			float z = (float)Math.Round(zf);
+			float y = (float)Math.Round(yf2);
+			float x = (float)Math.Round(xf2);
+
+			Vector2 v = new Vector2(x, y);
+
+			this.addBallz[index].Position = v;
+			//Since Godot renders Nodes with highest Z on top of others unlike original petz l, we set negative of it
+			this.addBallz[index].ZIndex = (int)-z;
+		}
+	}
+
 	
 	private void UpdateLinez(){
 		foreach (Line line in this.linez){

@@ -20,14 +20,16 @@ public partial class Ball : MeshInstance2D
 	public int outline_width;
 	public int outline_color;
 	public Vector3 rotation = new Vector3(0.0f, 0.0f, 0.0f);
+	public int id;
 
 	public Ball()
 	{
 
 	}
 
-	public Ball(Texture2D texture, Texture2D palette, int diameter, int color_index, int fuzz, int outline_width, int outline_color)
+	public Ball(int id, Texture2D texture, Texture2D palette, int diameter, int color_index, int fuzz, int outline_width, int outline_color)
 	{
+		this.id = id;
 		this.texture = texture;
 		this.palette = palette;
 		this.diameter = diameter;
