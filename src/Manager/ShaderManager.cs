@@ -10,7 +10,7 @@ public static class ShaderManager {
 	//also temporary
 	private static string circleShaderCode = "";
 	//To do: improve this
-	private static Dictionary<string, Shader> fetchedComponentShaders = new Dictionary<string, Shader>();
+	//private static Dictionary<string, Shader> fetchedComponentShaders = new Dictionary<string, Shader>();
 	
 	public static Shader FetchShader(string name)
 	{
@@ -40,7 +40,9 @@ public static class ShaderManager {
 			Shader shader = new Shader();
 			
 			shader.Code = code;
-			
+
+			fetchedShaders[name] = shader;
+
 			return shader;
 		} catch( Exception e){
 			return null;
