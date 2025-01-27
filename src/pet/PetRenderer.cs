@@ -49,7 +49,6 @@ public partial class PetRenderer : Node2D
 		
 		AddChild(textureAtlas);*/
 
-		//Create dummy ballz for now.
 		for (int i = 0; i < catBhd.NumBallz; i++)
 		{
 			var orien = frame.BallOrientation(i);
@@ -82,7 +81,6 @@ public partial class PetRenderer : Node2D
 			dummyBall.AddChild(pbg);
 		}
 
-		//ignore for now
 		foreach(var line in linezData.Linez)
 		{
 			if (line.StartBall >= this.ballz.Count)
@@ -112,6 +110,17 @@ public partial class PetRenderer : Node2D
 			this.linez.Add(newLine);
 			AddChild(newLine);
 		}
+
+    	//ignore for now
+		/*for (int l = 0; l < 2; l++)
+		{
+
+			Line dummyLine = new Line(null, null, this.ballz[l], this.ballz[l + 1], -1, 1, 39, 39);
+
+			//add them to the lists
+			this.linez.Add(dummyLine);
+			AddChild(dummyLine);
+		}*/
 	}
 
 	public override void _Process(double delta)
@@ -144,7 +153,7 @@ public partial class PetRenderer : Node2D
 	private void UpdateMainBallz()
 	{
 
-		currentFrame += 0;
+		currentFrame += 1;
 		GD.Print(animation.NumFrames);
 		
 		if (currentFrame >= animation.NumFrames)
