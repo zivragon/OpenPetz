@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -16,14 +16,14 @@ namespace OpenPetz {
     };
 
 
-	unsafe /*internal*/ public class Bhd {
-		public List<FrameGroup> m_Animations { get;/* set;*/}
-		public List<nint> m_BallSizes { get;/* set;*/}
-		public nint NumBallz { get; }
-		public nint NumAnimations { get; }
-		public nint NumFrames { get; }
-		public nint StartFrame { get; }
-		public nint StandFrame { get; }
+    unsafe /*internal*/ public class Bhd {
+        public List<FrameGroup> m_Animations { get;/* set;*/}
+        public List<nint> m_BallSizes { get;/* set;*/}
+        public nint NumBallz { get; }
+        public nint NumAnimations { get; }
+        public nint NumFrames { get; }
+        public nint StartFrame { get; }
+        public nint StandFrame { get; }
 
 
         private List<nint> m_AnimationFirstRawFrame;    //  so we can locate the corresponding animation for a given raw frame number
@@ -40,7 +40,7 @@ namespace OpenPetz {
 //              .................................
 
                 NumBallz = pBhd->NumBallz;
-                NumAnimations = /*pBhd->NumFrameGroups*/2;
+                NumAnimations = pBhd->NumFrameGroups;
                 NumFrames = pBhd->NumFrames;
                 StartFrame = pBhd->StartFrame;
                 StandFrame = pBhd->StandFrame;
@@ -124,9 +124,9 @@ namespace OpenPetz {
         }
 
 //      class for an animation (a group of frames)
-		unsafe /*internal*/ public class FrameGroup {
-			public List<Frame> m_Frames { get; set; }
-			public nint NumFrames { get => m_Frames.Count; }
+        unsafe /*internal*/ public class FrameGroup {
+            public List<Frame> m_Frames { get; set; }
+            public nint NumFrames { get => m_Frames.Count; }
 
             public FrameGroup(string bdtPath, nint numFrames, int* frameOffsets) {
 //              parse all frames in the animation; frameOffsets points to BHD FrameOffsets
