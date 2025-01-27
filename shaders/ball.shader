@@ -19,6 +19,10 @@ float random (vec2 st) {
         43758.5453) - 0.5;
 }
 
+void vertex() {
+	VERTEX *= diameter / 2.0;
+}
+
 void fragment() {
 	vec2 coord = FRAGCOORD.xy - center;
 	vec2 texUV = fract(coord / vec2(textureSize(tex, 0)));

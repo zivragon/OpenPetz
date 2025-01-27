@@ -1,14 +1,12 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using OpenPetz;
 
 //To Do: re-think if this class should inherit from Node2D
 public partial class PetRenderer : Node2D
 {
 	public Vector3 rotation = new Vector3(0, 0, 0);
-
-	//Coordination container (temporary)
-	private List<Vector3> coordArray = new List<Vector3> ();
 
 	//Geometry containers
 	private List<Ball> ballz = new List<Ball> (); //store ballz
@@ -19,15 +17,22 @@ public partial class PetRenderer : Node2D
 	
 	private List<Texture2D> textureList = new List<Texture2D>();
 
-	//To do: let a Manager class take care of this
 	private Texture2D palette;
-	//private Texture2D pal;
+	private Bhd catBhd;
+	private Bhd.FrameGroup animation;
+	private int currentFrame = 0;
 
 	private TextureAtlas textureAtlas = null;
 	//Methods
 
 	public override void _Ready()
 	{
+		
+		catBhd = AnimationManager.FetchCatBhd();
+		animation = catBhd.GetAnimation(0);
+		
+		var frame = animation.m_Frames[currentFrame];
+		
 		LoadTextures();
 		//Prepare the Textures
 		var texture = textureList[0];
@@ -40,25 +45,24 @@ public partial class PetRenderer : Node2D
 		AddChild(textureAtlas);*/
 
 		//Create dummy ballz for now.
-		for (int i = 1; i <= 1; i++)
+		for (int i = 0; i < 67; i++)
 		{
-
+			var orien = frame.BallOrientation(i);
 			int color = 40;
 			
-			Ball dummyBall = new Ball(texture, palette, 64, color, 4, 1, 39);
+			Ball dummyBall = new Ball(texture, palette, (int)catBhd.GetDefaultBallSize(i), color, 4, 1, 39);
 
-			Vector2 dummyCoord = new Vector2(0, 0);
-
-			coordArray.Add(new Vector3(dummyCoord.X, dummyCoord.Y, 0));
+			Vector2 dummyCoord = new Vector2(orien.Position.X, orien.Position.Y);
+			
 			dummyBall.Position = dummyCoord;
 
-			dummyBall.ZIndex = 0;
+			dummyBall.ZIndex = (int)-orien.Position.Z;
 
 			//add them to the lists
 			this.ballz.Add(dummyBall);
 			AddChild(dummyBall);
 			
-			List <PaintBall> paintBallz = new List<PaintBall>();
+			/*List <PaintBall> paintBallz = new List<PaintBall>();
 			
 			paintBallz.Add(new PaintBall(new Vector3(1.0f, 0.0f, 0.0f), 0.25f, 95.0f));
 			paintBallz.Add(new PaintBall(new Vector3(-1.0f, 0.0f, 0.0f), 0.25f, 95.0f));
@@ -67,8 +71,19 @@ public partial class PetRenderer : Node2D
 			paintBallz.Add(new PaintBall(new Vector3(0.0f, 0.0f, 1.0f), 0.25f, 95.0f));
 			paintBallz.Add(new PaintBall(new Vector3(0.0f, 0.0f, -1.0f), 0.25f, 95.0f));
 			
+			//
+			paintBallz.Add(new PaintBall(new Vector3(1.0f, 1.0f, 1.0f), 0.25f, 95.0f));
+			paintBallz.Add(new PaintBall(new Vector3(1.0f, 1.0f, -1.0f), 0.25f, 95.0f));
+			paintBallz.Add(new PaintBall(new Vector3(1.0f, -1.0f, -1.0f), 0.25f, 95.0f));
+			paintBallz.Add(new PaintBall(new Vector3(1.0f, -1.0f, 1.0f), 0.25f, 95.0f));
+			
+			paintBallz.Add(new PaintBall(new Vector3(-1.0f, -1.0f, 1.0f), 0.25f, 95.0f));
+			paintBallz.Add(new PaintBall(new Vector3(-1.0f, -1.0f, -1.0f), 0.25f, 95.0f));
+			paintBallz.Add(new PaintBall(new Vector3(-1.0f, 1.0f, 1.0f), 0.25f, 95.0f));
+			paintBallz.Add(new PaintBall(new Vector3(-1.0f, 1.0f, -1.0f), 0.25f, 95.0f));
+			
 			PaintBallGroup pbg = new PaintBallGroup(dummyBall, paintBallz);
-			dummyBall.AddChild(pbg);
+			dummyBall.AddChild(pbg);*/
 		}
 
 		//ignore for now
@@ -109,10 +124,18 @@ public partial class PetRenderer : Node2D
 		UpdateLinez();
 	}
 	
-	//To Do: implement the rotation vector math for x and z rotation
+	//To Do: implement the rotation vector math for x rotation
 	private void UpdateMainBallz()
 	{
 
+		currentFrame += 0;
+		GD.Print(animation.NumFrames);
+		
+		if (currentFrame >= animation.NumFrames)
+			currentFrame = 0;
+		
+		var frame = animation.m_Frames[currentFrame];
+	
 		float rYSin = (float)Math.Sin(rotation.Y);
 		float rYCos = (float)Math.Cos(rotation.Y);
 		
@@ -122,11 +145,11 @@ public partial class PetRenderer : Node2D
 		for (int index = 0; index < this.ballz.Count; index++)
 		{
 
-			Vector3 coord = this.coordArray[index];
+			var orien = frame.BallOrientation(index);
 
-			float xf = coord.X;
-			float yf = coord.Y;
-			float zf = coord.Z;
+			float xf = orien.Position.X;
+			float yf = orien.Position.Y;
+			float zf = orien.Position.Z;
 			
 			float zz = zf;
 

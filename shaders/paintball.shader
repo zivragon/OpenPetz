@@ -52,7 +52,7 @@ float random (vec2 st) {    // @pasted from ball.shader
 void vertex() {
 
     v_radius = CUSTOM0.r * diameter / 2.0;
-    v_total_radius = v_radius + diameter/ 2.0;
+    v_total_radius = v_radius / 2.0 + diameter/ 2.0;
    
     // we store coords in color. Coords are -1,1, but COLOR allows 0,1. 
     // So we had to convert -1,1 to 0,1, let's undo that and get the original coord:
@@ -67,7 +67,7 @@ void vertex() {
     
     v_fuzz = CUSTOM0.g;
     
-    VERTEX *= v_radius;
+    VERTEX *= (v_radius + vec2(fuzz, 0.0));
     VERTEX += v_position.xy;
 }
 
@@ -77,7 +77,7 @@ void fragment() {
     vec2 p_coord = FRAGCOORD.xy - center - v_position.xy;
 
     coord.x += random(vec2(coord.y + fuzz)) * fuzz;
-	p_coord.x += random(vec2(p_coord.y + v_fuzz)) * v_fuzz;
+	p_coord.x += random(vec2(p_coord.y + 0.125 + v_fuzz)) * v_fuzz;
 
     float radius = diameter / 2.0;
     
