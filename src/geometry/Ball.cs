@@ -66,9 +66,8 @@ public partial class Ball : MeshInstance2D
 
 	public override void _Process(double dt)
 	{
-		material.SetShaderParameter("center", this.GlobalPosition);
+		material.SetShaderParameter(StringManager.S("center"), this.GlobalPosition);
 
-		 
 		// ROTATION TEST CODE
 		
 		//rotation.X += 0.0625f;
