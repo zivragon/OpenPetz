@@ -27,7 +27,7 @@ public partial class PetRenderer : Node2D
 	//Methods
 
 
-	Lnz linezData = new Lnz();
+	LnzData linezData = new LnzData();
 
 	//
 	// Ballz and AddBallz can be Ommited
@@ -63,9 +63,9 @@ public partial class PetRenderer : Node2D
 		// @todo this file should be specified by [Default Linez File]
 		// @todo this file has [Num Ballz]
 		// @todo have a way for Parse to override, not only append
-		linezData.Parse("./Resource/linez/catmaster.lnz"); // @todo configure the file
+		linezData.ParseFile("./Resource/linez/catmaster.lnz"); // @todo configure the file
 		//
-		linezData.Parse("./Resource/linez/calico-petz3.lnz"); // @todo configure the file
+		linezData.ParseFile("./Resource/linez/calico-petz3.lnz"); // @todo configure the file
 		
 		var frame = animation.m_Frames[currentFrame];
 		
@@ -84,7 +84,7 @@ public partial class PetRenderer : Node2D
 		{
 			
 			
-			if (linezData.IsOmmited(i))
+			if (linezData.IsBallOmmited(i))
 			{
 				continue;
 			}
@@ -124,7 +124,7 @@ public partial class PetRenderer : Node2D
 			var parentBall = this.ballz[addBallInfo.ParentBallID];
 			int addBallId = (int)catBhd.NumBallz + index;
 
-			if (linezData.IsOmmited(addBallId))
+			if (linezData.IsBallOmmited(addBallId))
 			{
 				continue;
 			}
