@@ -53,8 +53,8 @@ namespace OpenPetz {
 
 //              parse animations
                 for (int i = 0; i < NumAnimations; i++) {
-                    int curentOffset = i > 0 ? pBhd->FrameGroupSizes[i - 1] : 0;
-                    int nextOffset = pBhd->FrameGroupSizes[i];
+                    int curentOffset = i > 0 ? pBhd->FrameGroupOffsets[i - 1] : 0;
+                    int nextOffset = pBhd->FrameGroupOffsets[i];
                     int frameGroupSize = nextOffset - curentOffset;
                     m_Animations.Add(new(bdtFiles[(int)i], frameGroupSize, pFrameOffsets));
                     m_AnimationFirstRawFrame.Add(curentOffset);
@@ -203,7 +203,7 @@ namespace OpenPetz {
         [FieldOffset(0x024)] public short Unk_24;                           //  [+024]
         [FieldOffset(0x026)] public fixed short BallSizes[67];              //  [+026]  default size of each ball in the skeleton
         [FieldOffset(0x0AC)] public short NumFrameGroups;                   //  [+0AC]  number of animations
-        [FieldOffset(0x0AE)] public fixed short FrameGroupSizes[1500];      //  [+0AE]  length of each animation in frames
+        [FieldOffset(0x0AE)] public fixed short FrameGroupOffsets[1500];    //  [+0AE]  array of offsets, each to start of next animation
         [FieldOffset(0xC66)] public int FrameOffsets;                       //  [+C66]  (evil, use pointer) array of byte offset to the start of each frame in its respective BDT file
     };
 
