@@ -20,8 +20,8 @@ namespace OpenPetz {
         public List<FrameGroup> m_Animations { get;/* set;*/}
         public List<nint> m_BallSizes { get;/* set;*/}
         public nint NumBallz { get; }
-        public nint NumAnimations { get; }
-        public nint NumFrames { get; }
+        public int NumAnimations { get; }
+        public int NumFrames { get; }
         public nint StartFrame { get; }
         public nint StandFrame { get; }
 
@@ -52,12 +52,12 @@ namespace OpenPetz {
                 };
 
 //              parse animations
-                nint rawFrameNumber = 0;
-                for (nint i = 0; i < NumAnimations; i++) {
-                    int frameGroupSize = pBhd->FrameGroupSizes[i];
-                    m_Animations.Add(new(bdtFiles[(int)i], frameGroupSize - rawFrameNumber, pFrameOffsets));
-                    m_AnimationFirstRawFrame.Add(rawFrameNumber);
-                    rawFrameNumber += frameGroupSize;
+                for (int i = 0; i < NumAnimations; i++) {
+                    int curentOffset = i > 0 ? pBhd->FrameGroupSizes[i - 1] : 0;
+                    int nextOffset = pBhd->FrameGroupSizes[i];
+                    int frameGroupSize = nextOffset - curentOffset;
+                    m_Animations.Add(new(bdtFiles[(int)i], frameGroupSize, pFrameOffsets));
+                    m_AnimationFirstRawFrame.Add(curentOffset);
                     pFrameOffsets += frameGroupSize;                //  advance pointer to next animation's first frame offset
                 };
             };
@@ -126,7 +126,7 @@ namespace OpenPetz {
 //      class for an animation (a group of frames)
         unsafe /*internal*/ public class FrameGroup {
             public List<Frame> m_Frames { get; set; }
-            public nint NumFrames { get; }
+            public nint NumFrames { get => m_Frames.Count; }
 
             public FrameGroup(string bdtPath, nint numFrames, int* frameOffsets) {
 //              parse all frames in the animation; frameOffsets points to BHD FrameOffsets

@@ -29,7 +29,7 @@ public partial class PetRenderer : Node2D
 	{
 		
 		catBhd = AnimationManager.FetchCatBhd();
-		animation = catBhd.GetAnimation(0);
+		animation = catBhd.GetAnimation(3);
 		
 		var frame = animation.m_Frames[currentFrame];
 		
