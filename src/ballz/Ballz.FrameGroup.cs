@@ -19,7 +19,7 @@ namespace OpenPetz {
 
                     for (int i = 0; i < numFrames; i++) {
                         Frame frame = new((BdtFrame*)(pBdtBytes + frameOffsets[i]), numRealBallz);
-                        Frames[i] = frame;
+                        Frames.Add(frame);
                     };
                     NumFrames = numFrames;
                 };

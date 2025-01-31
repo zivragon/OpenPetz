@@ -50,10 +50,10 @@ namespace OpenPetz {
 
 
     unsafe public partial class BallzModel {
-        private List<int>          m_AnimationFirstRawFrame;   //  so we can locate the corresponding animation for a given raw frame number
+        private List<int>          AnimationFirstRawFrame;      //  so we can locate the corresponding animation for a given raw frame number
 //      --------------------------
-        public List<FrameGroup>     m_Animations    { get; }    //  list of all animations
-        public List<int>            m_BallSizes     { get; }    //  default size of each ball in the skeleton
+        public List<FrameGroup>     Animations      { get; }    //  list of all animations
+        public List<int>            BallSizes       { get; }    //  default size of each ball in the skeleton
         public int                  NumBallz        { get; }    //  number of ballz in the skeleton
         public int                  NumAnimations   { get; }    //  number of animations
         public int                  NumFrames       { get; }    //  total number of frames in all animations
@@ -80,27 +80,27 @@ namespace OpenPetz {
                 StartFrame = pBhd->StartFrame;
                 StandFrame = pBhd->StandFrame;
                 
-                m_BallSizes = new List<int>(NumBallz);
+                BallSizes = new List<int>(NumBallz);
 
 //              parse default ball sizes
                 for (int i = 0; i < NumBallz; i++) {
-                    m_BallSizes[i] = pBhd->BallSizes[i];
+                    BallSizes.Add(pBhd->BallSizes[i]);
                 };
 
-                int thisNumFrames;
-                int frameGroupStart;
+                int thisNumFrames = 0;
+                int frameGroupEnd = 0;
                 int rawFrameNumber = 0;
-                m_Animations = new List<FrameGroup>(NumAnimations);
-                m_AnimationFirstRawFrame = new List<int>(NumAnimations);
+                Animations = new List<FrameGroup>(NumAnimations);
+                AnimationFirstRawFrame = new List<int>(NumAnimations);
 
 //              parse animations
                 for (int i = 0; i < NumAnimations; i++) {
-                    frameGroupStart = pBhd->FrameGroupFirstRawFrame[i];
-                    thisNumFrames = frameGroupStart - rawFrameNumber;
-                    m_AnimationFirstRawFrame[i] = rawFrameNumber;
-                    m_Animations[i] = new(bdtFiles[i], NumBallz, thisNumFrames, pFrameOffsets);
-                    rawFrameNumber += frameGroupStart;
-                    pFrameOffsets += frameGroupStart;                //  advance pointer to next animation's first frame's offset
+                    frameGroupEnd = pBhd->FrameGroupFirstRawFrame[i];
+                    thisNumFrames = frameGroupEnd - rawFrameNumber;
+                    AnimationFirstRawFrame.Add(rawFrameNumber);
+                    Animations.Add(new(bdtFiles[i], NumBallz, thisNumFrames, pFrameOffsets));
+                    rawFrameNumber += thisNumFrames;
+                    pFrameOffsets += thisNumFrames;                //  advance pointer to next animation's first frame's offset
                 };
             };
         }
@@ -109,17 +109,17 @@ namespace OpenPetz {
             if (i < 0 || i >= NumAnimations) {
                 throw new ArgumentOutOfRangeException(nameof(i), "Animation index out of range");
             };
-            return m_Animations[i];
+            return Animations[i];
         }
 
         public Frame GetFrameInAnimation(int aIndex, int fIndex) {
             if (aIndex < 0 || aIndex >= NumAnimations) {
                 throw new ArgumentOutOfRangeException(nameof(aIndex), "Animation index out of range");
             };
-            if (fIndex < 0 || fIndex >= m_Animations[aIndex].NumFrames) {
+            if (fIndex < 0 || fIndex >= Animations[aIndex].NumFrames) {
                 throw new ArgumentOutOfRangeException(nameof(fIndex), "Frame index out of range");
             };
-            return m_Animations[aIndex].Frames[fIndex];
+            return Animations[aIndex].Frames[fIndex];
         }
 
         public Frame GetRawFrame(int fNumber) {
@@ -133,32 +133,32 @@ namespace OpenPetz {
 
             while (low <= high) {
                 int mid = low + (high - low) / 2;
-                if (fNumber < m_AnimationFirstRawFrame[mid]) {
+                if (fNumber < AnimationFirstRawFrame[mid]) {
                     high = mid - 1;
-                } else if (fNumber >= m_AnimationFirstRawFrame[mid] + m_Animations[mid].Frames.Count) {
+                } else if (fNumber >= AnimationFirstRawFrame[mid] + Animations[mid].Frames.Count) {
                     low = mid + 1;
                 } else {
-                    return m_Animations[mid].Frames[(fNumber - m_AnimationFirstRawFrame[mid])];
+                    return Animations[mid].Frames[(fNumber - AnimationFirstRawFrame[mid])];
                 };
             };
             throw new Exception("Frame not found");
         }
 
-        public nint GetDefaultBallSize(int bNumber) {
+        public int GetDefaultBallSize(int bNumber) {
             if (bNumber < 0 || bNumber >= NumBallz) {
                 throw new ArgumentOutOfRangeException(nameof(bNumber), "Ball number out of range");
             };
-            return m_BallSizes[bNumber];
+            return BallSizes[bNumber];
         }
 
-        public nint GetBallSizeThisFrame(int bNumber, int fNumber) {
+        public int GetBallSizeThisFrame(int bNumber, int fNumber) {
             if (bNumber < 0 || bNumber >= NumBallz) {
                 throw new ArgumentOutOfRangeException(nameof(bNumber), "Ball number out of range");
             };
             return GetRawFrame(fNumber).BallSizeOffset(bNumber);
         }
 
-        public nint GetBallSizeThisFrame(int bNumber, int aIndex, int fIndex) {
+        public int GetBallSizeThisFrame(int bNumber, int aIndex, int fIndex) {
             if (bNumber < 0 || bNumber >= 67) {
                 throw new ArgumentOutOfRangeException(nameof(bNumber), "Ball number out of range");
             };

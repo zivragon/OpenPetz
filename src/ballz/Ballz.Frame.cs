@@ -14,7 +14,11 @@ namespace OpenPetz
                 BdtFrame.BdtBallSizeOverrideArray.BdtFrameBallSizeOverride* pOverrideArray = &pBallArray->SizeArray.SizeOverrides;  //  temporary ball size override lookup
                 Dictionary<int, int> sizeOverrides = new Dictionary<int, int>();
                 for (int i = 0; i < pBallArray->SizeArray.ArrayLength; i++) {
-                    sizeOverrides.Add(pOverrideArray->Ball, pOverrideArray->SizeDiff);
+                    // check if key is already there
+                    if (sizeOverrides.ContainsKey(pOverrideArray->Ball))
+                        sizeOverrides[pOverrideArray->Ball] = pOverrideArray->SizeDiff;
+                    else
+                        sizeOverrides.Add(pOverrideArray->Ball, pOverrideArray->SizeDiff);
                     pOverrideArray++;
                 };
 
