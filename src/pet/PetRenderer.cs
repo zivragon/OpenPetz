@@ -1,7 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using OpenPetz.src.anim;
+using OpenPetz;
 
 //To Do: re-think if this class should inherit from Node2D
 public partial class PetRenderer : Node2D
@@ -18,8 +18,8 @@ public partial class PetRenderer : Node2D
 	private List<Texture2D> textureList = new List<Texture2D>();
 
 	private Texture2D palette;
-	private Bhd catBhd;
-	private Bhd.FrameGroup animation;
+	private BallzModel catBhd;
+	private BallzModel.FrameGroup animation;
 	private int currentFrame = 0;
 
 	private TextureAtlas textureAtlas = null;
@@ -31,7 +31,7 @@ public partial class PetRenderer : Node2D
 		catBhd = AnimationManager.FetchCatBhd();
 		animation = catBhd.GetAnimation(0);
 		
-		var frame = animation.m_Frames[currentFrame];
+		var frame = animation.Frames[currentFrame];
 		
 		LoadTextures();
 		//Prepare the Textures
@@ -50,7 +50,7 @@ public partial class PetRenderer : Node2D
 			var orien = frame.BallOrientation(i);
 			int color = 40;
 			
-			Ball dummyBall = new Ball(texture, palette, (int)catBhd.GetDefaultBallSize(i), color, 4, 1, 39);
+			Ball dummyBall = new Ball(texture, palette, catBhd.GetDefaultBallSize(i), color, 4, 1, 39);
 
 			Vector2 dummyCoord = new Vector2(orien.Position.X, orien.Position.Y);
 			
@@ -127,14 +127,15 @@ public partial class PetRenderer : Node2D
 	//To Do: implement the rotation vector math for x rotation
 	private void UpdateMainBallz()
 	{
-
-		currentFrame += 1;
+		if (animation == null)
+            return;
+        currentFrame += 1;
 		GD.Print(animation.NumFrames);
 		
 		if (currentFrame >= animation.NumFrames)
 			currentFrame = 0;
 		
-		var frame = animation.m_Frames[currentFrame];
+		var frame = animation.Frames[currentFrame];
 	
 		float rYSin = (float)Math.Sin(rotation.Y);
 		float rYCos = (float)Math.Cos(rotation.Y);

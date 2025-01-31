@@ -1,11 +1,10 @@
 using Godot;
-using System;
 using System.Collections.Generic;
-using OpenPetz.src.anim;
+using OpenPetz;
 
 public static class AnimationManager {
 	
-	private static Bhd CatBhd { get; set; } = null;
+	private static BallzModel CatBhd { get; set; } = null;
 	
 	//Methods
 	
@@ -14,7 +13,7 @@ public static class AnimationManager {
 		
 	}
 	
-  public static Bhd FetchCatBhd()
+  public static BallzModel FetchCatBhd()
     {
         List<string> bdtFiles = new List<string>();
         for (int i = 0; i <= 492; i++)
@@ -22,7 +21,7 @@ public static class AnimationManager {
             bdtFiles.Add($"./ptzfiles/cat/CAT{i}.bdt");
         }
 
-        CatBhd = new Bhd("./ptzfiles/cat/CAT.bhd", bdtFiles);
+        CatBhd = new BallzModel("./ptzfiles/cat/CAT.bhd", bdtFiles);
 
         if (CatBhd == null)
         {
