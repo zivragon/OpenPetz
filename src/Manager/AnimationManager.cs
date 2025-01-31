@@ -1,7 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using OpenPetz;
+using OpenPetz.src.anim;
 
 public static class AnimationManager {
 	
@@ -17,7 +17,7 @@ public static class AnimationManager {
   public static Bhd FetchCatBhd()
     {
         List<string> bdtFiles = new List<string>();
-        for (int i = 0; i <= 1; i++)
+        for (int i = 0; i <= 492; i++)
         {
             bdtFiles.Add($"./ptzfiles/cat/CAT{i}.bdt");
         }
