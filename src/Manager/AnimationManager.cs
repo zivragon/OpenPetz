@@ -1,7 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using OpenPetz;
+using OpenPetz.src.anim;
 
 public static class AnimationManager {
 	

@@ -1,7 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using OpenPetz;
+using OpenPetz.src.anim;
 
 //To Do: re-think if this class should inherit from Node2D
 public partial class PetRenderer : Node2D
