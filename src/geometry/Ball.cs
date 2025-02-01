@@ -49,31 +49,24 @@ public partial class Ball : MeshInstance2D
 
 		//Set Material uniform parameters
 
-		this.material.SetShaderParameter("fuzz", fuzz);
-		this.material.SetShaderParameter("diameter", diameter);
-		this.material.SetShaderParameter("outline_width", outline_width);
+		this.material.SetShaderParameter(StringManager.S("fuzz"), fuzz);
+		this.material.SetShaderParameter(StringManager.S("diameter"), diameter);
+		this.material.SetShaderParameter(StringManager.S("outline_width"), outline_width);
 
-		this.material.SetShaderParameter("color_index", color_index);
-		this.material.SetShaderParameter("outline_color", outline_color);
-		material.SetShaderParameter("transparent_color_index", 1);
+		this.material.SetShaderParameter(StringManager.S("color_index"), color_index);
+		this.material.SetShaderParameter(StringManager.S("outline_color"), outline_color);
+		material.SetShaderParameter(StringManager.S("transparent_color_index"), 1);
 
-		this.material.SetShaderParameter("tex", texture);
-		this.material.SetShaderParameter("palette", palette);
+		this.material.SetShaderParameter(StringManager.S("tex"), texture);
+		this.material.SetShaderParameter(StringManager.S("palette"), palette);
 
-		this.material.SetShaderParameter("center", this.GlobalPosition);
+		this.material.SetShaderParameter(StringManager.S("center"), this.GlobalPosition);
 	}
 
 
 	public override void _Process(double dt)
 	{
 		material.SetShaderParameter(StringManager.S("center"), this.GlobalPosition);
-
-		// ROTATION TEST CODE
-		
-		//rotation.X += 0.0625f;
-		rotation.Y += 0.0625f;
-		rotation.Z += 0.0625f;
-
 	}
 
 }

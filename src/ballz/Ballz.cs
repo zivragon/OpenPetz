@@ -90,15 +90,15 @@ namespace OpenPetz {
                 int thisNumFrames = 0;
                 int frameGroupEnd = 0;
                 int rawFrameNumber = 0;
-                Animations = new List<FrameGroup>(NumAnimations);
-                AnimationFirstRawFrame = new List<int>(NumAnimations);
+                Animations = new List<FrameGroup>(/*NumAnimations*/);
+                AnimationFirstRawFrame = new List<int>(/*NumAnimations*/);
 
 //              parse animations
-                for (int i = 0; i < NumAnimations; i++) {
+                for (int i = 0; i < /*NumAnimations*/ 50; i++) {
                     frameGroupEnd = pBhd->FrameGroupFirstRawFrame[i];
                     thisNumFrames = frameGroupEnd - rawFrameNumber;
                     AnimationFirstRawFrame.Add(rawFrameNumber);
-                    Animations.Add(new(bdtFiles[i], NumBallz, thisNumFrames, pFrameOffsets));
+                    Animations.Add(new(bdtFiles[i], NumBallz, thisNumFrames, pFrameOffsets)); //???
                     rawFrameNumber += thisNumFrames;
                     pFrameOffsets += thisNumFrames;                //  advance pointer to next animation's first frame's offset
                 };
