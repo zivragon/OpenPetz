@@ -81,9 +81,9 @@ void fragment() {
 
     float radius = diameter / 2.0;
     
-    vec4 clip = vec4(circle(coord, radius));
+    vec4 clip = vec4(circle(coord, radius, 0.0));
     
-    vec4 ball = vec4(circle(p_coord, v_radius));
+    vec4 ball = vec4(circle(p_coord, v_radius, 0.0));
     
     vec4 color = get_color(color_index / 256.0, false);
 
