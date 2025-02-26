@@ -126,7 +126,8 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
         //Then unsubscribe
         RenderingServer.FramePostDraw -= SaveGeneratedAtlas;
         //Get rid of the subViewport
-        subViewport = null; // @note adding also RemoveChild(subViewport) causes memory leak of Canvas node
+	RemoveChild(subViewport); // Godot complains too much
+        subViewport = null; 
         
         Image img2 = Image.LoadFromFile("./cache/texture_atlas/raster/"+guid.ToString()+".png");
         TextureData = ImageTexture.CreateFromImage(img2);
