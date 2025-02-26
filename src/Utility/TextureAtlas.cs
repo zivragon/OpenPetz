@@ -89,7 +89,7 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
 		
 		dummyMesh.Mesh = immediateMesh;
 		dummyMesh.Material = material;
-		AddChild(dummyMesh);
+		subViewport.AddChild(dummyMesh);
 		
 		immediateMesh.ClearSurfaces();
 		immediateMesh.SurfaceBegin(Mesh.PrimitiveType.Triangles);
