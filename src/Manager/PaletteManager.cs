@@ -12,7 +12,6 @@ public static class PaletteManager {
 	
 	private static Texture2D CreateEmptyPalette()
 	{
-		//Hexadecimal of 10 is in fact, 0x0A
 		byte[] pixel = new byte[] { 0xEF, 0xE2, 0xDD, 0x00 };
 		
 		Image emptyImage = Image.CreateFromData(1, 1, false, Image.Format.Rgba8, pixel);
@@ -42,9 +41,9 @@ public static class PaletteManager {
 		
 		//Try to load the Bitmap
 		
-		BMP image = new BMP();
+		Bmp image = new Bmp();
 		
-		image.LoadFile("./Resource/palettes/"+name+".bmp");
+		image.LoadFile("./Resource/palettes/"+name+".bmp", Bmp.LoadType.Palette);
 		
 		Texture2D pal = image.GetPalette();
 		
