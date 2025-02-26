@@ -42,9 +42,9 @@ public static class TextureManager {
 		
 		//Try to load the Bitmap
 		
-		BMP image = new BMP();
+		Bmp image = new Bmp();
 		
-		image.LoadFile(path);
+		image.LoadFile(path, Bmp.LoadType.Raster);
 		
 		Texture2D texture = image.GetData();
 		
