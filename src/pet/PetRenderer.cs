@@ -38,6 +38,8 @@ public partial class PetRenderer : Node2D
 		
 		textureAtlas = new TextureAtlas(Guid.Empty, null);
 
+		AddChild(textureAtlas);
+		
 		//Create dummy ballz for now.
 		for (int i = 0; i < 67; i++)
 		{
