@@ -37,28 +37,25 @@ public class Bmp {
 				return;
 			}
 			
-			if ()
-			
 			//Read width and height;
-			
 			if (_type.HasFlags(LoadType.Palette))
 			{
-    			Width = file.Get32();
-    			Height = file.Get32();
+    			    Width = file.Get32();
+    			    Height = file.Get32();
     			
     			//Between 1 and 512 (inclusive) only
     			
-    			if (Width <= 0 || Height <= 0)
-                {
-    			    PrintError("Width or Height is 0 or below.");
+    			    if (Width <= 0 || Height <= 0)
+                            {
+    			        PrintError("Width or Height is 0 or below.");
     				return;
-    			}
+    			    }
     			
-    			if (Width > 1024 || Height > 1024)
-    			{
-    			    PrintError("Width or Height is above 1024.");
+    			    if (Width > 1024 || Height > 1024)
+    			    {
+    			        PrintError("Width or Height is above 1024.");
     				return;
-    			}
+    			    }
 			}
 			
 			//Ignore these two bytes too
@@ -87,7 +84,7 @@ public class Bmp {
 			//if 8 bit, then there must be the index palette, in BGR0 format 
 			if (BitCount == 8){
 				
-				if (_type.HasFlags(LoadType.Palette))
+			    if (_type.HasFlags(LoadType.Palette))
 			    {
     				byte[] pal = file.GetBuffer(1024);
     				//generate the palette
@@ -103,15 +100,15 @@ public class Bmp {
 			if (_type.HasFlags(LoadType.Raster))
 			    {
 			
-    			int bytesPerTexel = BitCount == 24 ? 3 : 1;
+    			    int bytesPerTexel = BitCount == 24 ? 3 : 1;
     			
-    			byte[] raster = file.GetBuffer(Width * Height * bytesPerTexel);
+    			    byte[] raster = file.GetBuffer(Width * Height * bytesPerTexel);
     			
-    			if (bytesPerTexel == 3){
+    			    if (bytesPerTexel == 3){
     				Raster = Image.CreateFromData((int)Width, (int)Height, false, Image.Format.Rgb8, raster);
-    			} else {
+    			    } else {
     				Raster = Image.CreateFromData((int)Width, (int)Height, false, Image.Format.R8, raster);
-    			}
+    			    }
 			}
 			//All good? then it means successfully loaded
 			Loaded = true;
