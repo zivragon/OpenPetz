@@ -35,6 +35,8 @@ public partial class PetRenderer : Node2D
 		var texture = textureList[0];
 
 		Texture2D palette = PaletteManager.FetchPalette("petz");
+		
+		textureAtlas = new TextureAtlas(Guid.Empty, null);
 
 		//Create dummy ballz for now.
 		for (int i = 0; i < 67; i++)
