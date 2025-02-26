@@ -41,7 +41,7 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
             //We are bound to dynamically generating it now using SubViewport.
             subViewport = new SubViewport();
             subViewport.Size = new Vector2I(1024, 64);
-            subViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Always;
+            subViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Once;
             AddChild(subViewport);
             
             PackTextures();
