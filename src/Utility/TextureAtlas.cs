@@ -21,7 +21,7 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
     {
         //First step is checking to see if it is already cached.
         
-        string fileName = "./cache/texture_atlas/raster/"+_guid.ToString()+".bmp";
+        string fileName = "./cache/texture_atlas/raster/"+_guid.ToString()+".png";
         
         if (FileAccess.FileExists(fileName))
         {
