@@ -1,26 +1,28 @@
 using Godot;
 using System;
 
+public class Bmp {
 
-//BLINDLY CODED, NEEDS TO BE TESTED FIRST
-
-public class BMP {
+	private uint Width {get; set;} = 0;
+	private uint Height {get; set;} = 0;
 	
-	private bool _loaded = false;
-	private uint _bitCount = 0; //8 for 256 color index, 24 for 24 bit (RGB)
-	private uint _width = 0;
-	private uint _height = 0;
+	private Image Palette { get; set; } = null;
+	private Image Raster { get; set; } = null;
 	
-	private Image _palette = new Image();
-	private Image _raster = new Image();
+	public uint BitCount { get; private set; } = 0;
+	public bool Loaded = { get; private set; }
 	
-	public uint BitCount => _bitCount;
-	public bool Loaded => _loaded;
+	[Flags] public enum LoadType {
+	    Palette = 1;
+	    Raster = 2;
+	    All = 3;
+	}
 	
-	public void LoadFile(string path){
+	
+	public void LoadFile(string _path, LoadType _type){
 		
 		try {
-			using var file = FileAccess.Open(path, FileAccess.ModeFlags.Read);
+			using var file = FileAccess.Open(_path, FileAccess.ModeFlags.Read);
 			
 			int junk = 0;
 			//Ignore first 14 bytes
@@ -30,64 +32,89 @@ public class BMP {
 			uint headerSize = file.Get32();
 			
 			if (headerSize != 40)
+			{
+			    PrintError("HeaderSize is not 40");
 				return;
+			}
+			
+			if ()
 			
 			//Read width and height;
 			
-			_width = file.Get32();
-			_height = file.Get32();
-			
-			//Between 1 and 512 (inclusive) only
-			
-			if (_width <= 0 || _height <= 0)
-				return;
-			
-			if (_width > 512 || _height > 512)
-				return;
+			if (_type.HasFlags(LoadType.Palette))
+			{
+    			Width = file.Get32();
+    			Height = file.Get32();
+    			
+    			//Between 1 and 512 (inclusive) only
+    			
+    			if (Width <= 0 || Height <= 0)
+                {
+    			    PrintError("Width or Height is 0 or below.");
+    				return;
+    			}
+    			
+    			if (Width > 1024 || Height > 1024)
+    			{
+    			    PrintError("Width or Height is above 1024.");
+    				return;
+    			}
+			}
 			
 			//Ignore these two bytes too
 			file.Get16();
 			
-			_bitCount = file.Get16();
+			BitCount = file.Get16();
 			
-			if (_bitCount != 8 && _bitCount != 24)
-				return;
+			if (BitCount != 8 && BitCount != 24)
+    			{
+    			    PrintError("Invalid Bit Count");
+    				return;
+    			}
 			
 			uint compression = file.Get32();
 			
 			if (compression != 0)
-				return;
+    			{
+    			    PrintError("Compression is not supported.");
+    				return;
+    			}
 				
 			//Ignore 20 more bytes
 			for (junk = 0; junk < 5; junk++)
 				file.Get32();
 			
-			//define buffer containers
-			byte[] palette = null;
-			byte[] raster = null;
-			
 			//if 8 bit, then there must be the index palette, in BGR0 format 
-			if (_bitCount == 8){
-				//_palette = new byte[256 * 4];
-				palette = file.GetBuffer(1024);
-				//generate the palette
-				_palette = Image.CreateFromData(256, 1, false, Image.Format.Rgba8, palette);
+			if (BitCount == 8){
+				
+				if (_type.HasFlags(LoadType.Palette))
+			    {
+    				byte[] pal = file.GetBuffer(1024);
+    				//generate the palette
+    				_palette = Image.CreateFromData(256, 1, false, Image.Format.Rgba8, pal);
+			    } else {
+			        //Bye bye those 1024 bytes 
+			        file.GetBuffer(1024);
+			    }
 			}
 			
 			//Now for the raster part
 			
-			int bytesPerTexel = _bitCount == 24 ? 3 : 1;
+			if (_type.HasFlags(LoadType.Raster))
+			    {
 			
-			raster = file.GetBuffer(_width * _height * bytesPerTexel);
-			
-			if (bytesPerTexel == 3){
-				_raster = Image.CreateFromData((int)_width, (int)_height, false, Image.Format.Rgb8, raster);
-			} else {
-				_raster = Image.CreateFromData((int)_width, (int)_height, false, Image.Format.R8, raster);
+    			int bytesPerTexel = BitCount == 24 ? 3 : 1;
+    			
+    			byte[] raster = file.GetBuffer(Width * Height * bytesPerTexel);
+    			
+    			if (bytesPerTexel == 3){
+    				Raster = Image.CreateFromData((int)Width, (int)Height, false, Image.Format.Rgb8, raster);
+    			} else {
+    				Raster = Image.CreateFromData((int)Width, (int)Height, false, Image.Format.R8, raster);
+    			}
 			}
-			
 			//All good? then it means successfully loaded
-			_loaded = true;
+			Loaded = true;
 			
 		}catch (Exception e){
 			
@@ -95,9 +122,9 @@ public class BMP {
 	}
 	
 	public Texture2D GetPalette() {
-		if (_loaded && _bitCount == 8){
+		if (Loaded && Palette != null){
 			
-			var textureImg = ImageTexture.CreateFromImage(_palette);
+			var textureImg = ImageTexture.CreateFromImage(Palette);
 			Texture2D texture = textureImg as Texture2D;
 			
 			return texture;
@@ -109,9 +136,9 @@ public class BMP {
 	}
 	
 	public Texture2D GetData() {
-		if (_loaded){
+		if (Loaded && Raster != null){
 			
-			var textureImg = ImageTexture.CreateFromImage(_raster);
+			var textureImg = ImageTexture.CreateFromImage(Raster);
 			Texture2D texture = textureImg as Texture2D;
 			
 			return texture;
@@ -120,6 +147,11 @@ public class BMP {
 		{
 			return null;
 		}
+	}
+	
+	private PrintError(string message)
+	{
+	    GD.Print("BMP loader error: "+ message);
 	}
 	
 }
