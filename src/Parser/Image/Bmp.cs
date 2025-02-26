@@ -10,7 +10,7 @@ public class Bmp {
 	private Image Raster { get; set; } = null;
 	
 	public uint BitCount { get; private set; } = 0;
-	public bool Loaded = { get; private set; }
+	public bool Loaded { get; private set; } = 0;
 	
 	[Flags] public enum LoadType {
 	    Palette = 1;
