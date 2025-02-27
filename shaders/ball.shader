@@ -34,15 +34,23 @@ void fragment() {
 	
 	float tex_index = texture(tex, texUV).r;
 	
-	vec4 outline = vec4(circle(coord, radius, 0.0));
+	vec4 outline = vec4(circle(coord, radius));
 	
 	outline *= get_color(outline_color / 256.0, false);
 	
-	vec4 ball = vec4(circle(coord, radius - outline_width, outline_width == 1.0 ? 1.0 : 0.0));
+	vec4 ball = vec4(0.0);
+	
+	if (outline_width == 1.0)
+	{
+		coord.x = abs(coord.x) + 1.0;
+		ball = vec4(circle(coord, radius));
+	} else {
+		ball = vec4(circle(coord, radius - outline_width));
+	}
 	
 	float is_ball = ball.a;
 	
-	ball *= get_color(tex_index, true);
+	ball *= vec4(texture(palette, vec2(tex_index, 0.0)).bgr, 1.0);
 	
 	vec4 color = mix(outline, ball, is_ball);
 	
