@@ -14,6 +14,8 @@ public partial class Ball : MeshInstance2D
 	public Texture2D texture;
 	public Texture2D palette;
 
+	public TextureAtlas atlas = null;
+	
 	public int diameter;
 	public int color_index;
 	public int fuzz;
@@ -35,17 +37,17 @@ public partial class Ball : MeshInstance2D
 		this.fuzz = fuzz;
 		this.outline_width = outline_width;
 		this.outline_color = outline_color;
-	}
-
-	public override void _Ready()
-	{
-
+		
 		this.ballMesh = MeshManager.FetchDefaultMesh();
 
 		this.material = ShaderManager.FetchShaderMaterial("ball");
 
 		this.Mesh = this.ballMesh;
 		this.Material = this.material;
+	}
+
+	public override void _Ready()
+	{
 
 		//Set Material uniform parameters
 
@@ -56,8 +58,9 @@ public partial class Ball : MeshInstance2D
 		this.material.SetShaderParameter(StringManager.S("color_index"), color_index);
 		this.material.SetShaderParameter(StringManager.S("outline_color"), outline_color);
 		material.SetShaderParameter(StringManager.S("transparent_color_index"), 1);
-
+		
 		this.material.SetShaderParameter(StringManager.S("tex"), texture);
+		
 		this.material.SetShaderParameter(StringManager.S("palette"), palette);
 
 		this.material.SetShaderParameter(StringManager.S("center"), this.GlobalPosition);
@@ -67,6 +70,20 @@ public partial class Ball : MeshInstance2D
 	public override void _Process(double dt)
 	{
 		material.SetShaderParameter(StringManager.S("center"), this.GlobalPosition);
+	}
+	
+	// CUSTOM METHODS
+	
+	public void SetTextureAtlas(TextureAtlas _atlas)
+	{
+		atlas = _atlas;
+		
+		if (atlas.TextureData != null)
+		{
+			this.material.SetShaderParameter(StringManager.S("tex"), atlas.TextureData);
+		} else {
+			this.material.SetShaderParameter(StringManager.S("tex"), texture);
+		}
 	}
 
 }

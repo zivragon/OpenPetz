@@ -23,22 +23,15 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
         
         string fileName = "./cache/texture_atlas/raster/"+_guid.ToString()+".png";
         
-        if (FileAccess.FileExists(fileName))
+        /*if (FileAccess.FileExists(fileName))
         {
             // Load the cache instead
-            /*Bmp bitmap = new Bmp();
-            
-            bitmap.LoadFile(fileName, Bmp.LoadType.Raster);
-            
-            Size = new Vector2I(bitmap.Width, bitmap.Height);
-            
-            TextureData = bitmap.GetData();*/
             
             Image img = Image.LoadFromFile(fileName);
             img.Convert(Image.Format.R8);
             TextureData = ImageTexture.CreateFromImage(img);
             
-        } else {
+        } else */{
             //We are bound to dynamically generating it now using SubViewport.
             subViewport = new SubViewport();
             subViewport.Size = new Vector2I(1024, 64);
@@ -52,7 +45,10 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
     public override void _Ready()
     {
         if (subViewport != null)
+		{
+			//PackTextures();
             RenderingServer.FramePostDraw += SaveGeneratedAtlas;
+		}
     }
     
     // CUSTOM METHODS
@@ -80,13 +76,13 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
     
     private void PackTextures()
     {
-        var texture = TextureManager.FetchTexture("./art/textures/flower.bmp");
+        var texture = TextureManager.FetchTexture("./art/textures/hair11.bmp");
 		var palette = PaletteManager.FetchPalette("oddballz");
 		
 		var dummyMesh = new MeshInstance2D();
 		
 		var immediateMesh = new ImmediateMesh();
-		var material = ShaderManager.FetchShaderMaterial("texture_atlas/texture");
+		var material = ShaderManager.FetchShaderMaterial("texture_atlas/texture_recolor");
 		
 		dummyMesh.Mesh = immediateMesh;
 		dummyMesh.Material = material;
@@ -96,12 +92,12 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
 		immediateMesh.SurfaceBegin(Mesh.PrimitiveType.Triangles);
 		
 		immediateMesh.SurfaceAddVertex(new Vector3(0, 0, 0));
-		immediateMesh.SurfaceAddVertex(new Vector3(0, 63, 0));
-		immediateMesh.SurfaceAddVertex(new Vector3(1023, 63, 0));
+		immediateMesh.SurfaceAddVertex(new Vector3(0, 64, 0));
+		immediateMesh.SurfaceAddVertex(new Vector3(1024, 64, 0));
 		
 		immediateMesh.SurfaceAddVertex(new Vector3(0, 0, 0));
-		immediateMesh.SurfaceAddVertex(new Vector3(1023, 0, 0));
-		immediateMesh.SurfaceAddVertex(new Vector3(1023, 63, 0));
+		immediateMesh.SurfaceAddVertex(new Vector3(1024, 0, 0));
+		immediateMesh.SurfaceAddVertex(new Vector3(1024, 64, 0));
 		
 		immediateMesh.SurfaceEnd();
 		
@@ -127,12 +123,12 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
         //Then unsubscribe
         RenderingServer.FramePostDraw -= SaveGeneratedAtlas;
         //Get rid of the subViewport
-	RemoveChild(subViewport); // Godot complains too much
+		RemoveChild(subViewport); // Godot complains too much
         subViewport = null; 
         
         Image img2 = Image.LoadFromFile("./cache/texture_atlas/raster/"+guid.ToString()+".png");
         img2.Convert(Image.Format.R8);
-	TextureData = ImageTexture.CreateFromImage(img2);
+		TextureData = ImageTexture.CreateFromImage(img2);
     }
 }
 
