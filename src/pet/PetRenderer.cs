@@ -26,6 +26,12 @@ public partial class PetRenderer : Node2D
 
 	public PetRenderer (Pet p){
 		parent = p;
+		
+		textureAtlas = new TextureAtlas(Guid.Empty, null);
+
+		AddChild(textureAtlas);
+		
+		Visible = false;
 	}
 	
 	public override void _Ready()
@@ -36,9 +42,7 @@ public partial class PetRenderer : Node2D
 
 		Texture2D palette = PaletteManager.FetchPalette("petz");
 		
-		textureAtlas = new TextureAtlas(Guid.Empty, null);
-
-		AddChild(textureAtlas);
+		GD.Print(textureAtlas.GetSubTextureCoords(0, 10).Dest.X);
 		
 		//Create dummy ballz for now.
 		for (int i = 0; i < 67; i++)
@@ -58,6 +62,8 @@ public partial class PetRenderer : Node2D
 			this.ballz.Add(dummyBall);
 			AddChild(dummyBall);
 		}
+		
+		RenderingServer.FramePostDraw += SetVisible;
 	}
 
 	public override void _Process(double delta)
@@ -67,6 +73,18 @@ public partial class PetRenderer : Node2D
 	}
 
 	// CUSTOM Methods
+	
+	private void SetVisible()
+	{
+		Visible = true;
+		
+		for (int index = 0; index < this.ballz.Count; index++)
+		{
+			ballz[index].SetTextureAtlas(textureAtlas);
+		}
+		
+		RenderingServer.FramePostDraw -= SetVisible;
+	}
 
 	public void SetFrame(BallzModel.Frame frame){
 		currentFrame = frame;
