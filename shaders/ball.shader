@@ -1,13 +1,15 @@
 shader_type canvas_item;
+
 uniform vec2 center;
 uniform float diameter;
 uniform float outline_width;
+
 uniform sampler2D tex : hint_default_white, filter_nearest, repeat_enable;
+uniform sampler2D palette: filter_nearest, repeat_enable;
+
 uniform float fuzz = 0.0;
-uniform float color_index;
-uniform float transparent_color_index = 1.0;
-uniform float outline_color;
-uniform sampler2D palette: filter_nearest;
+
+
 
 @LoadColorShaderComponent
 
@@ -21,6 +23,7 @@ float random (vec2 st) {
 
 void vertex() {
 	VERTEX *= diameter / 2.0;
+	VERTEX.x += fuzz;
 }
 
 void fragment() {
@@ -36,7 +39,7 @@ void fragment() {
 	
 	vec4 outline = vec4(circle(coord, radius));
 	
-	outline *= get_color(outline_color / 256.0, false);
+	outline *= vec4(texture(palette, vec2(outline_color, 0.0)).bgr, 1.0);
 	
 	vec4 ball = vec4(0.0);
 	
