@@ -35,6 +35,7 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
             TextureData = bitmap.GetData();*/
             
             Image img = Image.LoadFromFile(fileName);
+            img.Convert(Image.Format.R8);
             TextureData = ImageTexture.CreateFromImage(img);
             
         } else {
@@ -67,7 +68,7 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
         
         if (subTex.Transparency == 1)
         {
-            int color = _color / 10;
+            int color = _color / 10 - 1;
             float moveByX = subTex.Size.X * color + subTex.Dest.X;
             return new SubTextureCoordinations(moveByX / Size.X, subTex.Dest.Y / Size.Y, subTex.Size.X / Size.X, subTex.Size.Y / Size.Y);
         }
@@ -130,7 +131,8 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
         subViewport = null; 
         
         Image img2 = Image.LoadFromFile("./cache/texture_atlas/raster/"+guid.ToString()+".png");
-        TextureData = ImageTexture.CreateFromImage(img2);
+        img2.Convert(Image.Format.R8);
+	TextureData = ImageTexture.CreateFromImage(img2);
     }
 }
 
