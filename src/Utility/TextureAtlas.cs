@@ -59,17 +59,17 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
         
         if (subTex.Transparency == 0)
         {
-            return new SubTextureCoordinations(subTex.Dest.X / Size.X, subTex.Dest.Y / Size.Y, subTex.Size.X / Size.X, subTex.Size.Y / Size.Y);
+            return new SubTextureCoordinations(subTex.Position.X / Size.X, subTex.Position.Y / Size.Y, subTex.Size.X / Size.X, subTex.Size.Y / Size.Y);
         }
         
         if (subTex.Transparency == 1)
         {
             int color = _color / 10 - 1;
-            float moveByX = subTex.Size.X * color + subTex.Dest.X;
-            return new SubTextureCoordinations(moveByX / Size.X, subTex.Dest.Y / Size.Y, subTex.Size.X / Size.X, subTex.Size.Y / Size.Y);
+            float moveByX = subTex.Size.X * color + subTex.Position.X;
+            return new SubTextureCoordinations(moveByX / Size.X, subTex.Position.Y / Size.Y, subTex.Size.X / Size.X, subTex.Size.Y / Size.Y);
         }
         
-        return new SubTextureCoordinations(subTex.Dest.X / Size.X, subTex.Dest.Y / Size.Y, subTex.Size.X / Size.X, subTex.Size.Y / Size.Y);
+        return new SubTextureCoordinations(subTex.Position.X / Size.X, subTex.Position.Y / Size.Y, subTex.Size.X / Size.X, subTex.Size.Y / Size.Y);
     }
     
     // HEAVILY WIP
@@ -105,7 +105,7 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
 		material.SetShaderParameter("palette", palette);
 		
 		var subTex = new SubTextureContainer();
-		subTex.Dest = new Vector2(0.0f,0.0f);
+		subTex.Position = new Vector2(0.0f,0.0f);
 		subTex.Size = new Vector2(64.0f,64.0f);
 		subTex.Transparency = 0;
 		
@@ -140,19 +140,19 @@ internal struct SubTextureContainer {
 		;
 	}
 
-	public Vector2 Dest { get; set; } = new Vector2(0.0f, 0.0f);
+	public Vector2 Position { get; set; } = new Vector2(0.0f, 0.0f);
     public Vector2 Size { get; set; } = new Vector2(1.0f, 1.0f);
     public int Transparency { get; set; } = 0;
 }
 
 public struct SubTextureCoordinations {
     
-    public Vector2 Dest { get; private set; } = new Vector2(0.0f, 0.0f);
+    public Vector2 Position { get; private set; } = new Vector2(0.0f, 0.0f);
     public Vector2 Size { get; private set; } = new Vector2(1.0f, 1.0f);
     
     public SubTextureCoordinations (float _x, float _y, float _width, float _height)
     {
-        Dest = new Vector2(_x, _y);
+        Position = new Vector2(_x, _y);
         Size = new Vector2(_width, _height);
     }
 }
