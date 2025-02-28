@@ -4,14 +4,16 @@ uniform vec2 center;
 uniform float diameter;
 uniform float outline_width;
 
+uniform vec2 atlas_position = vec2(0.0, 0.0);
+uniform vec2 atlas_size = vec2(1.0, 1.0);
+
 uniform sampler2D tex : hint_default_white, filter_nearest, repeat_enable;
 uniform sampler2D palette: filter_nearest, repeat_enable;
 
 uniform float fuzz = 0.0;
 
 
-
-@LoadColorShaderComponent
+@LoadSubTextureShaderComponent
 
 @LoadCircleShaderComponent
 
@@ -28,14 +30,20 @@ void vertex() {
 
 void fragment() {
 	vec2 coord = FRAGCOORD.xy - center;
-	vec2 texUV = fract(coord / vec2(textureSize(tex, 0)));
+
+	vec2 atlas_texture_unnormalized = vec2(textureSize(tex, 0));
+	vec2 atlas_subtexture_unnormalized = vec2(atlas_size.x * atlas_texture_unnormalized.x, atlas_size.y * atlas_texture_unnormalized.y);
+
+	vec2 texUV = fract(coord / atlas_subtexture_unnormalized);
 	texUV.y = 1.0 - texUV.y;
-	
+
+	vec2 atlas_texUV = get_subtexture_uv(atlas_position, atlas_size, texUV);
+
 	float radius = diameter / 2.0;
 	
 	coord.x += random(vec2(coord.y + fuzz)) * fuzz;
 	
-	float tex_index = texture(tex, texUV).r;
+	float tex_index = texture(tex, atlas_texUV).r;
 	
 	vec4 outline = vec4(circle(coord, radius));
 	
