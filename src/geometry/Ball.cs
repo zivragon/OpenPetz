@@ -23,6 +23,8 @@ public partial class Ball : MeshInstance2D
 	public int outline_color;
 	public Vector3 rotation = new Vector3(0.0f, 0.0f, 0.0f);
 
+	private SubTextureCoordinations atlasCoords = null; 
+
 	public Ball()
 	{
 
@@ -55,12 +57,9 @@ public partial class Ball : MeshInstance2D
 		this.material.SetShaderParameter(StringManager.S("diameter"), diameter);
 		this.material.SetShaderParameter(StringManager.S("outline_width"), outline_width);
 
-		this.material.SetShaderParameter(StringManager.S("color_index"), color_index);
 		this.material.SetShaderParameter(StringManager.S("outline_color"), outline_color);
-		material.SetShaderParameter(StringManager.S("transparent_color_index"), 1);
 		
 		this.material.SetShaderParameter(StringManager.S("tex"), texture);
-		
 		this.material.SetShaderParameter(StringManager.S("palette"), palette);
 
 		this.material.SetShaderParameter(StringManager.S("center"), this.GlobalPosition);
@@ -80,8 +79,14 @@ public partial class Ball : MeshInstance2D
 		
 		if (atlas.TextureData != null)
 		{
+			atlasCoords = atlas.GetSubTextureCoords(0, color_index);
+
+   			this.material.SetShaderParameter(StringManager.S("atlas_position"), atlasCoords.Position);
+      			this.material.SetShaderParameter(StringManager.S("atlas_size"), atlasCoords.Size);
 			this.material.SetShaderParameter(StringManager.S("tex"), atlas.TextureData);
 		} else {
+     			this.material.SetShaderParameter(StringManager.S("atlas_position"), new Vector2(0.0f, 0.0f));
+      			this.material.SetShaderParameter(StringManager.S("atlas_size"), new Vector2(0.0f, 0.0f));
 			this.material.SetShaderParameter(StringManager.S("tex"), texture);
 		}
 	}
