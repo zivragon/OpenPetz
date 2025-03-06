@@ -1,15 +1,21 @@
 shader_type canvas_item;
+
 uniform vec2 center;
 uniform float diameter;
 uniform float outline_width;
-uniform sampler2D tex : hint_default_white, filter_nearest, repeat_enable;
-uniform float fuzz = 0.0;
-uniform float color_index;
-uniform float transparent_color_index = 1.0;
-uniform float outline_color;
-uniform sampler2D palette: filter_nearest;
 
-@LoadColorShaderComponent
+uniform float outline_color;
+
+uniform vec2 atlas_position = vec2(0.0, 0.0);
+uniform vec2 atlas_size = vec2(1.0, 1.0);
+
+uniform sampler2D tex : hint_default_white, filter_nearest, repeat_enable;
+uniform sampler2D palette: filter_nearest, repeat_enable;
+
+uniform float fuzz = 0.0;
+
+
+@LoadSubTextureShaderComponent
 
 @LoadCircleShaderComponent
 
@@ -20,29 +26,44 @@ float random (vec2 st) {
 }
 
 void vertex() {
-	VERTEX *= diameter / 2.0;
+	VERTEX *= (diameter / 2.0) + fuzz;
+	//VERTEX.x += fuzz;
 }
 
 void fragment() {
 	vec2 coord = FRAGCOORD.xy - center;
-	vec2 texUV = fract(coord / vec2(textureSize(tex, 0)));
+
+	vec2 atlas_texture_unnormalized = vec2(textureSize(tex, 0));
+	vec2 atlas_subtexture_unnormalized = vec2(atlas_size.x * atlas_texture_unnormalized.x, atlas_size.y * atlas_texture_unnormalized.y);
+
+	vec2 texUV = fract(coord / atlas_subtexture_unnormalized);
 	texUV.y = 1.0 - texUV.y;
-	
+
+	vec2 atlas_texUV = get_subtexture_uv(atlas_position, atlas_size, texUV);
+
 	float radius = diameter / 2.0;
 	
 	coord.x += random(vec2(coord.y + fuzz)) * fuzz;
 	
-	float tex_index = texture(tex, texUV).r;
+	float tex_index = texture(tex, atlas_texUV).r;
 	
-	vec4 outline = vec4(circle(coord, radius, 0.0));
+	vec4 outline = vec4(circle(coord, radius));
 	
-	outline *= get_color(outline_color / 256.0, false);
+	outline *= vec4(texture(palette, vec2(outline_color / 255.0, 0.0)).bgr, 1.0);
 	
-	vec4 ball = vec4(circle(coord, radius - outline_width, outline_width == 1.0 ? 1.0 : 0.0));
+	vec4 ball = vec4(0.0);
+	
+	if (outline_width == 1.0)
+	{
+		coord.x = abs(coord.x) + 1.0;
+		ball = vec4(circle(coord, radius));
+	} else {
+		ball = vec4(circle(coord, radius - outline_width));
+	}
 	
 	float is_ball = ball.a;
 	
-	ball *= get_color(tex_index, true);
+	ball *= vec4(texture(palette, vec2(tex_index, 0.0)).bgr, 1.0);
 	
 	vec4 color = mix(outline, ball, is_ball);
 	
