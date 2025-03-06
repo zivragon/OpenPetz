@@ -23,7 +23,7 @@ public partial class Ball : MeshInstance2D
 	public int outline_color;
 	public Vector3 rotation = new Vector3(0.0f, 0.0f, 0.0f);
 
-	private SubTextureCoordinations atlasCoords = null; 
+	private SubTextureCoordinations atlasCoords = new SubTextureCoordinations(0.0f, 0.0f, 1.0f, 1.0f); 
 
 	public Ball()
 	{
