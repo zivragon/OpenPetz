@@ -4,6 +4,8 @@ uniform vec2 center;
 uniform float diameter;
 uniform float outline_width;
 
+uniform float outline_color;
+
 uniform vec2 atlas_position = vec2(0.0, 0.0);
 uniform vec2 atlas_size = vec2(1.0, 1.0);
 
@@ -24,8 +26,8 @@ float random (vec2 st) {
 }
 
 void vertex() {
-	VERTEX *= diameter / 2.0;
-	VERTEX.x += fuzz;
+	VERTEX *= (diameter / 2.0) + fuzz;
+	//VERTEX.x += fuzz;
 }
 
 void fragment() {
@@ -47,7 +49,7 @@ void fragment() {
 	
 	vec4 outline = vec4(circle(coord, radius));
 	
-	outline *= vec4(texture(palette, vec2(outline_color, 0.0)).bgr, 1.0);
+	outline *= vec4(texture(palette, vec2(outline_color / 255.0, 0.0)).bgr, 1.0);
 	
 	vec4 ball = vec4(0.0);
 	
