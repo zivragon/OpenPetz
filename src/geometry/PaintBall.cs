@@ -11,7 +11,7 @@ public partial class PaintBall
 	private Color coordinations = new Color(1.0f, 0.0f, 0.0f, 0.0f);
 	private float size = 1.0f;
 	private float colorIndex = 95.0f / 255.0f;
-	private float fuzz = 4.0f;
+	private float fuzz = 0.0f;
 	
 	public Color Coordinations { get => coordinations; }
 	public float Size { get => size; }

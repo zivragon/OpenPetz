@@ -38,12 +38,13 @@ public partial class PaintBallGroup: MeshInstance2D
 		
 		//For the sake of keeping paintballz of one ball to one drawcall (for performance reasons), we need to generate a single surface from the list of paintballz and pass their data as vertex attributes.
 
-		foreach (var paintBall in paintBallz)
+		for (int i = 0; i < Math.Min(paintBallz.Count, 4); i++)
 		{
+			var paintBall = paintBallz[i];
 			// "color" (it is infact, not color)
 			//CUSTOM0.r channel: Radius (relative to the base ball, usually between 0.0 to 1.0)
 			//CUSTOM0.g channel: The amount of fuzz.
-			var info = new Color(paintBall.Size, paintBall.Fuzz, 0.0f, 0.0f);
+			var info = new Color((float)i, paintBall.Fuzz, 0.0f, 0.0f);
 			
 			//This includes info for 3D coordinations of the paintball (.rgb channels) as well as the color index on the palette (.a channel)
 			//NOTE: they are clamped to the [0.0, 1.0] range
@@ -73,6 +74,8 @@ public partial class PaintBallGroup: MeshInstance2D
 			st.SetColor(paintBall.Coordinations);
 			st.SetCustom(0, info);
 			st.AddVertex(new Vector3(1, 1, 0));
+			
+			this.material.SetShaderParameter("p_size["+i+"]", 0.5f);
 
 		}
 
@@ -90,6 +93,7 @@ public partial class PaintBallGroup: MeshInstance2D
 		this.material.SetShaderParameter("palette", baseBall.palette);
 
 		this.material.SetShaderParameter("center", this.GlobalPosition);
+		GD.Print(this.material.GetShaderParameter("p_size[0]"));
 	}
 
 	public override void _Process( double delta )

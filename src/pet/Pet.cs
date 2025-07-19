@@ -45,7 +45,8 @@ public partial class Pet : Node2D
 		
 		var frame = animation.Frames[currentFrame];
 		
-		this.petRenderer.SetFrame(frame);
+		//temp commented
+		//this.petRenderer.SetFrame(frame);
 	}
 
 	public override void _Draw()

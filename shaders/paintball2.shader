@@ -8,9 +8,6 @@ uniform sampler2D palette: filter_nearest;
 
 uniform vec3 rotation = vec3(0.0);
 
-uniform float p_size[4];
-uniform float p_fuzz[4];
-uniform vec3 p_coordination[4];
 
 varying float v_radius;
 varying float v_total_radius; 
@@ -54,9 +51,7 @@ float random (vec2 st) {    // @pasted from ball.shader
 
 void vertex() {
 
-	float size = p_size[0];
-
-    v_radius = size * diameter / 2.0;
+    v_radius = CUSTOM0.r * diameter / 2.0;
     v_total_radius = v_radius / 2.0 + diameter/ 2.0;
    
     // we store coords in color. Coords are -1,1, but COLOR allows 0,1. 
@@ -66,7 +61,7 @@ void vertex() {
     xyz = rotate3d(rotation, xyz);
         
     v_position = floor(xyz * v_total_radius);
-    color_index = 85.0;
+    color_index = COLOR.a * 255.0;
     
     v_is_visible = v_position.z > 0.0 ? 0.0 : 1.0;
     

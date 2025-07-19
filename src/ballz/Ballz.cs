@@ -94,7 +94,7 @@ namespace OpenPetz {
                 AnimationFirstRawFrame = new List<int>(/*NumAnimations*/);
 
 //              parse animations
-                for (int i = 0; i < NumAnimations; i++) {
+                for (int i = 0; i < /*NumAnimations*/ 50; i++) {
                     frameGroupEnd = pBhd->FrameGroupFirstRawFrame[i];
                     thisNumFrames = frameGroupEnd - rawFrameNumber;
                     AnimationFirstRawFrame.Add(rawFrameNumber);
