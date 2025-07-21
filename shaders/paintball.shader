@@ -8,20 +8,26 @@ uniform sampler2D palette: filter_nearest;
 
 uniform vec3 rotation = vec3(0.0);
 
-uniform float p_color[16];
-uniform float p_size[16];
-uniform float p_fuzz[16];
-uniform vec3 p_coordination[16];
+uniform float p_color[8];
+uniform float p_size[8];
+uniform float p_fuzz[8];
+uniform vec3 p_coordination[8];
+
+uniform vec2 p_atlas_position[8];
+uniform vec2 p_atlas_size[8];
 
 varying float v_radius;
 varying float v_total_radius; 
 varying float v_fuzz;
 varying float color_index; // @todo(naming consistency) rename to v_color_index
 varying float v_is_visible;
+varying float v_index;
 
 varying vec3 v_position;
 
 @LoadColorShaderComponent
+
+@LoadSubTextureShaderComponent
 
 @LoadCircleShaderComponent
 
@@ -56,6 +62,7 @@ float random (vec2 st) {    // @pasted from ball.shader
 void vertex() {
 
 	int index = int(floor(CUSTOM0.r));
+	v_index = floor(CUSTOM0.r);
 	float size = p_size[index];
 
     v_radius = size * diameter / 2.0;
@@ -78,11 +85,23 @@ void vertex() {
 
 void fragment() {
 
-    vec2 coord = FRAGCOORD.xy - center;
+	int index = int(v_index);
+	
+	vec2 coord = FRAGCOORD.xy - center;
     vec2 p_coord = FRAGCOORD.xy - center - v_position.xy;
-
-    coord.x += random(vec2(coord.y + fuzz)) * fuzz;
+	
+	coord.x += random(vec2(coord.y + fuzz)) * fuzz;
 	p_coord.x += random(vec2(p_coord.y + 0.125 + v_fuzz)) * v_fuzz;
+	
+	vec2 atlas_texture_unnormalized = vec2(textureSize(tex, 0));
+	vec2 atlas_subtexture_unnormalized = vec2(p_atlas_size[index].x * atlas_texture_unnormalized.x, p_atlas_size[index].y * atlas_texture_unnormalized.y);
+
+	vec2 texUV = fract(p_coord / atlas_subtexture_unnormalized);
+	texUV.y = 1.0 - texUV.y;
+
+	vec2 atlas_texUV = get_subtexture_uv(p_atlas_position[index], p_atlas_size[index], texUV);
+	
+	float tex_index = texture(tex, atlas_texUV).r;
 
     float radius = diameter / 2.0;
     
@@ -90,7 +109,7 @@ void fragment() {
     
     vec4 ball = vec4(circle(p_coord, v_radius));
     
-    vec4 color = get_color(color_index / 256.0, false);
+    vec4 color = vec4(texture(palette, vec2(tex_index, 0.0)).bgr, 1.0);
 
 	COLOR = color * ball * clip * vec4(v_is_visible);
 }
