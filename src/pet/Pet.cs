@@ -20,7 +20,7 @@ public partial class Pet : Node2D
 		World.pets.Add(this);
 		
 		catBhd = AnimationManager.FetchCatBhd();
-		animation = catBhd.GetAnimation(1);
+		animation = catBhd.GetAnimation(0);
 		
 		var frame = animation.Frames[currentFrame];
 

@@ -48,10 +48,13 @@ public partial class PetRenderer : Node2D
 		
 		//Create dummy ballz for now.
 		//Temporarily commented, will uncomment soon
-		/*for (int i = 0; i < 67; i++)
+		for (int i = 0; i < 67; i++)
 		{
 			//var orien = frame.BallOrientation(i);
 			int color = (i % 16) * 10;
+			int pcolor = ((i+8) % 16) * 10;
+			/*int color = 15;
+			int pcolor = 35;*/
 			
 			Ball dummyBall = new Ball(texture, palette, parent.catBhd.GetDefaultBallSize(i) / 2, color, 4, 1, 39);
 
@@ -64,9 +67,19 @@ public partial class PetRenderer : Node2D
 			//add them to the lists
 			this.ballz.Add(dummyBall);
 			AddChild(dummyBall);
-		}*/
 			
-		Ball dummyBall = new Ball(texture, palette, 50, 135, 0, 1, 39);
+			List<PaintBall> pbz = new List<PaintBall> (); //store ballz
+			pbz.Add(new PaintBall(new Vector3(0.0f, 0.0f, -1.0f), 0.3f, pcolor));
+			pbz.Add(new PaintBall(new Vector3(0.0f, 0.0f, 1.0f), 0.4f, pcolor));
+			pbz.Add(new PaintBall(new Vector3(0.0f, 1.0f, 0.0f), 0.5f, pcolor));
+			pbz.Add(new PaintBall(new Vector3(0.0f, -1.0f, 0.0f), 0.4f, pcolor));
+			pbz.Add(new PaintBall(new Vector3(1.0f, 0.0f, 0.0f), 0.3f, pcolor));
+			pbz.Add(new PaintBall(new Vector3(-1.0f, 0.0f, 0.0f), 0.4f, pcolor));
+			
+			dummyBall.AddPaintBalls(pbz);
+		}
+			
+		/*Ball dummyBall = new Ball(texture, palette, 50, 135, 0, 1, 39);
 		Ball dummyBall2 = new Ball(texture, palette, 50, 85, 0, 1, 39);
 		Vector2 dummyCoord = new Vector2(-50.0f, 0.0f);
 		Vector2 dummyCoord2 = new Vector2(50.0f, 0.0f);
@@ -83,18 +96,26 @@ public partial class PetRenderer : Node2D
 		AddChild(dummyBall2);
 		
 		List<PaintBall> pbz = new List<PaintBall> (); //store ballz
-		pbz.Add(new PaintBall(new Vector3(0.0f, 0.0f, -1.0f), 0.5f, 85));
-		pbz.Add(new PaintBall(new Vector3(1.0f, 0.0f, 0.0f), 0.5f, 85));
-		pbz.Add(new PaintBall(new Vector3(-1.0f, 0.0f, 0.0f), 0.5f, 85));
+		pbz.Add(new PaintBall(new Vector3(0.0f, 0.0f, -1.0f), 0.6f, 85));
+		pbz.Add(new PaintBall(new Vector3(0.0f, 0.0f, 1.0f), 0.5f, 85));
+		pbz.Add(new PaintBall(new Vector3(0.0f, 1.0f, 0.0f), 0.4f, 85));
+		pbz.Add(new PaintBall(new Vector3(0.0f, -1.0f, 0.0f), 0.3f, 85));
+		pbz.Add(new PaintBall(new Vector3(1.0f, 0.0f, 0.0f), 0.2f, 85));
+		pbz.Add(new PaintBall(new Vector3(-1.0f, 0.0f, 0.0f), 0.1f, 85));
 		
 		var pbg = new PaintBallGroup(dummyBall, pbz);
-		dummyBall.AddChild(pbg);
+		dummyBall.AddChild(pbg);*/
 		
 		RenderingServer.FramePostDraw += SetVisible;
 	}
 
 	public override void _Process(double delta)
 	{
+		rotation.Y += 0.05f;
+		foreach (var ball in this.ballz){
+			ball.rotation = this.rotation;
+		}
+		
 		UpdateGeometries();
 	}
 
@@ -130,7 +151,7 @@ public partial class PetRenderer : Node2D
 
 	//NOTE: Order of updating matters!
 	private void UpdateGeometries(){
-		//UpdateMainBallz();
+		UpdateMainBallz();
 		UpdateLinez();
 	}
 	
