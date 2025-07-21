@@ -10,6 +10,7 @@ public partial class Ball : MeshInstance2D
 	private Mesh ballMesh;
 	//To do: Merge this with this.Material
 	private ShaderMaterial material;
+	private List<PaintBallGroup> paintBallGroups = null;
 
 	public Texture2D texture;
 	public Texture2D palette;
@@ -73,6 +74,16 @@ public partial class Ball : MeshInstance2D
 	
 	// CUSTOM METHODS
 	
+	public void AddPaintBalls(List<PaintBall> _paintBalls)
+	{
+		if (paintBallGroups == null)
+			paintBallGroups = new List<PaintBallGroup>();
+		
+		var pbg = new PaintBallGroup(this, _paintBalls);
+		paintBallGroups.Add(pbg);
+		AddChild(pbg);
+	}
+	
 	public void SetTextureAtlas(TextureAtlas _atlas)
 	{
 		atlas = _atlas;
@@ -87,8 +98,15 @@ public partial class Ball : MeshInstance2D
 		} else {
      			this.material.SetShaderParameter(StringManager.S("atlas_position"), new Vector2(0.0f, 0.0f));
       			this.material.SetShaderParameter(StringManager.S("atlas_size"), new Vector2(0.0f, 0.0f));
-			this.material.SetShaderParameter(StringManager.S("tex"), texture);
+			this.material.SetShaderParameter(StringManager.S("tex"), TextureManager.FetchEmptyTexture());
+		}
+		
+		if (paintBallGroups != null)
+		{
+			foreach (var pbg in paintBallGroups)
+			{
+				pbg.SetTextureAtlas(atlas);
+			}
 		}
 	}
-
 }
