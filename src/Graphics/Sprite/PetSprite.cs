@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using OpenPetz;
 
 //To Do: re-think if this class should inherit from Node2D
-public partial class PetRenderer : Node2D
+public partial class PetSprite : Node2D
 {
 	private Pet parent = null;
 	
@@ -14,7 +14,7 @@ public partial class PetRenderer : Node2D
 
 	//Geometry containers
 	private List<Ball> ballz = new List<Ball> (); //store ballz
-	private List<Line> linez = new List<Line> (); //store ballz
+	//private List<Line> linez = new List<Line> ();
 
 	//this member is temporary 
 	private string[] texturePaths = new string[] { /*"./art/textures/flower.bmp"*/ "./Resource/textures/ziverre/ribbon.bmp" };
@@ -24,10 +24,11 @@ public partial class PetRenderer : Node2D
 	private TextureAtlas textureAtlas = null;
 	//Methods
 
-	public PetRenderer (Pet p){
-		parent = p;
+	public PetSprite (Pet _p){
+		parent = _p;
 		
-		textureAtlas = new TextureAtlas(Guid.Empty, null);
+		Texture2D palette = PaletteManager.FetchPalette("petz");
+		textureAtlas = new TextureAtlas(palette, Guid.Empty, null);
 
 		AddChild(textureAtlas);
 		
@@ -39,24 +40,41 @@ public partial class PetRenderer : Node2D
 		rotation.Y = (float)(1.57/2.0); 
 		
 		LoadTextures();
-		//Prepare the Textures
-		var texture = textureList[0];
+		
+		RenderingServer.FramePostDraw += SetupSprite;
+	}
 
-		Texture2D palette = PaletteManager.FetchPalette("petz");
+	public override void _Process(double delta)
+	{
+		rotation.Y += 0.05f;
+		foreach (var ball in this.ballz){
+			ball.rotation = this.rotation;
+		}
 		
-		/*GD.Print(textureAtlas.GetSubTextureCoords(0, 10).Dest.X);*/
-		
-		//Create dummy ballz for now.
-		//Temporarily commented, will uncomment soon
+		UpdateGeometries();
+	}
+
+	// CUSTOM Methods
+	
+	public void SetFrame(BallzModel.Frame frame){
+		currentFrame = frame;
+	}
+	
+	private void SetupSprite()
+	{
 		for (int i = 0; i < 67; i++)
 		{
-			//var orien = frame.BallOrientation(i);
 			int color = (i % 16) * 10;
 			int pcolor = ((i+8) % 16) * 10;
-			/*int color = 15;
-			int pcolor = 35;*/
 			
-			Ball dummyBall = new Ball(texture, palette, parent.catBhd.GetDefaultBallSize(i) / 2, color, 4, 1, 39);
+			Ball dummyBall = new Ball(textureAtlas, new BallInfo {
+				Diameter = parent.catBhd.GetDefaultBallSize(i) / 2,
+				ColorIndex = color,
+				Fuzz = 4,
+				OutlineType = 1,
+				OutlineColor = 39,
+				TextureIndex = -1
+			});
 
 			Vector2 dummyCoord = new Vector2(0.0f, 0.0f);
 			
@@ -78,63 +96,10 @@ public partial class PetRenderer : Node2D
 			
 			dummyBall.AddPaintBalls(pbz);
 		}
-			
-		/*Ball dummyBall = new Ball(texture, palette, 50, 135, 0, 1, 39);
-		Ball dummyBall2 = new Ball(texture, palette, 50, 85, 0, 1, 39);
-		Vector2 dummyCoord = new Vector2(-50.0f, 0.0f);
-		Vector2 dummyCoord2 = new Vector2(50.0f, 0.0f);
-			
-		dummyBall.Position = dummyCoord;
-		dummyBall.ZIndex = (int)0;
-		dummyBall2.Position = dummyCoord2;
-		dummyBall2.ZIndex = (int)0;
-
-		//add them to the lists
-		this.ballz.Add(dummyBall);
-		AddChild(dummyBall);
-		this.ballz.Add(dummyBall2);
-		AddChild(dummyBall2);
 		
-		List<PaintBall> pbz = new List<PaintBall> (); //store ballz
-		pbz.Add(new PaintBall(new Vector3(0.0f, 0.0f, -1.0f), 0.6f, 85));
-		pbz.Add(new PaintBall(new Vector3(0.0f, 0.0f, 1.0f), 0.5f, 85));
-		pbz.Add(new PaintBall(new Vector3(0.0f, 1.0f, 0.0f), 0.4f, 85));
-		pbz.Add(new PaintBall(new Vector3(0.0f, -1.0f, 0.0f), 0.3f, 85));
-		pbz.Add(new PaintBall(new Vector3(1.0f, 0.0f, 0.0f), 0.2f, 85));
-		pbz.Add(new PaintBall(new Vector3(-1.0f, 0.0f, 0.0f), 0.1f, 85));
-		
-		var pbg = new PaintBallGroup(dummyBall, pbz);
-		dummyBall.AddChild(pbg);*/
-		
-		RenderingServer.FramePostDraw += SetVisible;
-	}
-
-	public override void _Process(double delta)
-	{
-		rotation.Y += 0.05f;
-		foreach (var ball in this.ballz){
-			ball.rotation = this.rotation;
-		}
-		
-		UpdateGeometries();
-	}
-
-	// CUSTOM Methods
-	
-	private void SetVisible()
-	{
 		Visible = true;
 		
-		for (int index = 0; index < this.ballz.Count; index++)
-		{
-			ballz[index].SetTextureAtlas(textureAtlas);
-		}
-		
-		RenderingServer.FramePostDraw -= SetVisible;
-	}
-
-	public void SetFrame(BallzModel.Frame frame){
-		currentFrame = frame;
+		RenderingServer.FramePostDraw -= SetupSprite;
 	}
 	
 	private void LoadTextures(){
@@ -152,7 +117,7 @@ public partial class PetRenderer : Node2D
 	//NOTE: Order of updating matters!
 	private void UpdateGeometries(){
 		UpdateMainBallz();
-		UpdateLinez();
+		//UpdateLinez();
 	}
 	
 	//To Do: implement the rotation vector math for x rotation
@@ -178,10 +143,10 @@ public partial class PetRenderer : Node2D
 		}
 	}
 	
-	private void UpdateLinez(){
+	/*private void UpdateLinez(){
 		foreach (Line line in this.linez){
 			line.ZIndex = Math.Min(line.start.ZIndex, line.end.ZIndex) - 1;
 		}
-	}
+	}*/
 
 }

@@ -1,3 +1,7 @@
+// *_*
+// TO DO: REFACTOR THIS 
+// REFACTOR REFACTOR **REFACTOR**
+
 using Godot;
 using Godot.NativeInterop;
 using System;
@@ -6,6 +10,23 @@ using System.Threading;
 
 public partial class Line : MeshInstance2D
 {
+	public Line()
+	{
+
+	}	
+}
+
+/*public struct LineInfo {
+	public Ball start {get; set;}= null;
+	public Ball end {get; set;} = null;
+	public int ColorIndex {get; set;} = 0;
+	public int Fuzz {get; set;} = 0;
+	public LineInfo(){}
+}
+
+public partial class Line : MeshInstance2D
+{
+	public TextureAtlas atlas {get; private set;} = null;
 	//private MeshInstance2D meshInstance;
 	public ImmediateMesh immediateMesh;
 	public ShaderMaterial material;
@@ -31,11 +52,11 @@ public partial class Line : MeshInstance2D
 	public Line()
 	{
 
-
 	}
 
-	public Line(Texture2D texture, Texture2D palette, Ball start, Ball end, int color, int transparent_color_index, int r_outline_color, int l_outline_color)
+	public Line(TextureAtlas _atlas, LineInfo _info)
 	{
+		
 		this.texture = texture != null ? texture : start.texture;
 		this.palette = palette != null ? palette : start.palette;
 		this.start = start;
@@ -178,3 +199,4 @@ public partial class Line : MeshInstance2D
 
 	}
 }
+*/
