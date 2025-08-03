@@ -17,8 +17,9 @@ public partial class PaintBallGroup: MeshInstance2D
 	private TextureAtlas atlas;
 	//private SubTextureCoordinations atlasCoords = new SubTextureCoordinations(0.0f, 0.0f, 1.0f, 1.0f); 
 
-	public PaintBallGroup(Ball _base, List < PaintBall > _paintBallz) 
+	public PaintBallGroup(TextureAtlas _atlas, Ball _base, List < PaintBall > _paintBallz) 
 	{
+		atlas = _atlas;
 		baseBall = _base;
 		paintBallz = _paintBallz;
 
@@ -94,13 +95,14 @@ public partial class PaintBallGroup: MeshInstance2D
 		
 		//Uniform variables are universal for all of the paintballz of a ball.
 		//the base ball's fuzz, diameter and position (center) are rrquired for creating the clipping mask in the shader
-		this.material.SetShaderParameter("fuzz", baseBall.fuzz);
-		this.material.SetShaderParameter("diameter", baseBall.diameter);
+		this.material.SetShaderParameter("fuzz", baseBall.Info.Fuzz);
+		this.material.SetShaderParameter("diameter", baseBall.Info.Diameter);
 
-		this.material.SetShaderParameter("tex", baseBall.texture);
-		this.material.SetShaderParameter("palette", baseBall.palette);
+		this.material.SetShaderParameter("tex", TextureManager.FetchEmptyTexture());
+		this.material.SetShaderParameter("palette", atlas.Palette);
 
 		this.material.SetShaderParameter("center", this.GlobalPosition);
+		SetTextureAtlas();
 	}
 
 	public override void _Process( double delta )
@@ -111,10 +113,8 @@ public partial class PaintBallGroup: MeshInstance2D
 	
 	// CUSTOM METHODS
 	
-	public void SetTextureAtlas(TextureAtlas _atlas)
-	{
-		atlas = _atlas;
-		
+	public void SetTextureAtlas()
+	{	
 		if (atlas.TextureData != null)
 		{
 			//atlasCoords = atlas.GetSubTextureCoords(0, color_index);
