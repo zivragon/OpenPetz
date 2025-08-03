@@ -8,7 +8,7 @@ using OpenPetz;
 
 public partial class Pet : Node2D
 {
-	private PetRenderer petRenderer;
+	private PetSprite petSprite;
 
 	private Texture2D palette;
 	public BallzModel catBhd;
@@ -24,11 +24,11 @@ public partial class Pet : Node2D
 		
 		var frame = animation.Frames[currentFrame];
 
-		petRenderer = new PetRenderer(this);
+		petSprite = new PetSprite(this);
 		
-		AddChild(petRenderer);
+		AddChild(petSprite);
 		
-		petRenderer.SetFrame(frame);
+		petSprite.SetFrame(frame);
 	}
 
 	public override void _ExitTree()
@@ -46,7 +46,7 @@ public partial class Pet : Node2D
 		var frame = animation.Frames[currentFrame];
 		
 		//temp commented
-		//this.petRenderer.SetFrame(frame);
+		//petSprite.SetFrame(frame);
 	}
 
 	public override void _Draw()
