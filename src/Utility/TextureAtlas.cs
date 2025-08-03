@@ -12,16 +12,18 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
     private List<SubTextureContainer> subTexList = new List<SubTextureContainer>();
     
     private Guid guid;
-    
+	
     public Texture2D TextureData { get; private set; } = null;
+	public Texture2D Palette { get; private set; } = null;
     
     public Vector2I Size { get; private set; } = new Vector2I(1024, 64);
     
-    public TextureAtlas(Guid _guid, List<OpenPetz.Linez.Entries.Texture> _textureList)
+    public TextureAtlas(Texture2D _palette, Guid _guid, List<OpenPetz.Linez.Entries.Texture> _textureList)
     {
         //First step is checking to see if it is already cached.
         
 		guid = _guid;
+		Palette = _palette;
 		
         string fileName = "./cache/texture_atlas/raster/"+_guid.ToString()+".png";
         
@@ -78,8 +80,7 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
     
     private void PackTextures()
     {
-        var texture = TextureManager.FetchTexture("./art/textures/hair11.bmp");
-		var palette = PaletteManager.FetchPalette("oddballz");
+        var texture = TextureManager.FetchTexture("./art/textures/hair11.bmp");;
 		
 		var dummyMesh = new MeshInstance2D();
 		
@@ -104,7 +105,6 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
 		immediateMesh.SurfaceEnd();
 		
 		material.SetShaderParameter("tex", texture);
-		material.SetShaderParameter("palette", palette);
 		
 		var subTex = new SubTextureContainer();
 		subTex.Position = new Vector2(0.0f,0.0f);
