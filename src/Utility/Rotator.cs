@@ -31,7 +31,7 @@ public static class Rotator {
 		v3.Z = v1.Z * rXCos - v2.Y * rXSin;
 		v3.Y = v2.Y * rXCos + v1.Z * rXSin;
 		
-		var v4 = new Vector3((float)Math.Round(v2.X / 2.0f), (float)Math.Round(v3.Y / 2.0f), (float)Math.Round(v3.Z / 2.0f));
+		var v4 = new Vector3((float)Math.Round(v2.X ), (float)Math.Round(v3.Y), (float)Math.Round(v3.Z));
 		
 		return v4;
 	}
