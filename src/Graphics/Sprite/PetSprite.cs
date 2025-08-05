@@ -14,7 +14,7 @@ public partial class PetSprite : Node2D
 
 	//Geometry containers
 	private List<Ball> ballz = new List<Ball> (); //store ballz
-	//private List<Line> linez = new List<Line> ();
+	private List<Line> linez = new List<Line> ();
 
 	//this member is temporary 
 	private string[] texturePaths = new string[] { /*"./art/textures/flower.bmp"*/ "./Resource/textures/ziverre/ribbon.bmp" };
@@ -27,7 +27,7 @@ public partial class PetSprite : Node2D
 	public PetSprite (Pet _p){
 		parent = _p;
 		
-		Texture2D palette = PaletteManager.FetchPalette("petz");
+		Texture2D palette = PaletteManager.FetchPalette("oddballz");
 		textureAtlas = new TextureAtlas(palette, Guid.Empty, null);
 
 		AddChild(textureAtlas);
@@ -64,11 +64,10 @@ public partial class PetSprite : Node2D
 	{
 		for (int i = 0; i < 67; i++)
 		{
-			int color = (i % 16) * 10;
-			int pcolor = ((i+8) % 16) * 10;
+			int color = 10 + (i % 2) * 80;
 			
 			Ball dummyBall = new Ball(textureAtlas, new BallInfo {
-				Diameter = parent.catBhd.GetDefaultBallSize(i) / 2,
+				Diameter = parent.catBhd.GetDefaultBallSize(i),// / 2,
 				ColorIndex = color,
 				Fuzz = 4,
 				OutlineType = 1,
@@ -86,7 +85,7 @@ public partial class PetSprite : Node2D
 			this.ballz.Add(dummyBall);
 			AddChild(dummyBall);
 			
-			List<PaintBall> pbz = new List<PaintBall> (); //store ballz
+			/*List<PaintBall> pbz = new List<PaintBall> (); //store ballz
 			pbz.Add(new PaintBall(new Vector3(0.0f, 0.0f, -1.0f), 0.3f, pcolor));
 			pbz.Add(new PaintBall(new Vector3(0.0f, 0.0f, 1.0f), 0.4f, pcolor));
 			pbz.Add(new PaintBall(new Vector3(0.0f, 1.0f, 0.0f), 0.5f, pcolor));
@@ -94,7 +93,42 @@ public partial class PetSprite : Node2D
 			pbz.Add(new PaintBall(new Vector3(1.0f, 0.0f, 0.0f), 0.3f, pcolor));
 			pbz.Add(new PaintBall(new Vector3(-1.0f, 0.0f, 0.0f), 0.4f, pcolor));
 			
-			dummyBall.AddPaintBalls(pbz);
+			dummyBall.AddPaintBalls(pbz);*/
+		}
+		
+		List<Vector2I> arr = new List<Vector2I>();
+		arr.Add(new Vector2I(6,36));
+		arr.Add(new Vector2I(2,3));
+		arr.Add(new Vector2I(6,2));
+		arr.Add(new Vector2I(8,9));
+		arr.Add(new Vector2I(10,11));
+		arr.Add(new Vector2I(3, 43));
+		arr.Add(new Vector2I(43,44));
+		arr.Add(new Vector2I(44,45));	
+		arr.Add(new Vector2I(45,46));	
+		arr.Add(new Vector2I(46,47));	
+		arr.Add(new Vector2I(47,48));
+		arr.Add(new Vector2I(32,0));
+		arr.Add(new Vector2I(33,1));
+		arr.Add(new Vector2I(41,0));
+		arr.Add(new Vector2I(42,1));
+		arr.Add(new Vector2I(25,32));
+		arr.Add(new Vector2I(26,33));
+		arr.Add(new Vector2I(12,63));
+		arr.Add(new Vector2I(13,64));
+		arr.Add(new Vector2I(12,38));
+		arr.Add(new Vector2I(13,39));
+		arr.Add(new Vector2I(55,56));
+		
+		foreach (var membs in arr)
+		{
+			var dummyLine = new Line(textureAtlas, new LineInfo {
+				Start = this.ballz[membs.X],
+				End = this.ballz[membs.Y]
+			});
+			
+			this.linez.Add(dummyLine);
+			AddChild(dummyLine);
 		}
 		
 		Visible = true;
@@ -117,7 +151,7 @@ public partial class PetSprite : Node2D
 	//NOTE: Order of updating matters!
 	private void UpdateGeometries(){
 		UpdateMainBallz();
-		//UpdateLinez();
+		UpdateLinez();
 	}
 	
 	//To Do: implement the rotation vector math for x rotation
@@ -143,10 +177,10 @@ public partial class PetSprite : Node2D
 		}
 	}
 	
-	/*private void UpdateLinez(){
+	private void UpdateLinez(){
 		foreach (Line line in this.linez){
-			line.ZIndex = Math.Min(line.start.ZIndex, line.end.ZIndex) - 1;
+			line.ZIndex = Math.Min(line.Info.Start.ZIndex, line.Info.End.ZIndex) - 1;
 		}
-	}*/
+	}
 
 }
