@@ -3,200 +3,103 @@
 // REFACTOR REFACTOR **REFACTOR**
 
 using Godot;
-using Godot.NativeInterop;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 
-public partial class Line : MeshInstance2D
-{
-	public Line()
-	{
-
-	}	
-}
-
-/*public struct LineInfo {
-	public Ball start {get; set;}= null;
-	public Ball end {get; set;} = null;
-	public int ColorIndex {get; set;} = 0;
-	public int Fuzz {get; set;} = 0;
+public struct LineInfo {
+	public Ball Start {get; set;} = null;
+	public Ball End {get; set;} = null;
 	public LineInfo(){}
 }
-
 public partial class Line : MeshInstance2D
 {
 	public TextureAtlas atlas {get; private set;} = null;
-	//private MeshInstance2D meshInstance;
-	public ImmediateMesh immediateMesh;
-	public ShaderMaterial material;
-
-	List<Vector3> pnts;
-	List<Vector2> uvs;
-	Vector2 raws;
-
-	public Texture2D texture;
-	public Texture2D palette;
-
-	public Ball start;
-	public Ball end;
-
-	public int color;
-	public int transparent_color_index;
-
-	public int r_outline_color;
-	public int l_outline_color;
-
-
-
-	public Line()
-	{
-
-	}
-
+	
+	public LineInfo Info {get; private set;} = new LineInfo();
+	
+	public bool Renderable {get; private set;} = false;
+	
+	//Do I have to...? GODOT?
+	private Godot.Collections.Array<Vector2> coords = new Godot.Collections.Array<Vector2>();
+	private Godot.Collections.Array<float> diameters = new Godot.Collections.Array<float>();
+	
+	private Mesh lineMesh;
+	//To do: Merge this with this.Material
+	private ShaderMaterial material;
+	
+	private SubTextureCoordinations atlasCoords = new SubTextureCoordinations(0.0f, 0.0f, 1.0f, 1.0f); 
+	
 	public Line(TextureAtlas _atlas, LineInfo _info)
 	{
+		Visible = false;
+		if (_info.Start == null || _info.End == null)
+			return;
 		
-		this.texture = texture != null ? texture : start.texture;
-		this.palette = palette != null ? palette : start.palette;
-		this.start = start;
-		this.end = end;
-		this.color = color != -1 ? color : start.color_index;
-		this.transparent_color_index = transparent_color_index;
-		this.r_outline_color = r_outline_color;
-		this.l_outline_color = l_outline_color;
-	}
+		Info = _info;
 
-	public override void _Ready()
-	{
-		//meshInstance = new MeshInstance2D();
-		//AddChild(meshInstance);
+		atlas = _atlas;
+		
+		this.lineMesh = MeshManager.FetchDefaultLineMesh();
 
-		immediateMesh = new ImmediateMesh();
-		this.Mesh = immediateMesh;
-
-		//material = (ShaderMaterial)GD.Load<ShaderMaterial>("res://shaders/line_shader.tres").Duplicate(true);
 		this.material = ShaderManager.FetchShaderMaterial("line");
 
-		//Texture2D texture = GD.Load<Texture2D>("res://pet/data/textures/hair6.bmp");
-		//Texture2D palette = GD.Load<Texture2D>("res://pet/data/textures/petzpalette.png");
-
-		//Vector2 start = new Vector2(0,0);
-		//Vector2 end = new Vector2(20,30);
-
-		//calcRectangle(start.GlobalPosition, end.GlobalPosition, 10, 25);
-
-		Vector2 Position = start.Position + (end.Position - start.Position) / 2; 
-
-		this.Position = Position;
-
-		this.Rotation = end.Position.AngleToPoint(start.Position);
-
+		this.Mesh = this.lineMesh;
+		this.Material = this.material;
 		
-
-
-
-		material.SetShaderParameter("tex", texture);
-		material.SetShaderParameter("palette", palette);
-
-		material.SetShaderParameter("fuzz", 0);
-
-		material.SetShaderParameter("r_outline_color", 39);
-		material.SetShaderParameter("l_outline_color", 39);
-
-		material.SetShaderParameter("color_index", (float)this.color);
-		material.SetShaderParameter("transparent_color_index", 1);
-		
-		material.SetShaderParameter("start_ball", start.GlobalPosition);
-		material.SetShaderParameter("end_ball", end.GlobalPosition);
-		
-		material.SetShaderParameter("start_diameter", start.diameter);
-		material.SetShaderParameter("end_diameter", end.diameter);
-
-		material.SetShaderParameter("center", Position);
-		material.SetShaderParameter("vec_to_upright", Vector2.FromAngle(this.Rotation));
-		
-		
-		//immediateMesh.SurfaceSetMaterial(0, material);
-		this.Material = material;
-	}
-
-
-	public override void _Process(double delta)
+		Renderable = true;
+	}	
+	
+	public override void _Ready()
 	{
-		material.SetShaderParameter("start_ball", start.GlobalPosition);
-		material.SetShaderParameter("end_ball", end.GlobalPosition);
+		if (!Renderable)
+			return;
 		
-		Vector2 Position = start.Position + (end.Position - start.Position) / 2; 
-
-		this.Position = Position;
-
-		this.Rotation = end.Position.AngleToPoint(start.Position);
+		coords.Add(Info.Start.Position);
+		coords.Add(Info.End.Position);
 		
+		diameters.Add(Info.Start.Info.Diameter);
+		diameters.Add(Info.End.Info.Diameter);
 		
-		immediateMesh.ClearSurfaces();
-		immediateMesh.SurfaceBegin(Mesh.PrimitiveType.Triangles);
-
-		drawVertices();
-
-		immediateMesh.SurfaceEnd();
+		this.material.SetShaderParameter("ball_coords", coords);
+		this.material.SetShaderParameter("ball_diameters", diameters);
+		this.material.SetShaderParameter("angle_to", Info.Start.Position.AngleToPoint(Info.End.Position));
+		
+		this.material.SetShaderParameter(StringManager.S("palette"), atlas.Palette);
+		
+		SetTextureAtlas();
+		
+		Visible = true;
 	}
-
-	private void drawVertices()
+	
+	public override void _Process(double dt)
 	{
-		int startWidth = start.diameter;
-		int endWidth = end.diameter;
-		float length = (end.Position - start.Position).Length() / 2;
-
-		Vector3 vtBottomLeft =	new Vector3(-1 * length, -1 * endWidth, 0);
-		Vector3 vtTopLeft =		new Vector3(-1 * length, endWidth, 0);
-		Vector3 vtTopRight =	new Vector3(length, startWidth, 0);
-		Vector3 vtBottomRight = new Vector3(length, -1 * startWidth, 0);
-
-		Vector2 uvBottomLeft = new Vector2(0, endWidth * 2);
-		Vector2 uvTopLeft = new Vector2(0, 0);
-		Vector2 uvTopRight = new Vector2(length, 0);
-		Vector2 uvBottomRight = new Vector2(length, startWidth * 2);	
-
-		immediateMesh.SurfaceSetUV(uvBottomLeft);
-		immediateMesh.SurfaceAddVertex(vtBottomLeft);
-
-		immediateMesh.SurfaceSetUV(uvTopLeft);
-		immediateMesh.SurfaceAddVertex(vtTopLeft);
-
-		immediateMesh.SurfaceSetUV(uvTopRight);
-		immediateMesh.SurfaceAddVertex(vtTopRight);
-
-
-		immediateMesh.SurfaceSetUV(uvBottomRight);
-		immediateMesh.SurfaceAddVertex(vtBottomRight);
-
-		immediateMesh.SurfaceSetUV(uvBottomLeft);
-		immediateMesh.SurfaceAddVertex(vtBottomLeft);
-
-		immediateMesh.SurfaceSetUV(uvTopRight);
-		immediateMesh.SurfaceAddVertex(vtTopRight);
-
+		if (!Renderable)
+			return;
+		
+		coords[0] = Info.Start.Position;
+		coords[1] = Info.End.Position;
+		
+		this.material.SetShaderParameter("ball_coords", coords);
+		this.material.SetShaderParameter("angle_to", Info.Start.Position.AngleToPoint(Info.End.Position));
 	}
-
-	private void calcRectangle(Vector2 start, Vector2 end, int startWidth, int endWidth)
+	
+	public void SetTextureAtlas()
 	{
-		pnts = new List<Vector3>();
-		float length = (end - start).Length() / 2;
+		//atlas = _atlas;
+		if (!Renderable)
+			return;
+		
+		if (atlas.TextureData != null)
+		{
+			atlasCoords = atlas.GetSubTextureCoords(0, Info.Start.Info.ColorIndex);
 
-		pnts.Add(new Vector3(length,     2*startWidth, 0));
-		pnts.Add(new Vector3(-1*length,  2*endWidth, 0));
-		pnts.Add(new Vector3(-1*length, -2*endWidth, 0));
-		pnts.Add(new Vector3(length,    -2*startWidth, 0));
-
-		uvs = new List<Vector2>();
-		uvs.Add(new Vector2(length, 0));
-		uvs.Add(new Vector2(0, 0));
-		uvs.Add(new Vector2(0, endWidth * 4));
-		uvs.Add(new Vector2(length, startWidth * 4));
-
-		raws = new Vector2(startWidth *4, endWidth * 4);
-
+   			this.material.SetShaderParameter(StringManager.S("atlas_position"), atlasCoords.Position);
+      		this.material.SetShaderParameter(StringManager.S("atlas_size"), atlasCoords.Size);
+			this.material.SetShaderParameter(StringManager.S("tex"), atlas.TextureData);
+		} else {
+     		this.material.SetShaderParameter(StringManager.S("atlas_position"), new Vector2(0.0f, 0.0f));
+      		this.material.SetShaderParameter(StringManager.S("atlas_size"), new Vector2(1.0f, 1.0f));
+			this.material.SetShaderParameter(StringManager.S("tex"), TextureManager.FetchEmptyTexture());
+		}
 	}
 }
-*/
