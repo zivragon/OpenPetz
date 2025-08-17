@@ -4,24 +4,15 @@ using System.Collections.Generic;
 using OpenPetz;
 
 //To Do: re-think if this class should inherit from Node2D
-public partial class PetSprite : Node2D
+public partial class PetSprite : Sprite3D
 {
 	private Pet parent = null;
-	
-	public Vector3 rotation = new Vector3(0, 0, 0);
-	
-	BallzModel.Frame currentFrame = null;
-
-	//Geometry containers
-	private List<Ball> ballz = new List<Ball> (); //store ballz
-	private List<Line> linez = new List<Line> ();
 
 	//this member is temporary 
 	private string[] texturePaths = new string[] { /*"./art/textures/flower.bmp"*/ "./Resource/textures/ziverre/ribbon.bmp" };
 	
 	private List<Texture2D> textureList = new List<Texture2D>();
 
-	private TextureAtlas textureAtlas = null;
 	//Methods
 
 	public PetSprite (Pet _p){
@@ -37,7 +28,7 @@ public partial class PetSprite : Node2D
 	
 	public override void _Ready()
 	{
-		rotation.Y = (float)(1.57/2.0); 
+		Rotation3D.Y = (float)(1.57/2.0); 
 		
 		LoadTextures();
 		
@@ -46,9 +37,9 @@ public partial class PetSprite : Node2D
 
 	public override void _Process(double delta)
 	{
-		rotation.Y += 0.05f;
-		foreach (var ball in this.ballz){
-			ball.rotation = this.rotation;
+		Rotation3D.Y += 0.05f;
+		foreach (var ball in BallzList){
+			ball.Rotation3D = Rotation3D;
 		}
 		
 		UpdateGeometries();
@@ -66,7 +57,7 @@ public partial class PetSprite : Node2D
 		{
 			int color = 10 + (i % 2) * 80;
 			
-			Ball dummyBall = new Ball(textureAtlas, new BallInfo {
+			Ball dummyBall = new Ball(textureAtlas, new BallParams {
 				Diameter = parent.catBhd.GetDefaultBallSize(i),// / 2,
 				ColorIndex = color,
 				Fuzz = 4,
@@ -82,7 +73,7 @@ public partial class PetSprite : Node2D
 			dummyBall.ZIndex = (int)0;
 
 			//add them to the lists
-			this.ballz.Add(dummyBall);
+			BallzList.Add(dummyBall);
 			AddChild(dummyBall);
 			
 			/*List<PaintBall> pbz = new List<PaintBall> (); //store ballz
@@ -122,13 +113,13 @@ public partial class PetSprite : Node2D
 		
 		foreach (var membs in arr)
 		{
-			var dummyLine = new Line(textureAtlas, new LineInfo {
-				Start = this.ballz[membs.X],
-				End = this.ballz[membs.Y]
+			var dummyLine = new Line(this, textureAtlas, new LineParams {
+				Start = BallzList[membs.X],
+				End = BallzList[membs.Y]
 			});
 			
-			this.linez.Add(dummyLine);
-			AddChild(dummyLine);
+			/*LinezList.Add(dummyLine);
+			AddChild(dummyLine);*/
 		}
 		
 		Visible = true;
@@ -162,23 +153,23 @@ public partial class PetSprite : Node2D
 		
 		var frame = currentFrame;
 	
-		for (int index = 0; index < this.ballz.Count; index++)
+		for (int index = 0; index < BallzList.Count; index++)
 		{
 
 			var orien = frame.BallOrientation(index);
 			
-			var rotMat = Rotator.Rotate3D(orien.Position, rotation);
+			var rotMat = Rotator.Rotate3D(orien.Position, Rotation3D);
 
 			Vector2 v = new Vector2(rotMat.X, rotMat.Y);
 
-			ballz[index].Position = v;
+			BallzList[index].Position = v;
 			//Since Godot renders Nodes with highest Z on top of others unlike original petz l, we set negative of it
-			ballz[index].ZIndex = (int)-rotMat.Z;
+			BallzList[index].ZIndex = (int)-rotMat.Z;
 		}
 	}
 	
 	private void UpdateLinez(){
-		foreach (Line line in this.linez){
+		foreach (Line line in LinezList){
 			line.ZIndex = Math.Min(line.Info.Start.ZIndex, line.Info.End.ZIndex) - 1;
 		}
 	}
