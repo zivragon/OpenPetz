@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public partial class PaintBallGroup: MeshInstance2D
+public partial class PaintBallGroup: Geometry
 {
 	private Ball baseBall = null;
 	private List <PaintBall> paintBallz = null;
@@ -14,12 +14,11 @@ public partial class PaintBallGroup: MeshInstance2D
 	
 	private Mesh meshBuffer = null;
 	private ShaderMaterial material = null;
-	private TextureAtlas atlas;
 	//private SubTextureCoordinations atlasCoords = new SubTextureCoordinations(0.0f, 0.0f, 1.0f, 1.0f); 
 
 	public PaintBallGroup(TextureAtlas _atlas, Ball _base, List < PaintBall > _paintBallz) 
 	{
-		atlas = _atlas;
+		Atlas = _atlas;
 		baseBall = _base;
 		paintBallz = _paintBallz;
 
@@ -28,9 +27,9 @@ public partial class PaintBallGroup: MeshInstance2D
 
 	public override void _Ready() 
 	{
-		material = ShaderManager.FetchShaderMaterial("paintball");
+		ShaderMaterial = ShaderManager.FetchShaderMaterial("paintball");
 		
-		this.Material = material;
+		Material = ShaderMaterial;
 		
 		var st = new SurfaceTool();
 		
@@ -83,61 +82,59 @@ public partial class PaintBallGroup: MeshInstance2D
 
 		}
 		
-		this.material.SetShaderParameter("p_size", sizes);
-		this.material.SetShaderParameter("p_fuzz", fuzzs);
-		this.material.SetShaderParameter("p_coordination", coords);
-		this.material.SetShaderParameter("p_color", cols);
+		ShaderMaterial.SetShaderParameter("p_size", sizes);
+		ShaderMaterial.SetShaderParameter("p_fuzz", fuzzs);
+		ShaderMaterial.SetShaderParameter("p_coordination", coords);
+		ShaderMaterial.SetShaderParameter("p_color", cols);
 
-		// And finally, generate the mesh.
-		meshBuffer = st.Commit();
-		
-		this.Mesh = meshBuffer;
+		// And finally, generate the mesh.		
+		Mesh = st.Commit();
 		
 		//Uniform variables are universal for all of the paintballz of a ball.
 		//the base ball's fuzz, diameter and position (center) are rrquired for creating the clipping mask in the shader
-		this.material.SetShaderParameter("fuzz", baseBall.Info.Fuzz);
-		this.material.SetShaderParameter("diameter", baseBall.Info.Diameter);
+		ShaderMaterial.SetShaderParameter(StringManager.S("fuzz"), baseBall.Info.Fuzz);
+		ShaderMaterial.SetShaderParameter(StringManager.S("diameter"), baseBall.Info.Diameter);
 
-		this.material.SetShaderParameter("tex", TextureManager.FetchEmptyTexture());
-		this.material.SetShaderParameter("palette", atlas.Palette);
+		ShaderMaterial.SetShaderParameter(StringManager.S("tex"), TextureManager.FetchEmptyTexture());
+		ShaderMaterial.SetShaderParameter(StringManager.S("palette"), Atlas.Palette);
 
-		this.material.SetShaderParameter("center", this.GlobalPosition);
+		ShaderMaterial.SetShaderParameter(StringManager.S("center"), this.GlobalPosition);
 		SetTextureAtlas();
 	}
 
 	public override void _Process( double delta )
 	{
-		this.material.SetShaderParameter("center", this.GlobalPosition);
-		this.material.SetShaderParameter("rotation", baseBall.rotation);
+		ShaderMaterial.SetShaderParameter(StringManager.S("center"), this.GlobalPosition);
+		ShaderMaterial.SetShaderParameter(StringManager.S("rotation"), baseBall.Rotation3D);
 	}
 	
 	// CUSTOM METHODS
 	
-	public void SetTextureAtlas()
+	public override void SetTextureAtlas()
 	{	
-		if (atlas.TextureData != null)
+		if (Atlas.TextureData != null)
 		{
 			//atlasCoords = atlas.GetSubTextureCoords(0, color_index);
 			
-			this.material.SetShaderParameter(StringManager.S("tex"), atlas.TextureData);
+			ShaderMaterial.SetShaderParameter(StringManager.S("tex"), Atlas.TextureData);
 			
 			var positions = new Godot.Collections.Array<Vector2>();
 			var sizes = new Godot.Collections.Array<Vector2>();
 
 			foreach (var paintBall in paintBallz)
 			{
-				var atlasCoords = atlas.GetSubTextureCoords(0, (int)paintBall.ColorIndex);
+				var atlasCoords = Atlas.GetSubTextureCoords(0, (int)paintBall.ColorIndex);
 				var position = atlasCoords.Position;
 				var size = atlasCoords.Size;
 				positions.Add(position);
 				sizes.Add(size);
 			}
 			
-   			this.material.SetShaderParameter(StringManager.S("p_atlas_position"), positions);
-      		this.material.SetShaderParameter(StringManager.S("p_atlas_size"), sizes);
+   			ShaderMaterial.SetShaderParameter(StringManager.S("p_atlas_position"), positions);
+      		ShaderMaterial.SetShaderParameter(StringManager.S("p_atlas_size"), sizes);
 			
 		} else {
-			this.material.SetShaderParameter(StringManager.S("tex"), TextureManager.FetchEmptyTexture());
+			ShaderMaterial.SetShaderParameter(StringManager.S("tex"), TextureManager.FetchEmptyTexture());
 		}
 	}
 }

@@ -5,29 +5,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public struct BallInfo {
+public struct BallParams {
 	public int Fuzz {get; set;} = 0;
 	public int Diameter {get; set;} = 1;
 	public int ColorIndex {get; set;} = 0;
 	public int OutlineType {get; set;} = 0;
 	public int OutlineColor {get; set;} = 0;
 	public int TextureIndex {get; set;} = -1;
-	public BallInfo(){}
+	public BallParams(){}
 }
 
-public partial class Ball : MeshInstance2D
+public partial class Ball : Geometry
 {
-	private Mesh ballMesh;
-	//To do: Merge this with this.Material
-	private ShaderMaterial material;
+
 	private List<PaintBallGroup> paintBallGroups = null;
 
-	public Texture2D texture;
-	public Texture2D palette;
-
-	public TextureAtlas atlas {get; private set;} = null;
+	//public TextureAtlas atlas {get; private set;} = null;
 	
-	public BallInfo Info {get; private set;} = new BallInfo();
+	public BallParams Info {get; private set;} = new BallParams();
 	
 	public Vector3 rotation = new Vector3(0.0f, 0.0f, 0.0f);
 
@@ -39,34 +34,33 @@ public partial class Ball : MeshInstance2D
 	}
 
 	//public Ball(TextureAtlas _atlas, Texture2D texture, Texture2D palette, int diameter, int color_index, int fuzz, int outline_width, int outline_color)
-	public Ball(TextureAtlas _atlas, BallInfo _info)
+	public Ball(TextureAtlas _atlas, BallParams _params)
 	{
-		Info = _info;
+		Info = _params;
 
-		atlas = _atlas;
+		Atlas = _atlas;
 		
-		this.ballMesh = MeshManager.FetchDefaultMesh();
+		Mesh = MeshManager.FetchDefaultMesh();
 
-		this.material = ShaderManager.FetchShaderMaterial("ball");
-
-		this.Mesh = this.ballMesh;
-		this.Material = this.material;
+		ShaderMaterial = ShaderManager.FetchShaderMaterial("ball");
+		
+		Material = this.ShaderMaterial;
 	}
 
 	public override void _Ready()
 	{
 		//Set Material uniform parameters
 
-		this.material.SetShaderParameter(StringManager.S("fuzz"), Info.Fuzz);
-		this.material.SetShaderParameter(StringManager.S("diameter"), Info.Diameter);
-		this.material.SetShaderParameter(StringManager.S("outline_width"), Info.OutlineType);
+		ShaderMaterial.SetShaderParameter(StringManager.S("fuzz"), Info.Fuzz);
+		ShaderMaterial.SetShaderParameter(StringManager.S("diameter"), Info.Diameter);
+		ShaderMaterial.SetShaderParameter(StringManager.S("outline_width"), Info.OutlineType);
 
-		this.material.SetShaderParameter(StringManager.S("outline_color"), Info.OutlineColor);
+		ShaderMaterial.SetShaderParameter(StringManager.S("outline_color"), Info.OutlineColor);
 		
-		this.material.SetShaderParameter(StringManager.S("tex"), TextureManager.FetchEmptyTexture());
-		this.material.SetShaderParameter(StringManager.S("palette"), atlas.Palette);
+		ShaderMaterial.SetShaderParameter(StringManager.S("tex"), TextureManager.FetchEmptyTexture());
+		ShaderMaterial.SetShaderParameter(StringManager.S("palette"), Atlas.Palette);
 
-		this.material.SetShaderParameter(StringManager.S("center"), this.GlobalPosition);
+		ShaderMaterial.SetShaderParameter(StringManager.S("center"), this.GlobalPosition);
 		
 		SetTextureAtlas();
 	}
@@ -74,7 +68,7 @@ public partial class Ball : MeshInstance2D
 
 	public override void _Process(double dt)
 	{
-		material.SetShaderParameter(StringManager.S("center"), this.GlobalPosition);
+		ShaderMaterial.SetShaderParameter(StringManager.S("center"), this.GlobalPosition);
 	}
 	
 	// CUSTOM METHODS
@@ -84,26 +78,26 @@ public partial class Ball : MeshInstance2D
 		if (paintBallGroups == null)
 			paintBallGroups = new List<PaintBallGroup>();
 		
-		var pbg = new PaintBallGroup(atlas, this, _paintBalls);
+		var pbg = new PaintBallGroup(Atlas, this, _paintBalls);
 		paintBallGroups.Add(pbg);
 		AddChild(pbg);
 	}
 	
-	public void SetTextureAtlas()
+	public override void SetTextureAtlas()
 	{
 		//atlas = _atlas;
 		
-		if (atlas.TextureData != null)
+		if (Atlas.TextureData != null)
 		{
-			atlasCoords = atlas.GetSubTextureCoords(0, Info.ColorIndex);
+			atlasCoords = Atlas.GetSubTextureCoords(0, Info.ColorIndex);
 
-   			this.material.SetShaderParameter(StringManager.S("atlas_position"), atlasCoords.Position);
-      		this.material.SetShaderParameter(StringManager.S("atlas_size"), atlasCoords.Size);
-			this.material.SetShaderParameter(StringManager.S("tex"), atlas.TextureData);
+   			ShaderMaterial.SetShaderParameter(StringManager.S("atlas_position"), atlasCoords.Position);
+      		ShaderMaterial.SetShaderParameter(StringManager.S("atlas_size"), atlasCoords.Size);
+			ShaderMaterial.SetShaderParameter(StringManager.S("tex"), Atlas.TextureData);
 		} else {
-     		this.material.SetShaderParameter(StringManager.S("atlas_position"), new Vector2(0.0f, 0.0f));
-      		this.material.SetShaderParameter(StringManager.S("atlas_size"), new Vector2(1.0f, 1.0f));
-			this.material.SetShaderParameter(StringManager.S("tex"), TextureManager.FetchEmptyTexture());
+     		ShaderMaterial.SetShaderParameter(StringManager.S("atlas_position"), new Vector2(0.0f, 0.0f));
+      		ShaderMaterial.SetShaderParameter(StringManager.S("atlas_size"), new Vector2(1.0f, 1.0f));
+			ShaderMaterial.SetShaderParameter(StringManager.S("tex"), TextureManager.FetchEmptyTexture());
 		}
 	}
 }

@@ -6,7 +6,7 @@
 [node name="Root" type="Node"]
 
 [node name="Pet" type="Node2D" parent="."]
-position = Vector2(543, 290)
+position = Vector2(588, 348)
 script = ExtResource("1_uahtr")
 
 [node name="Icon" type="Sprite2D" parent="Pet"]
