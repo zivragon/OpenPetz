@@ -37,10 +37,10 @@ void vertex () {
 	
 	v_uv = vec2(VERTEX.x , VERTEX.y * 10.);
 	
+	v_coords = vec2(ball_diameters[index]/2., ball_diameters[index]/2.*VERTEX.y);
+	
 	VERTEX.x = ball_coords[index].x + -1.*VERTEX.y * sin(angle_to) * (ball_diameters[index] / 2.);
 	VERTEX.y = ball_coords[index].y + VERTEX.y * cos(angle_to) * (ball_diameters[index] / 2.);
-	
-	v_coords = VERTEX.xy;
 }
 
 void fragment() {
@@ -59,6 +59,8 @@ void fragment() {
 	float tex_index = texture(tex, atlas_texUV).r;
 	
 	vec4 color = vec4(texture(palette, vec2(tex_index, 0.0)).bgr, 1.0);
+	
+	color.rgb *= (abs(v_coords.y) + 1.) < v_coords.x ? 1. : 0.;
 	
 	COLOR = color;
 }

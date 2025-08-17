@@ -55,7 +55,8 @@ void fragment() {
 	
 	if (outline_width == 1.0)
 	{
-		coord.x = abs(coord.x) + 1.0;
+		float err = fract(radius);
+		coord.x = abs(coord.x - err) + 1.0;
 		ball = vec4(circle(coord, radius));
 	} else {
 		ball = vec4(circle(coord, radius - outline_width));
