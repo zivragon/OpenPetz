@@ -1,6 +1,8 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+
 using OpenPetz;
 
 public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
@@ -18,7 +20,7 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
     public Texture2D TextureData { get; private set; } = null;
 	public Texture2D Palette { get; private set; } = null;
     
-    public Vector2I Size { get; private set; } = new Vector2I(128, 128);
+    public Vector2I Size { get; private set; } = new Vector2I(256, 256);
     
     public TextureAtlas(Texture2D _palette, Guid _guid, List<TextureParams> _textureList)
     {
@@ -28,6 +30,14 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
 		Palette = _palette;
 		
 		textureList = _textureList;
+		
+		for (var i = 0; i < textureList.Count; i++){
+			var tex = textureList[i];
+			tex.Index = i;
+			textureList[i] = tex;
+		}
+		
+		//
 		
         string fileName = "./cache/texture_atlas/raster/"+_guid.ToString()+".png";
         
@@ -42,7 +52,7 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
         } else */{
             //We are bound to dynamically generating it now using SubViewport.
             subViewport = new SubViewport();
-            subViewport.Size = new Vector2I(256, 128);
+            subViewport.Size = Size;
             subViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Once;
             AddChild(subViewport);
             
@@ -62,11 +72,18 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
     
     public SubTextureCoordinations GetSubTextureCoords(int _index, int _color)
     {
-        var subTex = subTexList[_index];
+		//Non texturable color? Non texturable color!
+		if (_color < 10 || _color > 149 || _index == -1){
+			Vector2I position = new Vector2I(0, 0);
+			position.X = _color % 16;
+			position.Y = (_color - position.X) / 16;			
+			
+			return new SubTextureCoordinations((float)position.X / Size.X, (float)position.Y / Size.Y, 1f / Size.X, 1f / Size.Y);
+		}
 		
-		GD.Print(subTex.Size);
+        var subTex = subTexList[_index];
 
-        return new SubTextureCoordinations(subTex.Position.X / Size.X, subTex.Position.Y / Size.Y, (subTex.Size.X / 2f) / Size.X, subTex.Size.Y / Size.Y);
+        return new SubTextureCoordinations(subTex.Position.X / Size.X, subTex.Position.Y / Size.Y, subTex.Size.X / Size.X, subTex.Size.Y / Size.Y);
     }
     
     // HEAVILY WIP
@@ -74,9 +91,46 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
     private void PackTextures()
     {
 		Vector2 posPtr = new Vector2(0f, 0f);
+		
+		{
+			var dummyMesh = new MeshInstance2D();
+			
+			var material = ShaderManager.FetchShaderMaterial("texture_atlas/solid_colors");
+			
+			dummyMesh.Mesh = MeshManager.FetchNormalMesh();
+			dummyMesh.Material = material;
+			subViewport.AddChild(dummyMesh);
+			
+			posPtr.X += 16f;
+		}
+		
+		List<Texture2D> texList = new List<Texture2D>();
+		
+		foreach (var texParam in textureList){
+			var texture = TextureManager.FetchTexture(texParam.Path);
+			texList.Add(texture);
+		}
+		
+		textureList.Sort(delegate(TextureParams a, TextureParams b) 
+		{
+			var sizeA = texList[a.Index].GetSize();
+			var sizeB = texList[b.Index].GetSize();
+			
+			var ai = Math.Max(sizeA.X, sizeA.Y);
+			var bi = Math.Max(sizeB.X, sizeB.Y);
+			
+			return (ai > bi) ? 1 : -1;
+		});
+		
 		foreach (var texParam in textureList){
 			var texture = TextureManager.FetchTexture(texParam.Path);
 			var texSize = texture.GetSize();
+			
+			if (posPtr.X + texSize.X > Size.X) //jump down
+			{
+				posPtr.X = 0;
+				posPtr.Y += texSize.Y;
+			}
 			
 			var dummyMesh = new MeshInstance2D();
 			
@@ -94,12 +148,18 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
 			subTex.Position = posPtr;
 			subTex.Size = texSize;
 			//
-			subTex.Transparency = 1;
+			subTex.Transparency = 0;
+			subTex.Index = texParam.Index;
 			
 			subTexList.Add(subTex);
 			
 			posPtr.X += texSize.X;
 		}
+		
+		subTexList.Sort(delegate(SubTextureContainer a, SubTextureContainer b) 
+		{
+			return (a.Index > b.Index) ? 1 : -1;
+		});
     }
     
     private void SaveGeneratedAtlas()
@@ -125,7 +185,7 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
 //
 
 public struct TextureParams {
-	public int Index = 0;
+	public int Index {get; set;} = 0;
 	public string Path {get; set;} = "";
     public int Transparency {get; set;} = 0;
 	public int Color {get; set;} = 0;
@@ -138,6 +198,7 @@ internal struct SubTextureContainer {
 		;
 	}
 
+	public int Index { get; set; } = 0;
 	public Vector2 Position { get; set; } = new Vector2(0.0f, 0.0f);
     public Vector2 Size { get; set; } = new Vector2(1.0f, 1.0f);
     public int Transparency { get; set; } = 0;
