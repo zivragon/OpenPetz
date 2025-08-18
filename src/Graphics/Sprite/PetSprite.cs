@@ -8,11 +8,6 @@ public partial class PetSprite : Sprite3D
 {
 	private Pet parent = null;
 
-	//this member is temporary 
-	private string[] texturePaths = new string[] { /*"./art/textures/flower.bmp"*/ "./Resource/textures/ziverre/ribbon.bmp" };
-	
-	private List<Texture2D> textureList = new List<Texture2D>();
-
 	//Methods
 
 	public PetSprite (Pet _p){
@@ -23,10 +18,16 @@ public partial class PetSprite : Sprite3D
 			Path = "./art/textures/trianglespink.bmp"
 		});
 		textureList.Add(new TextureParams {
+			Path = "./art/textures/bee2.bmp"
+		});
+		textureList.Add(new TextureParams {
 			Path = "./art/textures/wizard.bmp"
 		});
 		textureList.Add(new TextureParams {
 			Path = "./art/textures/bubblesb.bmp"
+		});
+		textureList.Add(new TextureParams {
+			Path = "./art/textures/quiltblue.bmp"
 		});
 		
 		Texture2D palette = PaletteManager.FetchPalette("babyz");
@@ -40,8 +41,6 @@ public partial class PetSprite : Sprite3D
 	public override void _Ready()
 	{
 		Rotation3D.Y = (float)(1.57/2.0); 
-		
-		LoadTextures();
 		
 		RenderingServer.FramePostDraw += SetupSprite;
 	}
@@ -66,7 +65,8 @@ public partial class PetSprite : Sprite3D
 	{
 		for (int i = 0; i < 67; i++)
 		{
-			int color = 10 + (i % 2) * 80;
+			int color = 25;
+			int tex = i % 3;
 			
 			Ball dummyBall = new Ball(textureAtlas, new BallParams {
 				Diameter = parent.catBhd.GetDefaultBallSize(i),// / 2,
@@ -74,7 +74,7 @@ public partial class PetSprite : Sprite3D
 				Fuzz = 4,
 				OutlineType = 1,
 				OutlineColor = 39,
-				TextureIndex = -1
+				TextureIndex = tex
 			});
 
 			Vector2 dummyCoord = new Vector2(0.0f, 0.0f);
@@ -136,18 +136,6 @@ public partial class PetSprite : Sprite3D
 		Visible = true;
 		
 		RenderingServer.FramePostDraw -= SetupSprite;
-	}
-	
-	private void LoadTextures(){
-		//start with adding the empty texture for the sake of texture index of -1
-		textureList.Add(TextureManager.FetchEmptyTexture());
-		
-		foreach (string texturePath in texturePaths)
-		{
-			Texture2D fetchedTexture = TextureManager.FetchTexture(texturePath);
-			
-			textureList.Add(fetchedTexture);
-		}
 	}
 
 	//NOTE: Order of updating matters!
