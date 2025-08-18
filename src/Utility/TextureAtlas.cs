@@ -8,22 +8,26 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
     public static Vector2I MaximumSize => new Vector2I(1024, 1024);
     
     private SubViewport subViewport = null;
-    private List<Texture2D> textureList = null;
+    private List<TextureParams> textureList = null;
+	
     private List<SubTextureContainer> subTexList = new List<SubTextureContainer>();
+	//private List<SubTextureContainer> subTexListTransparent = new List<SubTextureContainer>();
     
     private Guid guid;
 	
     public Texture2D TextureData { get; private set; } = null;
 	public Texture2D Palette { get; private set; } = null;
     
-    public Vector2I Size { get; private set; } = new Vector2I(1024, 64);
+    public Vector2I Size { get; private set; } = new Vector2I(128, 128);
     
-    public TextureAtlas(Texture2D _palette, Guid _guid, List<OpenPetz.Linez.Entries.Texture> _textureList)
+    public TextureAtlas(Texture2D _palette, Guid _guid, List<TextureParams> _textureList)
     {
         //First step is checking to see if it is already cached.
         
 		guid = _guid;
 		Palette = _palette;
+		
+		textureList = _textureList;
 		
         string fileName = "./cache/texture_atlas/raster/"+_guid.ToString()+".png";
         
@@ -38,7 +42,7 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
         } else */{
             //We are bound to dynamically generating it now using SubViewport.
             subViewport = new SubViewport();
-            subViewport.Size = new Vector2I(1024, 64);
+            subViewport.Size = new Vector2I(256, 128);
             subViewport.RenderTargetUpdateMode = SubViewport.UpdateMode.Once;
             AddChild(subViewport);
             
@@ -50,7 +54,6 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
     {
         if (subViewport != null)
 		{
-			//PackTextures();
             RenderingServer.FramePostDraw += SaveGeneratedAtlas;
 		}
     }
@@ -60,59 +63,43 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
     public SubTextureCoordinations GetSubTextureCoords(int _index, int _color)
     {
         var subTex = subTexList[_index];
-        
-        if (subTex.Transparency == 0)
-        {
-            return new SubTextureCoordinations(subTex.Position.X / Size.X, subTex.Position.Y / Size.Y, subTex.Size.X / Size.X, subTex.Size.Y / Size.Y);
-        }
-        
-        if (subTex.Transparency == 1)
-        {
-            int color = _color / 10 - 1;
-            float moveByX = subTex.Size.X * color + subTex.Position.X;
-            return new SubTextureCoordinations(moveByX / Size.X, subTex.Position.Y / Size.Y, subTex.Size.X / Size.X, subTex.Size.Y / Size.Y);
-        }
-        
-        return new SubTextureCoordinations(subTex.Position.X / Size.X, subTex.Position.Y / Size.Y, subTex.Size.X / Size.X, subTex.Size.Y / Size.Y);
+		
+		GD.Print(subTex.Size);
+
+        return new SubTextureCoordinations(subTex.Position.X / Size.X, subTex.Position.Y / Size.Y, (subTex.Size.X / 2f) / Size.X, subTex.Size.Y / Size.Y);
     }
     
     // HEAVILY WIP
     
     private void PackTextures()
     {
-        var texture = TextureManager.FetchTexture("./art/textures/hair11.bmp");;
-		
-		var dummyMesh = new MeshInstance2D();
-		
-		var immediateMesh = new ImmediateMesh();
-		var material = ShaderManager.FetchShaderMaterial("texture_atlas/texture_recolor");
-		
-		dummyMesh.Mesh = immediateMesh;
-		dummyMesh.Material = material;
-		subViewport.AddChild(dummyMesh);
-		
-		immediateMesh.ClearSurfaces();
-		immediateMesh.SurfaceBegin(Mesh.PrimitiveType.Triangles);
-		
-		immediateMesh.SurfaceAddVertex(new Vector3(0, 0, 0));
-		immediateMesh.SurfaceAddVertex(new Vector3(0, 64, 0));
-		immediateMesh.SurfaceAddVertex(new Vector3(1024, 64, 0));
-		
-		immediateMesh.SurfaceAddVertex(new Vector3(0, 0, 0));
-		immediateMesh.SurfaceAddVertex(new Vector3(1024, 0, 0));
-		immediateMesh.SurfaceAddVertex(new Vector3(1024, 64, 0));
-		
-		immediateMesh.SurfaceEnd();
-		
-		material.SetShaderParameter("tex", texture);
-		
-		var subTex = new SubTextureContainer();
-		subTex.Position = new Vector2(0.0f,0.0f);
-		subTex.Size = new Vector2(64.0f,64.0f);
-		//
-		subTex.Transparency = 1;
-		
-		subTexList.Add(subTex);
+		Vector2 posPtr = new Vector2(0f, 0f);
+		foreach (var texParam in textureList){
+			var texture = TextureManager.FetchTexture(texParam.Path);
+			var texSize = texture.GetSize();
+			
+			var dummyMesh = new MeshInstance2D();
+			
+			var material = ShaderManager.FetchShaderMaterial("texture_atlas/texture");
+			
+			dummyMesh.Mesh = MeshManager.FetchNormalMesh();
+			dummyMesh.Material = material;
+			subViewport.AddChild(dummyMesh);
+			
+			material.SetShaderParameter("tex", texture);
+			material.SetShaderParameter("position", posPtr);
+			material.SetShaderParameter("size", texSize);
+			
+			var subTex = new SubTextureContainer();
+			subTex.Position = posPtr;
+			subTex.Size = texSize;
+			//
+			subTex.Transparency = 1;
+			
+			subTexList.Add(subTex);
+			
+			posPtr.X += texSize.X;
+		}
     }
     
     private void SaveGeneratedAtlas()
@@ -136,6 +123,14 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
 }
 
 //
+
+public struct TextureParams {
+	public int Index = 0;
+	public string Path {get; set;} = "";
+    public int Transparency {get; set;} = 0;
+	public int Color {get; set;} = 0;
+	public TextureParams(){}
+}
 
 internal struct SubTextureContainer {
 	public SubTextureContainer()
