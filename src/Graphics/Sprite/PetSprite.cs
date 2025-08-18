@@ -18,8 +18,19 @@ public partial class PetSprite : Sprite3D
 	public PetSprite (Pet _p){
 		parent = _p;
 		
-		Texture2D palette = PaletteManager.FetchPalette("oddballz");
-		textureAtlas = new TextureAtlas(palette, Guid.Empty, null);
+		List<TextureParams> textureList = new List<TextureParams>();
+		textureList.Add(new TextureParams {
+			Path = "./art/textures/trianglespink.bmp"
+		});
+		textureList.Add(new TextureParams {
+			Path = "./art/textures/wizard.bmp"
+		});
+		textureList.Add(new TextureParams {
+			Path = "./art/textures/bubblesb.bmp"
+		});
+		
+		Texture2D palette = PaletteManager.FetchPalette("babyz");
+		textureAtlas = new TextureAtlas(palette, Guid.Empty, textureList);
 
 		AddChild(textureAtlas);
 		
