@@ -1,9 +1,6 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 public struct BallParams {
 	public int Fuzz {get; set;} = 0;
@@ -89,7 +86,7 @@ public partial class Ball : Geometry
 		
 		if (Atlas.TextureData != null)
 		{
-			atlasCoords = Atlas.GetSubTextureCoords(0, Info.ColorIndex);
+			atlasCoords = Atlas.GetSubTextureCoords(Info.TextureIndex, Info.ColorIndex);
 
    			ShaderMaterial.SetShaderParameter(StringManager.S("atlas_position"), atlasCoords.Position);
       		ShaderMaterial.SetShaderParameter(StringManager.S("atlas_size"), atlasCoords.Size);

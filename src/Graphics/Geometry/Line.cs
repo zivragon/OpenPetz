@@ -83,7 +83,7 @@ public partial class Line : Geometry
 		
 		if (Atlas.TextureData != null)
 		{
-			atlasCoords = Atlas.GetSubTextureCoords(0, Info.Start.Info.ColorIndex);
+			atlasCoords = Atlas.GetSubTextureCoords(Info.Start.Info.TextureIndex, Info.Start.Info.ColorIndex);
 
    			ShaderMaterial.SetShaderParameter(StringManager.S("atlas_position"), atlasCoords.Position);
       		ShaderMaterial.SetShaderParameter(StringManager.S("atlas_size"), atlasCoords.Size);
