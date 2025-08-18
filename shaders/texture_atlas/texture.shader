@@ -2,7 +2,12 @@ shader_type canvas_item;
 
 uniform sampler2D tex : hint_default_white, filter_nearest, repeat_enable;
 
-//uniform sampler2D palette: filter_nearest;
+uniform vec2 position;
+uniform vec2 size;
+
+void vertex() {
+	VERTEX = VERTEX * size + position;
+}
 
 void fragment() {
 	vec2 coord = FRAGCOORD.xy;
