@@ -20,7 +20,7 @@ public partial class Pet : Node2D
 		World.pets.Add(this);
 		
 		catBhd = AnimationManager.FetchCatBhd();
-		animation = catBhd.GetAnimation(0);
+		animation = catBhd.GetAnimation(1);
 		
 		var frame = animation.Frames[currentFrame];
 
@@ -46,7 +46,7 @@ public partial class Pet : Node2D
 		var frame = animation.Frames[currentFrame];
 		
 		//temp commented
-		//petSprite.SetFrame(frame);
+		petSprite.SetFrame(frame);
 	}
 
 	public override void _Draw()

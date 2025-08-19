@@ -49,7 +49,7 @@ void fragment() {
 	
 	vec4 outline = vec4(circle(coord, radius));
 	
-	outline *= vec4(texture(palette, vec2(outline_color / 255.0, 0.0)).bgr, 1.0);
+	outline *= vec4(texture(palette, vec2(outline_color / 255., 0.0)).bgr, 1.0);
 	
 	vec4 ball = vec4(0.0);
 	

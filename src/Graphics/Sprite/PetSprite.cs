@@ -8,18 +8,30 @@ public partial class PetSprite : Sprite3D
 {
 	private Pet parent = null;
 
-	//this member is temporary 
-	private string[] texturePaths = new string[] { /*"./art/textures/flower.bmp"*/ "./Resource/textures/ziverre/ribbon.bmp" };
-	
-	private List<Texture2D> textureList = new List<Texture2D>();
-
 	//Methods
 
 	public PetSprite (Pet _p){
 		parent = _p;
 		
-		Texture2D palette = PaletteManager.FetchPalette("oddballz");
-		textureAtlas = new TextureAtlas(palette, Guid.Empty, null);
+		List<TextureParams> textureList = new List<TextureParams>();
+		textureList.Add(new TextureParams {
+			Path = "./art/textures/trianglespink.bmp"
+		});
+		textureList.Add(new TextureParams {
+			Path = "./art/textures/bee2.bmp"
+		});
+		textureList.Add(new TextureParams {
+			Path = "./art/textures/wizard.bmp"
+		});
+		textureList.Add(new TextureParams {
+			Path = "./art/textures/bubblesb.bmp"
+		});
+		textureList.Add(new TextureParams {
+			Path = "./art/textures/quiltblue.bmp"
+		});
+		
+		Texture2D palette = PaletteManager.FetchPalette("babyz");
+		textureAtlas = new TextureAtlas(palette, Guid.Empty, textureList);
 
 		AddChild(textureAtlas);
 		
@@ -28,16 +40,14 @@ public partial class PetSprite : Sprite3D
 	
 	public override void _Ready()
 	{
-		Rotation3D.Y = (float)(1.57/2.0); 
-		
-		LoadTextures();
+		Rotation3D.Y = 1.57f; 
 		
 		RenderingServer.FramePostDraw += SetupSprite;
 	}
 
 	public override void _Process(double delta)
 	{
-		Rotation3D.Y += 0.05f;
+		//Rotation3D.Y += 0.05f;
 		foreach (var ball in BallzList){
 			ball.Rotation3D = Rotation3D;
 		}
@@ -55,15 +65,16 @@ public partial class PetSprite : Sprite3D
 	{
 		for (int i = 0; i < 67; i++)
 		{
-			int color = 10 + (i % 2) * 80;
+			int color = 25;
+			int tex = i % 3;
 			
 			Ball dummyBall = new Ball(textureAtlas, new BallParams {
 				Diameter = parent.catBhd.GetDefaultBallSize(i),// / 2,
 				ColorIndex = color,
 				Fuzz = 4,
 				OutlineType = 1,
-				OutlineColor = 39,
-				TextureIndex = -1
+				OutlineColor = 50,
+				TextureIndex = tex
 			});
 
 			Vector2 dummyCoord = new Vector2(0.0f, 0.0f);
@@ -115,7 +126,9 @@ public partial class PetSprite : Sprite3D
 		{
 			var dummyLine = new Line(this, textureAtlas, new LineParams {
 				Start = BallzList[membs.X],
-				End = BallzList[membs.Y]
+				End = BallzList[membs.Y],
+				LeftColor = 50,
+				RightColor = 50
 			});
 			
 			/*LinezList.Add(dummyLine);
@@ -125,18 +138,6 @@ public partial class PetSprite : Sprite3D
 		Visible = true;
 		
 		RenderingServer.FramePostDraw -= SetupSprite;
-	}
-	
-	private void LoadTextures(){
-		//start with adding the empty texture for the sake of texture index of -1
-		textureList.Add(TextureManager.FetchEmptyTexture());
-		
-		foreach (string texturePath in texturePaths)
-		{
-			Texture2D fetchedTexture = TextureManager.FetchTexture(texturePath);
-			
-			textureList.Add(fetchedTexture);
-		}
 	}
 
 	//NOTE: Order of updating matters!

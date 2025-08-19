@@ -7,6 +7,9 @@ uniform float angle_to;
 uniform vec2 atlas_position = vec2(0.0, 0.0);
 uniform vec2 atlas_size = vec2(1.0, 1.0);
 
+uniform float left_color = -1.;
+uniform float right_color = -1.;
+
 uniform sampler2D tex : hint_default_white, filter_nearest, repeat_enable;
 uniform sampler2D palette: filter_nearest, repeat_enable;
 
@@ -60,7 +63,21 @@ void fragment() {
 	
 	vec4 color = vec4(texture(palette, vec2(tex_index, 0.0)).bgr, 1.0);
 	
-	color.rgb *= (abs(v_coords.y) + 1.) < v_coords.x ? 1. : 0.;
+	vec3 outcol = vec3(0.);
+	bool has_outline;
+	
+	if (v_coords.y < 0.){
+		outcol = texture(palette, vec2(left_color / 255., 0.0)).bgr;
+		has_outline = left_color != -1./255.;
+	}
+	else {
+		outcol = texture(palette, vec2(right_color / 255., 0.0)).bgr;
+		has_outline = right_color != -1./255.;
+	}
+		
+	bool is_outline = (abs(v_coords.y) + 1.) < v_coords.x != true;
+	
+	color.rgb = mix(color.rgb, outcol.rgb, (is_outline && has_outline) ? 1. : 0.);
 	
 	COLOR = color;
 }
