@@ -7,6 +7,8 @@ public struct LineParams {
 	public Ball End {get; set;} = null;
 	public int StartThickness {get; set;} = 100;
 	public int EndThickness {get; set;} = 100;
+	public int LeftColor {get; set;} = -1;
+	public int RightColor {get; set;} = 128;
 	public LineParams(){}
 }
 public partial class Line : Geometry
@@ -55,6 +57,9 @@ public partial class Line : Geometry
 		ShaderMaterial.SetShaderParameter("ball_coords", coords);
 		ShaderMaterial.SetShaderParameter("ball_diameters", diameters);
 		ShaderMaterial.SetShaderParameter("angle_to", Info.Start.Position.AngleToPoint(Info.End.Position));
+		
+		ShaderMaterial.SetShaderParameter("left_color", (float)Info.LeftColor);
+		ShaderMaterial.SetShaderParameter("right_color", (float)Info.RightColor);
 		
 		ShaderMaterial.SetShaderParameter(StringManager.S("palette"), Atlas.Palette);
 		

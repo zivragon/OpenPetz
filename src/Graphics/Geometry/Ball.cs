@@ -52,7 +52,7 @@ public partial class Ball : Geometry
 		ShaderMaterial.SetShaderParameter(StringManager.S("diameter"), Info.Diameter);
 		ShaderMaterial.SetShaderParameter(StringManager.S("outline_width"), Info.OutlineType);
 
-		ShaderMaterial.SetShaderParameter(StringManager.S("outline_color"), Info.OutlineColor);
+		ShaderMaterial.SetShaderParameter(StringManager.S("outline_color"), (float)Info.OutlineColor);
 		
 		ShaderMaterial.SetShaderParameter(StringManager.S("tex"), TextureManager.FetchEmptyTexture());
 		ShaderMaterial.SetShaderParameter(StringManager.S("palette"), Atlas.Palette);
