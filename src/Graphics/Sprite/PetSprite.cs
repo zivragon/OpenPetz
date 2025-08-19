@@ -40,14 +40,14 @@ public partial class PetSprite : Sprite3D
 	
 	public override void _Ready()
 	{
-		Rotation3D.Y = (float)(1.57/2.0); 
+		Rotation3D.Y = 1.57f; 
 		
 		RenderingServer.FramePostDraw += SetupSprite;
 	}
 
 	public override void _Process(double delta)
 	{
-		Rotation3D.Y += 0.05f;
+		//Rotation3D.Y += 0.05f;
 		foreach (var ball in BallzList){
 			ball.Rotation3D = Rotation3D;
 		}
@@ -73,7 +73,7 @@ public partial class PetSprite : Sprite3D
 				ColorIndex = color,
 				Fuzz = 4,
 				OutlineType = 1,
-				OutlineColor = 39,
+				OutlineColor = 50,
 				TextureIndex = tex
 			});
 
@@ -126,7 +126,9 @@ public partial class PetSprite : Sprite3D
 		{
 			var dummyLine = new Line(this, textureAtlas, new LineParams {
 				Start = BallzList[membs.X],
-				End = BallzList[membs.Y]
+				End = BallzList[membs.Y],
+				LeftColor = 50,
+				RightColor = 50
 			});
 			
 			/*LinezList.Add(dummyLine);
