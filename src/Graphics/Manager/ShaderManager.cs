@@ -10,8 +10,8 @@ public static class ShaderManager {
 	private static string circleShaderCode = "";
 	//also temporary (One day I will properly manage this)
 	private static string subTextureShaderCode = "";
-	//To do: improve this
-	//private static Dictionary<string, Shader> fetchedComponentShaders = new Dictionary<string, Shader>();
+	
+	private static Dictionary<string, ShaderMaterial> _shaderMaterials = new Dictionary<string, ShaderMaterial>();
 	
 	private static Shader FetchShader(string name)
 	{
@@ -48,8 +48,6 @@ public static class ShaderManager {
 			return null;
 		}
 	}
-	
-	private static Dictionary<string, ShaderMaterial> _shaderMaterials = new Dictionary<string, ShaderMaterial>();
 	
 	public static ShaderMaterial FetchShaderMaterial(string name)
 	{

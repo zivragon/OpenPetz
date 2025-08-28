@@ -30,7 +30,7 @@ public partial class PetSprite : Sprite3D
 			Path = "./art/textures/quiltblue.bmp"
 		});
 		
-		Texture2D palette = PaletteManager.FetchPalette("babyz");
+		Texture2D palette = PaletteManager.FetchPalette("catz");
 		textureAtlas = new TextureAtlas(palette, Guid.Empty, textureList);
 
 		AddChild(textureAtlas);
@@ -40,7 +40,7 @@ public partial class PetSprite : Sprite3D
 	
 	public override void _Ready()
 	{
-		Rotation3D.Y = 1.57f; 
+		Rotation3D.Y = 1.57f/2.0f; 
 		
 		RenderingServer.FramePostDraw += SetupSprite;
 	}
@@ -63,17 +63,25 @@ public partial class PetSprite : Sprite3D
 	
 	private void SetupSprite()
 	{
+		//shamelessly stolen from Catz 1 :)
+		//int[] colors = {102,102,82,102,102,102,72,42,82,72,82,112,82,72,15,15,72,72,72,112,112,112,82,72,82,82,82,112,112,102,82,102,102,72,72,102,102,112,82,102,42,82,82,112,72,82,112,82,42,112,112,112,42,42,42,118,118,0,0,0,0,0,0,72,112,9,9};
+		int[] colors = {32,32,72,72,72,72,72,32,72,32,72,32,72,72,15,15,32,32,32,32,32,32,32,32,72,72,72,0,0,72,32,32,72,72,32,32,72,0,72,72,72,32,32,72,72,72,72,28,34,32,32,32,32,32,32,18,118,0,0,0,0,0,0,32,32,7,7};
+		
+		GD.Print(colors.Length);
+		
+		
 		for (int i = 0; i < 67; i++)
 		{
-			int color = 25;
-			int tex = i % 3;
+			int color = colors[i];
+			int pcolor = 110;
+			int tex = -1;
 			
 			Ball dummyBall = new Ball(textureAtlas, new BallParams {
 				Diameter = parent.catBhd.GetDefaultBallSize(i),// / 2,
 				ColorIndex = color,
 				Fuzz = 4,
 				OutlineType = 1,
-				OutlineColor = 50,
+				OutlineColor = 0,
 				TextureIndex = tex
 			});
 
@@ -88,12 +96,16 @@ public partial class PetSprite : Sprite3D
 			AddChild(dummyBall);
 			
 			/*List<PaintBall> pbz = new List<PaintBall> (); //store ballz
-			pbz.Add(new PaintBall(new Vector3(0.0f, 0.0f, -1.0f), 0.3f, pcolor));
-			pbz.Add(new PaintBall(new Vector3(0.0f, 0.0f, 1.0f), 0.4f, pcolor));
-			pbz.Add(new PaintBall(new Vector3(0.0f, 1.0f, 0.0f), 0.5f, pcolor));
-			pbz.Add(new PaintBall(new Vector3(0.0f, -1.0f, 0.0f), 0.4f, pcolor));
-			pbz.Add(new PaintBall(new Vector3(1.0f, 0.0f, 0.0f), 0.3f, pcolor));
-			pbz.Add(new PaintBall(new Vector3(-1.0f, 0.0f, 0.0f), 0.4f, pcolor));
+			pbz.Add(new PaintBall(new PaintBallParams {
+				Diameter = 30,
+				Direction = new Vector3(0.0f, 0.0f, -1.0f),
+				ColorIndex = pcolor
+			}));
+			pbz.Add(new PaintBall(new PaintBallParams {
+				Diameter = 30,
+				Direction = new Vector3(0.0f, 0.0f, 1.0f),
+				ColorIndex = pcolor
+			}));
 			
 			dummyBall.AddPaintBalls(pbz);*/
 		}
@@ -127,8 +139,8 @@ public partial class PetSprite : Sprite3D
 			var dummyLine = new Line(this, textureAtlas, new LineParams {
 				Start = BallzList[membs.X],
 				End = BallzList[membs.Y],
-				LeftColor = 50,
-				RightColor = 50
+				LeftColor = 0,
+				RightColor = 0
 			});
 			
 			/*LinezList.Add(dummyLine);
