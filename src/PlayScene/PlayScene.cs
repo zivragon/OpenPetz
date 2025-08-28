@@ -13,7 +13,6 @@ public partial class PlayScene : Node2D
 	
 	public override void _Ready()
 	{
-		GD.Print("damn");
 		string bgPath = "./Resource/Area/Arabia/arabia.png";
 		
 		Image img = Image.LoadFromFile(bgPath);
