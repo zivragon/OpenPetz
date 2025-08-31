@@ -7,6 +7,8 @@ using OpenPetz;
 public partial class PetSprite : Sprite3D
 {
 	private Pet parent = null;
+	
+	private Vector3 HeadRotation = new Vector3(0f, 0f, 0f);
 
 	//Methods
 
@@ -40,14 +42,16 @@ public partial class PetSprite : Sprite3D
 	
 	public override void _Ready()
 	{
-		Rotation3D.Y = 1.57f/2.0f; 
+		HeadRotation.Y = -3.14f - 1.57f;
+		Rotation3D.Y = 3.14f + 1.57f; 
 		
 		RenderingServer.FramePostDraw += SetupSprite;
 	}
 
 	public override void _Process(double delta)
 	{
-		//Rotation3D.Y += 0.05f;
+		//HeadRotation.Y -= 0.1f;
+		//Rotation3D.Y += 0.1f;
 		foreach (var ball in BallzList){
 			ball.Rotation3D = Rotation3D;
 		}
@@ -59,6 +63,16 @@ public partial class PetSprite : Sprite3D
 	
 	public void SetFrame(BallzModel.Frame frame){
 		currentFrame = frame;
+	}
+	
+	public void SetHeadRotation(Vector3 _rotation)
+	{
+		HeadRotation = _rotation;
+	}
+	
+	public void PointHeadAt(Vector2 _point)
+	{
+		//HeadRotation = _rotation;
 	}
 	
 	private void SetupSprite()
@@ -154,6 +168,9 @@ public partial class PetSprite : Sprite3D
 
 	//NOTE: Order of updating matters!
 	private void UpdateGeometries(){
+		if (!Visible)
+			return;
+		
 		UpdateMainBallz();
 		UpdateLinez();
 	}
@@ -162,7 +179,7 @@ public partial class PetSprite : Sprite3D
 	private void UpdateMainBallz()
 	{
 		if (currentFrame == null)
-            return;
+			return;
 		
 		var frame = currentFrame;
 	
@@ -179,6 +196,24 @@ public partial class PetSprite : Sprite3D
 			//Since Godot renders Nodes with highest Z on top of others unlike original petz l, we set negative of it
 			BallzList[index].ZIndex = (int)-rotMat.Z;
 		}
+		
+		int[] headballz = {4, 5, 7, 8, 9, 10, 11, 14, 15, 27, 28, 29, 24, 30, 31, 36, 37, 40, 55, 56, 57, 58, 59, 60, 61, 62};
+		
+		foreach (var index in headballz)
+		{		
+			var headball = new Vector3(BallzList[index].Position.X, BallzList[index].Position.Y, -BallzList[index].ZIndex);
+			var chestball = new Vector3(BallzList[6].Position.X, BallzList[6].Position.Y, -BallzList[6].ZIndex);
+			
+			var rotMat2 = Rotator.Rotate3D(headball - chestball, HeadRotation);
+			
+			rotMat2 += chestball;
+			
+			Vector2 v2 = new Vector2(rotMat2.X, rotMat2.Y);
+			BallzList[index].Position = v2;
+			//Since Godot renders Nodes with highest Z on top of others unlike original petz l, we set negative of it
+			BallzList[index].ZIndex = (int)-rotMat2.Z;
+		}
+		
 	}
 	
 	private void UpdateLinez(){
