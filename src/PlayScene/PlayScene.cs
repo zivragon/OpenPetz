@@ -30,6 +30,12 @@ public partial class PlayScene : Node2D
 		bg.ZIndex = -999;
 		
 		AddChild(bg);
+		
+		var pet = new Pet();
+		
+		pet.Position = new Vector2(512f,512f);
+		
+		AddChild(pet);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
