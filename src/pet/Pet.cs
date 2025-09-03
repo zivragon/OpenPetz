@@ -25,7 +25,7 @@ public partial class Pet : Node2D
 		World.pets.Add(this);
 		
 		catBhd = AnimationManager.FetchCatBhd();
-		animation = catBhd.GetAnimation(0);
+		animation = catBhd.GetAnimation(104);
 		
 		var frame = animation.Frames[currentFrame];
 
@@ -53,7 +53,7 @@ public partial class Pet : Node2D
 		//temp commented
 		petSprite.SetFrame(frame);
 		
-		//GD.Print(GetViewport().GetMousePosition());
+		petSprite.PointHeadAt(GetViewport().GetMousePosition());
 		//double rot = Math.Atan2(10.0, /*(double)petSprite.GlobalPosition.X - */(double)GetViewport().GetMousePosition().X);
 		//double rot = Math.Atan2(-10.0, 10.0 - (double)petSprite.GlobalPosition.X);
 		
