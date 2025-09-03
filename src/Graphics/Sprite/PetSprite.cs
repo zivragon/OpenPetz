@@ -9,6 +9,7 @@ public partial class PetSprite : Sprite3D
 	private Pet parent = null;
 	
 	private Vector3 HeadRotation = new Vector3(0f, 0f, 0f);
+	public Vector2 PointHeadTo {get; set;} = new Vector2(0f, 0f);
 
 	//Methods
 
@@ -42,8 +43,9 @@ public partial class PetSprite : Sprite3D
 	
 	public override void _Ready()
 	{
-		HeadRotation.Y = -3.14f - 1.57f;
-		Rotation3D.Y = 3.14f + 1.57f; 
+		//HeadRotation.Y = -3.14f - 1.57f;
+		Rotation3D.Y = 1.57f; 
+		Rotation3D.X -= 0.125f;
 		
 		RenderingServer.FramePostDraw += SetupSprite;
 	}
@@ -72,7 +74,7 @@ public partial class PetSprite : Sprite3D
 	
 	public void PointHeadAt(Vector2 _point)
 	{
-		//HeadRotation = _rotation;
+		PointHeadTo = _point;
 	}
 	
 	private void SetupSprite()
@@ -197,6 +199,14 @@ public partial class PetSprite : Sprite3D
 			BallzList[index].ZIndex = (int)-rotMat.Z;
 		}
 		
+		//Head rotation
+		
+		float headRotateY = (float)Math.Atan2((double)(BallzList[6].GlobalPosition.X - PointHeadTo.X), 128.0);
+		float headRotateX = (float)Math.Atan2((double)(BallzList[6].GlobalPosition.Y - PointHeadTo.Y - 64f), 128.0);
+		
+		HeadRotation.Y = headRotateY;
+		HeadRotation.X = headRotateX;
+		
 		int[] headballz = {4, 5, 7, 8, 9, 10, 11, 14, 15, 27, 28, 29, 24, 30, 31, 36, 37, 40, 55, 56, 57, 58, 59, 60, 61, 62};
 		
 		foreach (var index in headballz)
@@ -204,7 +214,7 @@ public partial class PetSprite : Sprite3D
 			var headball = new Vector3(BallzList[index].Position.X, BallzList[index].Position.Y, -BallzList[index].ZIndex);
 			var chestball = new Vector3(BallzList[6].Position.X, BallzList[6].Position.Y, -BallzList[6].ZIndex);
 			
-			var rotMat2 = Rotator.Rotate3D(headball - chestball, HeadRotation);
+			var rotMat2 = Rotator.Rotate3D(headball - chestball, HeadRotation - Rotation3D);
 			
 			rotMat2 += chestball;
 			
