@@ -44,7 +44,7 @@ public partial class PetSprite : Sprite3D
 	public override void _Ready()
 	{
 		//HeadRotation.Y = -3.14f - 1.57f;
-		Rotation3D.Y = 1.57f; 
+		Rotation3D.Y = 1.57f/2f; 
 		Rotation3D.X -= 0.125f;
 		
 		RenderingServer.FramePostDraw += SetupSprite;
@@ -92,14 +92,33 @@ public partial class PetSprite : Sprite3D
 			int pcolor = 110;
 			int tex = -1;
 			
-			Ball dummyBall = new Ball(textureAtlas, new BallParams {
-				Diameter = parent.catBhd.GetDefaultBallSize(i),// / 2,
-				ColorIndex = color,
-				Fuzz = 4,
-				OutlineType = 1,
-				OutlineColor = 0,
-				TextureIndex = tex
-			});
+			Ball dummyBall;
+			
+			var diameter = parent.catBhd.GetDefaultBallSize(i) * 2 / 3;
+			
+			if (i == 27 || i == 28)
+				diameter = 0;
+		
+			if (i == 14 || i == 15)
+			{
+				dummyBall = new EyeBall(textureAtlas, new BallParams {
+					Diameter = diameter,// / 2,
+					ColorIndex = color,
+					Fuzz = 4,
+					OutlineType = 1,
+					OutlineColor = 0,
+					TextureIndex = tex
+				});
+			} else {
+				dummyBall = new Ball(textureAtlas, new BallParams {
+					Diameter = diameter,// / 2,
+					ColorIndex = color,
+					Fuzz = 4,
+					OutlineType = 1,
+					OutlineColor = 0,
+					TextureIndex = tex
+				});
+			}
 
 			Vector2 dummyCoord = new Vector2(0.0f, 0.0f);
 			
@@ -190,9 +209,9 @@ public partial class PetSprite : Sprite3D
 
 			var orien = frame.BallOrientation(index);
 			
-			var rotMat = Rotator.Rotate3D(orien.Position, Rotation3D);
+			var rotMat = Rotator.Rotate3D(orien.Position * new Vector3(2f/3f, 2f/3f, 2f/3f), Rotation3D);
 
-			Vector2 v = new Vector2(rotMat.X, rotMat.Y);
+			Vector2 v = new Vector2(rotMat.X, rotMat.Y)/* */;
 
 			BallzList[index].Position = v;
 			//Since Godot renders Nodes with highest Z on top of others unlike original petz l, we set negative of it
@@ -201,11 +220,11 @@ public partial class PetSprite : Sprite3D
 		
 		//Head rotation
 		
-		float headRotateY = (float)Math.Atan2((double)(BallzList[6].GlobalPosition.X - PointHeadTo.X), 128.0);
+		/*float headRotateY = (float)Math.Atan2((double)(BallzList[6].GlobalPosition.X - PointHeadTo.X), 128.0);
 		float headRotateX = (float)Math.Atan2((double)(BallzList[6].GlobalPosition.Y - PointHeadTo.Y - 64f), 128.0);
 		
 		HeadRotation.Y = headRotateY;
-		HeadRotation.X = headRotateX;
+		HeadRotation.X = headRotateX;*/
 		
 		int[] headballz = {4, 5, 7, 8, 9, 10, 11, 14, 15, 27, 28, 29, 24, 30, 31, 36, 37, 40, 55, 56, 57, 58, 59, 60, 61, 62};
 		
@@ -214,7 +233,7 @@ public partial class PetSprite : Sprite3D
 			var headball = new Vector3(BallzList[index].Position.X, BallzList[index].Position.Y, -BallzList[index].ZIndex);
 			var chestball = new Vector3(BallzList[6].Position.X, BallzList[6].Position.Y, -BallzList[6].ZIndex);
 			
-			var rotMat2 = Rotator.Rotate3D(headball - chestball, HeadRotation - Rotation3D);
+			var rotMat2 = Rotator.Rotate3D(headball - chestball, HeadRotation);
 			
 			rotMat2 += chestball;
 			

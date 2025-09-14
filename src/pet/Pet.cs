@@ -25,7 +25,8 @@ public partial class Pet : Node2D
 		World.pets.Add(this);
 		
 		catBhd = AnimationManager.FetchCatBhd();
-		animation = catBhd.GetAnimation(104);
+    
+		animation = catBhd.GetAnimation(104); //104
 		
 		var frame = animation.Frames[currentFrame];
 
@@ -53,11 +54,7 @@ public partial class Pet : Node2D
 		//temp commented
 		petSprite.SetFrame(frame);
 		
-		petSprite.PointHeadAt(GetViewport().GetMousePosition());
-		//double rot = Math.Atan2(10.0, /*(double)petSprite.GlobalPosition.X - */(double)GetViewport().GetMousePosition().X);
-		//double rot = Math.Atan2(-10.0, 10.0 - (double)petSprite.GlobalPosition.X);
-		
-		//petSprite.SetHeadRotation(new Vector3(0f, (float)rot, 0f));
+		//petSprite.PointHeadAt(GetViewport().GetMousePosition());
 	}
 
 	public override void _Draw()

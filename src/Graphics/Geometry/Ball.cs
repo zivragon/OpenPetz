@@ -19,7 +19,7 @@ public partial class Ball : Geometry
 
 	//public TextureAtlas atlas {get; private set;} = null;
 	
-	public BallParams Info {get; private set;} = new BallParams();
+	public BallParams Info {get; protected set;} = new BallParams();
 	
 	public Vector3 rotation = new Vector3(0.0f, 0.0f, 0.0f);
 
