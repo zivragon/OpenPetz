@@ -14,13 +14,18 @@ public partial class Pet : Node2D
 	public BallzModel catBhd;
 	private BallzModel.FrameGroup animation;
 	private int currentFrame = 0;
+	
+	public Pet()
+	{
+		
+	}
 
 	public override void _Ready()
 	{
 		World.pets.Add(this);
 		
 		catBhd = AnimationManager.FetchCatBhd();
-		animation = catBhd.GetAnimation(1);
+		animation = catBhd.GetAnimation(104); //104
 		
 		var frame = animation.Frames[currentFrame];
 
@@ -47,6 +52,8 @@ public partial class Pet : Node2D
 		
 		//temp commented
 		petSprite.SetFrame(frame);
+		
+		//petSprite.PointHeadAt(GetViewport().GetMousePosition());
 	}
 
 	public override void _Draw()
