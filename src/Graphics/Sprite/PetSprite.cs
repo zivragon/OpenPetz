@@ -233,7 +233,7 @@ public partial class PetSprite : Sprite3D
 			var headball = new Vector3(BallzList[index].Position.X, BallzList[index].Position.Y, -BallzList[index].ZIndex);
 			var chestball = new Vector3(BallzList[6].Position.X, BallzList[6].Position.Y, -BallzList[6].ZIndex);
 			
-			var rotMat2 = Rotator.Rotate3D(headball - chestball, HeadRotation/* - Rotation3D*/);
+			var rotMat2 = Rotator.Rotate3D(headball - chestball, HeadRotation);
 			
 			rotMat2 += chestball;
 			
