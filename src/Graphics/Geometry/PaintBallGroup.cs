@@ -42,20 +42,17 @@ public partial class PaintBallGroup: Geometry
 
 		st.SetCustomFormat(0, SurfaceTool.CustomFormat.RFloat);
 		
-		//For the sake of keeping paintballz of one ball to one drawcall (for performance reasons), we need to generate a single surface from the list of paintballz and pass their data as vertex attributes.
+		//For the sake of keeping paintballz of one ball to one drawcall (for performance reasons), we need to generate a single surface from the list of paintballz and pass indice as vertex attribute.
 
 		for (int i = 0; i < Math.Min(paintBallz.Count, 16); i++)
 		{
 			var paintBall = paintBallz[i];
 			// "color" (it is infact, not color)
-			//CUSTOM0.r channel: Radius (relative to the base ball, usually between 0.0 to 1.0)
-			//CUSTOM0.g channel: The amount of fuzz.
+			//CUSTOM0.r channel: The index
 			var info = new Color((float)i, 0.0f, 0.0f, 0.0f);
 			
-			//This includes info for 3D coordinations of the paintball (.rgb channels) as well as the color index on the palette (.a channel)
-			//NOTE: they are clamped to the [0.0, 1.0] range
 			st.SetCustom(0, info);
-			//And finally, add the vertex position (relativr)
+			//And finally, add the vertex position (relative)
 			st.AddVertex(new Vector3(-1, -1, 0));
 			
 			//Repeat this 5 more times (a quad requires two triangles, requiring 6 vertices per quad)
@@ -75,10 +72,10 @@ public partial class PaintBallGroup: Geometry
 			st.SetCustom(0, info);
 			st.AddVertex(new Vector3(1, 1, 0));
 			
-			cols.Add(paintBall.ColorIndex);
-			sizes.Add(paintBall.Size);
-			fuzzs.Add(paintBall.Fuzz);
-			coords.Add(paintBall.Coordinations);
+			cols.Add(paintBall.Info.ColorIndex);
+			sizes.Add((float)paintBall.Info.Diameter / 100f);
+			fuzzs.Add(paintBall.Info.Fuzz);
+			coords.Add(paintBall.Info.Direction);
 
 		}
 		
@@ -123,7 +120,7 @@ public partial class PaintBallGroup: Geometry
 
 			foreach (var paintBall in paintBallz)
 			{
-				var atlasCoords = Atlas.GetSubTextureCoords(0, (int)paintBall.ColorIndex);
+				var atlasCoords = Atlas.GetSubTextureCoords(paintBall.Info.TextureIndex, (int)paintBall.Info.ColorIndex);
 				var position = atlasCoords.Position;
 				var size = atlasCoords.Size;
 				positions.Add(position);

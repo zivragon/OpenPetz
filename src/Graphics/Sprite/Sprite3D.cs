@@ -10,6 +10,8 @@ public partial class Sprite3D : Node2D //3d inheriting 2d? oh well
 	
 	protected BallzModel.Frame currentFrame = null;
 	
+	public int KeyBallIndex {get; protected set;} = 6; // catz default
+	
 	//Geometry containers
 	public List<Ball> BallzList {get; protected set;} = new List<Ball> (); //store ballz
 	public List<Line> LinezList {get; protected set;} = new List<Line> ();
