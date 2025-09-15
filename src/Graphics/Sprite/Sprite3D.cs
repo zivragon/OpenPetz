@@ -7,6 +7,7 @@ using OpenPetz;
 public partial class Sprite3D : Node2D //3d inheriting 2d? oh well 
 {
 	public Vector3 Rotation3D = new Vector3(0.0f, 0.0f, 0.0f);
+	public Vector3 GlobalRotation3D = new Vector3(0.0f, 0.0f, 0.0f);
 	
 	protected BallzModel.Frame currentFrame = null;
 	
