@@ -2,7 +2,6 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using static System.Net.Mime.MediaTypeNames;
 
 using OpenPetz;
 
@@ -15,6 +14,10 @@ public partial class Pet : Node2D
 	private BallzModel.FrameGroup animation;
 	private int currentFrame = 0;
 	
+	public List<Fudger.Base> Fudgers = new List<Fudger.Base>();
+	
+	public Vector3 Rotation3D = new Vector3(0.0f, 0.0f, 0.0f);
+	
 	public Pet()
 	{
 		
@@ -22,11 +25,16 @@ public partial class Pet : Node2D
 
 	public override void _Ready()
 	{
+		Rotation3D.X -= 0.125f;
+		
+		Fudgers.Add(Fudger.Method.InitFudger(Fudger.DirectiveType.Aim));
+		
+		Rotation3D.Y = Fudgers[(int)Fudger.Type.Rotation].GetCurrentAngle();
+		
 		World.pets.Add(this);
 		
 		catBhd = AnimationManager.FetchCatBhd();
-    
-		animation = catBhd.GetAnimation(104); //104
+		animation = catBhd.GetAnimation(0); //104
 		
 		var frame = animation.Frames[currentFrame];
 
@@ -45,6 +53,20 @@ public partial class Pet : Node2D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+		foreach (var fudger in Fudgers)
+			fudger.Update();
+		
+		var fudger2 = Fudgers[(int)Fudger.Type.Rotation] as Fudger.Aim;
+		
+		//What?
+		var cursor = GetViewport().GetMousePosition();
+		//WHAT?
+		var angle = (int)(Math.Atan2((double)(GlobalPosition.X - cursor.X), 128d) * 32768d / Math.PI);
+		
+		fudger2.SetAimTarget(angle);
+		
+		Rotation3D.Y = Fudgers[(int)Fudger.Type.Rotation].GetCurrentAngle();
+		
 		currentFrame += 1;
 		if (currentFrame >= animation.NumFrames)
 			currentFrame = 0;
