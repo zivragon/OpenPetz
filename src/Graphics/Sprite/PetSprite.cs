@@ -44,16 +44,13 @@ public partial class PetSprite : Sprite3D
 	public override void _Ready()
 	{
 		//HeadRotation.Y = -3.14f - 1.57f;
-		Rotation3D.Y = 1.57f/2f; 
-		Rotation3D.X -= 0.125f;
 		
 		RenderingServer.FramePostDraw += SetupSprite;
 	}
 
 	public override void _Process(double delta)
 	{
-		//HeadRotation.Y -= 0.1f;
-		//Rotation3D.Y += 0.1f;
+		Rotation3D = parent.Rotation3D;
 		foreach (var ball in BallzList){
 			ball.Rotation3D = Rotation3D;
 		}
@@ -94,7 +91,7 @@ public partial class PetSprite : Sprite3D
 			
 			Ball dummyBall;
 			
-			var diameter = parent.catBhd.GetDefaultBallSize(i) * 2 / 3;
+			var diameter = parent.catBhd.GetDefaultBallSize(i) / 2;
 			
 			if (i == 27 || i == 28)
 				diameter = 0;
@@ -209,7 +206,7 @@ public partial class PetSprite : Sprite3D
 
 			var orien = frame.BallOrientation(index);
 			
-			var rotMat = Rotator.Rotate3D(orien.Position * new Vector3(2f/3f, 2f/3f, 2f/3f), Rotation3D);
+			var rotMat = Rotator.Rotate3D(orien.Position / new Vector3(2f, 2f, 2f), Rotation3D);
 
 			Vector2 v = new Vector2(rotMat.X, rotMat.Y)/* */;
 
@@ -233,7 +230,7 @@ public partial class PetSprite : Sprite3D
 			var headball = new Vector3(BallzList[index].Position.X, BallzList[index].Position.Y, -BallzList[index].ZIndex);
 			var chestball = new Vector3(BallzList[6].Position.X, BallzList[6].Position.Y, -BallzList[6].ZIndex);
 			
-			var rotMat2 = Rotator.Rotate3D(headball - chestball, HeadRotation);
+			var rotMat2 = Rotator.Rotate3D(headball - chestball, HeadRotation/* - Rotation3D*/);
 			
 			rotMat2 += chestball;
 			
