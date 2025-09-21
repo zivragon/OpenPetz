@@ -14,7 +14,7 @@ public partial class Pet : Node2D
 	private BallzModel.FrameGroup animation;
 	private int currentFrame = 0;
 	
-	public List<Fudger.Base> Fudgers = new List<Fudger.Base>();
+	public List<Fudger> Fudgers = new List<Fudger>();
 	
 	public Vector3 Rotation3D = new Vector3(0.0f, 0.0f, 0.0f);
 	
@@ -27,9 +27,9 @@ public partial class Pet : Node2D
 	{
 		Rotation3D.X -= 0.125f;
 		
-		Fudgers.Add(Fudger.Method.InitFudger(Fudger.DirectiveType.Aim));
+		Fudgers.Add(new Fudger(Fudger.EDirectiveType.Decay));
 		
-		Rotation3D.Y = Fudgers[(int)Fudger.Type.Rotation].GetCurrentAngle();
+		Rotation3D.Y = Fudgers[(int)Fudger.EType.Rotation].GetCurrentAngle();
 		
 		World.pets.Add(this);
 		
@@ -56,16 +56,16 @@ public partial class Pet : Node2D
 		foreach (var fudger in Fudgers)
 			fudger.Update();
 		
-		var fudger2 = Fudgers[(int)Fudger.Type.Rotation] as Fudger.Aim;
+		var fudger2 = Fudgers[(int)Fudger.EType.Rotation];
 		
 		//What?
-		var cursor = GetViewport().GetMousePosition();
+		//var cursor = GetViewport().GetMousePosition();
 		//WHAT?
-		var angle = (int)(Math.Atan2((double)(GlobalPosition.X - cursor.X), 128d) * 32768d / Math.PI);
+		//var angle = (int)(Math.Atan2((double)(GlobalPosition.X - cursor.X), 128d) * 128d / Math.PI);
 		
-		fudger2.SetAimTarget(angle);
+		//fudger2.SetAimTarget(angle);
 		
-		Rotation3D.Y = Fudgers[(int)Fudger.Type.Rotation].GetCurrentAngle();
+		Rotation3D.Y = fudger2.GetCurrentAngle();
 		
 		currentFrame += 1;
 		if (currentFrame >= animation.NumFrames)
