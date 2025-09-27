@@ -2,8 +2,8 @@
 
 namespace OpenPetz.Linez.Entries {
     public class Texture {
-        public string Path {get; private set;}
-        public int Transparency {get; private set;}
+        public string Path {get; set;}
+        public int Transparency {get; set;}
         
         public Texture(string _path, int _transparency)
         {

@@ -20,7 +20,7 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
     public Texture2D TextureData { get; private set; } = null;
 	public Texture2D Palette { get; private set; } = null;
     
-    public Vector2I Size { get; private set; } = new Vector2I(256, 256);
+    public Vector2I Size { get; private set; } = new Vector2I(512, 512);
     
     public TextureAtlas(Texture2D _palette, Guid _guid, List<TextureParams> _textureList)
     {
@@ -78,12 +78,12 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
 			position.X = _color % 16;
 			position.Y = (_color - position.X) / 16;			
 			
-			return new SubTextureCoordinations((float)position.X / Size.X, (float)position.Y / Size.Y, 1f / Size.X, 1f / Size.Y);
+			return new SubTextureCoordinations((float)position.X / Size.X, (float)position.Y / Size.Y, 1f / Size.X, 1f / Size.Y, 0);
 		}
 		
         var subTex = subTexList[_index];
 
-        return new SubTextureCoordinations(subTex.Position.X / Size.X, subTex.Position.Y / Size.Y, subTex.Size.X / Size.X, subTex.Size.Y / Size.Y);
+        return new SubTextureCoordinations(subTex.Position.X / Size.X, subTex.Position.Y / Size.Y, subTex.Size.X / Size.X, subTex.Size.Y / Size.Y, subTex.Transparency);
     }
     
     // HEAVILY WIP
@@ -148,7 +148,7 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
 			subTex.Position = posPtr;
 			subTex.Size = texSize;
 			//
-			subTex.Transparency = 0;
+			subTex.Transparency = texParam.Transparency;
 			subTex.Index = texParam.Index;
 			
 			subTexList.Add(subTex);
@@ -208,11 +208,13 @@ public struct SubTextureCoordinations {
     
     public Vector2 Position { get; private set; } = new Vector2(0.0f, 0.0f);
     public Vector2 Size { get; private set; } = new Vector2(1.0f, 1.0f);
+	public int Transparency = 0;
     
-    public SubTextureCoordinations (float _x, float _y, float _width, float _height)
+    public SubTextureCoordinations (float _x, float _y, float _width, float _height, int _transparency = 0)
     {
         Position = new Vector2(_x, _y);
         Size = new Vector2(_width, _height);
+		Transparency = _transparency;
     }
 }
 
