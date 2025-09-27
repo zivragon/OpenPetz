@@ -1,5 +1,9 @@
 shader_type canvas_item;
 
+@LoadSubTextureShaderComponent
+
+@LoadCircleShaderComponent
+
 uniform vec2 center;
 uniform float diameter;
 uniform float outline_width;
@@ -9,15 +13,13 @@ uniform float outline_color;
 uniform vec2 atlas_position = vec2(0.0, 0.0);
 uniform vec2 atlas_size = vec2(1.0, 1.0);
 
+uniform float color_index = 0;
+uniform float transparency = 0;
+
 uniform sampler2D tex : hint_default_white, filter_nearest, repeat_enable;
 uniform sampler2D palette: filter_nearest, repeat_enable;
 
 uniform float fuzz = 0.0;
-
-
-@LoadSubTextureShaderComponent
-
-@LoadCircleShaderComponent
 
 float random (vec2 st) {
     return fract(sin(dot(st.xy,
@@ -64,7 +66,9 @@ void fragment() {
 	
 	float is_ball = ball.a;
 	
-	ball *= vec4(texture(palette, vec2(tex_index, 0.0)).bgr, 1.0);
+	float mapped_color = color_map(tex_index, color_index, transparency);
+	
+	ball *= vec4(texture(palette, vec2(mapped_color, 0.0)).bgr, 1.0);
 	
 	vec4 color = mix(outline, ball, is_ball);
 	
