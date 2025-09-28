@@ -10,7 +10,7 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
     public static Vector2I MaximumSize => new Vector2I(1024, 1024);
     
     private SubViewport subViewport = null;
-    private List<TextureParams> textureList = null;
+    private List<OpenPetz.Linez.Entries.Texture> textureList = null;
 	
     private List<SubTextureContainer> subTexList = new List<SubTextureContainer>();
 	//private List<SubTextureContainer> subTexListTransparent = new List<SubTextureContainer>();
@@ -22,7 +22,7 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
     
     public Vector2I Size { get; private set; } = new Vector2I(512, 512);
     
-    public TextureAtlas(Texture2D _palette, Guid _guid, List<TextureParams> _textureList)
+    public TextureAtlas(Texture2D _palette, Guid _guid, List<OpenPetz.Linez.Entries.Texture> _textureList)
     {
         //First step is checking to see if it is already cached.
         
@@ -111,7 +111,7 @@ public partial class TextureAtlas : Node2D { //TO DO: Replace with Node
 			texList.Add(texture);
 		}
 		
-		textureList.Sort(delegate(TextureParams a, TextureParams b) 
+		textureList.Sort(delegate(OpenPetz.Linez.Entries.Texture a, OpenPetz.Linez.Entries.Texture b) 
 		{
 			var sizeA = texList[a.Index].GetSize();
 			var sizeB = texList[b.Index].GetSize();
@@ -188,7 +188,6 @@ public struct TextureParams {
 	public int Index {get; set;} = 0;
 	public string Path {get; set;} = "";
     public int Transparency {get; set;} = 0;
-	public int Color {get; set;} = 0;
 	public TextureParams(){}
 }
 

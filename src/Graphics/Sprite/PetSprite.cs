@@ -16,7 +16,7 @@ public partial class PetSprite : Sprite3D
 	public PetSprite (Pet _p){
 		parent = _p;
 		
-		List<TextureParams> textureList = new List<TextureParams>();
+		/*List<TextureParams> textureList = new List<TextureParams>();
 		textureList.Add(new TextureParams {
 			Path = "./art/textures/hair10.bmp",
 			Transparency = 1
@@ -28,10 +28,10 @@ public partial class PetSprite : Sprite3D
 		textureList.Add(new TextureParams {
 			Path = "./art/textures/hair10.bmp",
 			Transparency = 1
-		});
+		});*/
 		
 		Texture2D palette = PaletteManager.FetchPalette("petz");
-		textureAtlas = new TextureAtlas(palette, Guid.Empty, textureList);
+		textureAtlas = new TextureAtlas(palette, Guid.Empty, parent.LinezDatabase.TextureList);
 
 		AddChild(textureAtlas);
 		
@@ -73,15 +73,20 @@ public partial class PetSprite : Sprite3D
 	
 	private void SetupSprite()
 	{	
+		var scales = parent.LinezDatabase.DefaultScales;
+	
+		float scalesUnit = (float)(150 + scales[0]) / 512f;
+		AbsScale = new Vector3(scalesUnit,scalesUnit,scalesUnit);
+		
 		for (int i = 0; i < 67; i++)
 		{
-			int color = parent.Linez.BallzInfo[i].Color;
-			int pcolor = 110;
-			int tex = 1;
+			var ballInfo = parent.LinezDatabase.BallzInfo[i];
 			
 			Ball dummyBall;
 			
-			var diameter = parent.catBhd.GetDefaultBallSize(i) / 3 * 2;
+			var diameter = parent.catBhd.GetDefaultBallSize(i) + ballInfo.SizeDifference;
+			
+			diameter = (int)((float)diameter * (float)(150 + scales[1]) / 512f);
 			
 			if (i == 27 || i == 28)
 				diameter = 0;
@@ -90,20 +95,20 @@ public partial class PetSprite : Sprite3D
 			{
 				dummyBall = new EyeBall(textureAtlas, new BallParams {
 					Diameter = diameter,// / 2,
-					ColorIndex = color,
-					Fuzz = 4,
-					OutlineType = 1,
-					OutlineColor = 0,
-					TextureIndex = tex
+					ColorIndex = ballInfo.Color,
+					Fuzz = ballInfo.Fuzz,
+					OutlineType = ballInfo.OutlineType,
+					OutlineColor = ballInfo.OutlineColor,
+					TextureIndex = ballInfo.Texture
 				});
 			} else {
 				dummyBall = new Ball(textureAtlas, new BallParams {
 					Diameter = diameter,// / 2,
-					ColorIndex = color,
-					Fuzz = 4,
-					OutlineType = 1,
-					OutlineColor = 39,
-					TextureIndex = tex
+					ColorIndex = ballInfo.Color,
+					Fuzz = ballInfo.Fuzz,
+					OutlineType = ballInfo.OutlineType,
+					OutlineColor = ballInfo.OutlineColor,
+					TextureIndex = ballInfo.Texture
 				});
 			}
 
@@ -190,13 +195,16 @@ public partial class PetSprite : Sprite3D
 			return;
 		
 		var frame = currentFrame;
+		
+		var scales = parent.LinezDatabase.DefaultScales;
+		float scalesUnit = (float)(150 + scales[0]) / 512f;
 	
 		for (int index = 0; index < BallzList.Count; index++)
 		{
 
 			var orien = frame.BallOrientation(index);
 			
-			var rotMat = Rotator.Rotate3D(orien.Position / new Vector3(3f/2f, 3f/2f, 3f/2f), Rotation3D);
+			var rotMat = Rotator.Rotate3D(orien.Position * AbsScale, Rotation3D);
 
 			Vector2 v = new Vector2(rotMat.X, rotMat.Y)/* */;
 

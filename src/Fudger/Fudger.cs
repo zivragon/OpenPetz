@@ -47,8 +47,8 @@ public class Fudger
 	public bool UpdateWhenDeactivated = false;
 		
 	int AimTarget = 0;					//  [+10] transitioning current value to this value over time
-	int LowerLimit = -256;					//  [+14] value's lower limit (default 0x80000000)
-	int UpperLimit = 256;					//  [+18] value's upper limit (default 0x7FFFFFFE)
+	int LowerLimit = -0x7FFFFFFE;					//  [+14] value's lower limit (default 0x80000000)
+	int UpperLimit = 0x7FFFFFFE;					//  [+18] value's upper limit (default 0x7FFFFFFE)
 	int PreviousValue = 0;				//  [+1C] previous value of the thing (speed = current - previous)
 	int CurrentValue = 0;
 	

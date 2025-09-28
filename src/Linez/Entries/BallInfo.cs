@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace OpenPetz.Linez.Entries {
-    public class BallInfo {
+    public struct BallInfo {
         public int Color {get; set;}
 		public int OutlineColor {get; set;}
 		public int SpeckleColor {get; set;}
