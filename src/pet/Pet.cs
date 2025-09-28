@@ -21,82 +21,13 @@ public partial class Pet : LinezObject
 	}
 
 	public override void _Ready()
-	{
-		//temp
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	1,	-1,	-3,	3,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	1,	-1,	-3,	3,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	2,	-1,	-5,	1,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	2,	-1,	-12,	3,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	2,	-2,	-16,	0,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	2,	0,	-16,	0,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	3,	-1,	3,	1,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	0,	1,	-2,	0,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	1,	-1,	-22,	0,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	1,	-1,	15,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	1,	-1,	-22,	0,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	1,	-1,	15,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	1,	-1,	-8,	1,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	1,	-1,	-8,	1,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(201,	244,	0,	0,	1,	3,	-1,	-1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(201,	244,	0,	0,	1,	3,	-1,	-1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	0,	-2,	7,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	0,	0,	7,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	0,	-1,	7,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	0,	0,	7,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	0,	-2,	7,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	0,	-1,	7,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	0,	0,	4,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	0,	0,	4,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	1,	-1,	-9,	0,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	1,	-1,	-21,	3,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	1,	-1,	-21,	3,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(244,	203,	0,	0,	3,	9,	-1,	-1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(244,	203,	0,	0,	3,	9,	-1,	-1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	0,	-1,	19,	0,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	1,	1,	-9,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	1,	1,	-9,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	1,	0,	-14,	3,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	1,	-2,	-14,	3,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	0,	0,	-2,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	0,	0,	-2,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	1,	-1,	8,	0,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(244,	244,	0,	0,	-1,	-5,	-1,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	1,	-1,	-2,	1,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	1,	-1,	-2,	1,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	0,	-1,	-12,	0,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	0,	0,	-5,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	0,	0,	-5,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	1,	-1,	-7,	4,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	1,	-1,	-9,	2,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	1,	-1,	-11,	2,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	1,	-1,	-9,	2,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	1,	-1,	-8,	2,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	1,	-1,	-6,	2,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	0,	-2,	5,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	0,	0,	5,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	0,	-1,	5,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	0,	0,	5,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	0,	-2,	5,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(35,	244,	0,	0,	-1,	5,	2,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(75,	244,	0,	0,	-1,	5,	-1,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(75,	244,	0,	0,	-1,	5,	-1,	0));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(25,	244,	0,	0,	0,	-15,	-1,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(25,	244,	0,	0,	0,	-15,	-1,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(25,	244,	0,	0,	0,	-15,	-1,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(25,	244,	0,	0,	0,	-15,	-1,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(25,	244,	0,	0,	0,	-15,	-1,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(25,	244,	0,	0,	0,	-15,	-1,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	0,	-1,	-8,	1,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(45,	244,	0,	0,	-1,	-8,	1,	1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(7,	244,	0,	0,	0,	5,	-1,	-1));
-		Linez.BallzInfo.Add(new OpenPetz.Linez.Entries.BallInfo(7,	244,	0,	0,	0,	5,	-1,	-1));
-		
+	{	
 		Fudgers.Add(new Fudger(Fudger.EDirectiveType.Decay));
 		
-		Rotation3D.Y = 1.57f/2f;
+		//Rotation3D.Y = 1.57f/2f;
 		
 		catBhd = AnimationManager.FetchCatBhd();
-		animation = catBhd.GetAnimation(0); //104
+		animation = catBhd.GetAnimation(10); //104
 		
 		var frame = animation.Frames[currentFrame];
 
