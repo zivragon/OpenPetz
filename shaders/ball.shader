@@ -28,7 +28,7 @@ float random (vec2 st) {
 }
 
 void vertex() {
-	VERTEX *= (diameter / 2.0) + fuzz;
+	VERTEX *= (diameter / 2.0) + fuzz + 1.;
 	//VERTEX.x += fuzz;
 }
 
@@ -55,13 +55,24 @@ void fragment() {
 	
 	vec4 ball = vec4(0.0);
 	
-	if (outline_width == 1.0)
+	if (outline_width == -2.0)
+	{
+		coord.x += 1.0;
+		ball = vec4(circle(coord, radius));
+	} else if (outline_width == -1.0)
+	{
+		ball = vec4(circle(coord, radius));
+	} else if (outline_width == 0.0)
+	{
+		coord.x -= 1.0;
+		ball = vec4(circle(coord, radius));
+	} else if (outline_width == 1.0)
 	{
 		float err = fract(radius);
 		coord.x = abs(coord.x - err) + 1.0;
 		ball = vec4(circle(coord, radius));
 	} else {
-		ball = vec4(circle(coord, radius - outline_width));
+		ball = vec4(circle(coord, radius - outline_width + 1.0));
 	}
 	
 	float is_ball = ball.a;
